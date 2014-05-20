@@ -1,0 +1,19 @@
+package EntityAttackDetection
+import Entity
+
+trigger currentDmgTrig = CreateTrigger()
+trigger toDestroy = null
+
+public function registerDmgEvent(unit u)
+	currentDmgTrig.registerUnitEvent(u, EVENT_UNIT_DAMAGED)
+	
+function onDamageEvent() returns boolean
+	let adata = GetAttacker().getUserData() castTo UnitEntity
+	
+	return false
+	
+function refreshTrigger()
+	
+init
+	currentDmgTrig.addCondition(Condition(function onDamageEvent))
+	CreateTimer().startPeriodic(600, function refreshTrigger)
