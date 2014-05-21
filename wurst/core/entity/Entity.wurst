@@ -88,10 +88,7 @@ public abstract class Entity
 		
 		let startZVelocity = ((-gravity.z * t) / 2 - pos.z/t + e/t)
 		this.setVel( vec3( Cos(tangle.radians()) * speed, Sin(tangle.radians()) * speed, startZVelocity) )
-		
-	function terminate()
-		done = true
-		
+				
 	/** This function is called every ANIMATION_PERIOD tick if the Entity is active */
 	abstract function update()
 	
@@ -181,7 +178,15 @@ abstract public class FxEntity extends Entity
 		destroy fx
 
 
+function updateEntities()
+	Entity e = Entity.first
+	while e != null
+		if e.active
+			e.update()
+		e = e.next
 
+public function startEntityLoop()
+	CreateTimer().startPeriodic(ANIMATION_PERIOD, function updateEntities)
 
 
 	

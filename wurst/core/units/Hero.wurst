@@ -1,0 +1,35 @@
+package Hero
+import public Entity
+import public HeroPreset
+import PhysicsEntity
+
+public class Hero extends UnitEntity
+	use PhysicsModule
+	
+	construct(vec3 pos, player owner, int id)
+		super(pos, createUnit(owner, id, pos, angle(0)))
+		
+	function onCast(int spellId)
+		
+	function onUnitCast(int spellId, unit target)
+		
+	function onPointCast(int spellId, vec2 target)
+		
+	
+constant castTrigger = CreateTrigger()
+
+init
+	castTrigger.addAction(() -> begin
+		let hero = GetTriggerUnit().getEntity() castTo Hero
+		let id = GetSpellAbilityId()
+		let targetUnit = GetSpellTargetUnit()
+		let targetX = GetSpellTargetX()
+		let targetY = GetSpellTargetY()
+		
+		if targetUnit != null
+			hero.onUnitCast(id, targetUnit)
+		else if targetX != 0
+			hero.onPointCast(id, vec2(targetX, targetY))
+		else
+			hero.onCast(id)
+	end)

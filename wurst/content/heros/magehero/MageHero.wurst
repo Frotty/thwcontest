@@ -1,0 +1,18 @@
+package MageHero
+import Hero
+import IdFactory
+import ChannelAbilityPreset
+
+int mageHeroId
+
+public class MageHero extends Hero
+
+	construct(vec3 pos, player owner)
+		super(pos, owner, mageHeroId)
+
+public function init_MageHero(boolean compiletime)
+	mageHeroId = HeroIdFactory.getId()
+	if compiletime
+		let preset = new HeroPreset(mageHeroId, 'Oshd', "Mage")
+		preset.addProperName("Daffa")
+		preset.buildHero()

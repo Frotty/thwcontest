@@ -182,3 +182,9 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+objectEditingOutput/WurstExportedObjects_w3a.wurst.txt
+objectEditingOutput/WurstExportedObjects_w3u.wurst.txt
+objectEditingOutput/wurstCreatedObjects.w3a
+objectEditingOutput/wurstCreatedObjects.w3o
+objectEditingOutput/wurstCreatedObjects.w3u
+wurst/war3map.j

@@ -1,0 +1,11 @@
+package GameInit
+import MageHero
+
+function initResources(boolean compileTime)
+	init_MageHero(compileTime)	
+	
+function initGame()
+	initResources(false)
+	
+@compiletime function generateObjects()
+	initResources(true)
