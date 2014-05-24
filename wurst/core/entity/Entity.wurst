@@ -78,16 +78,15 @@ public abstract class Entity
 	function addVel( vec3 vel )
 		this.vel += vel
 		
-	function setTarget( vec3 tpos, real speed )
-		var t = distanceBetweenCoords(pos.x, pos.y, tpos.x, tpos.y) / speed
-		let tangle = angleBetweenCoords(pos.x, pos.y, tpos.x, tpos.y)
-		let e = getTerrainZ(tpos.x,tpos.y)
-		
+	function setTarget( vec2 tpos, real speed )
+		var t = pos.distToVec2d(tpos) / speed
+		let tangle = pos.angle2d(tpos)
+		let e = getTerrainZ(tpos)
 		if t < 1.
 			t = 1./speed
 		
 		let startZVelocity = ((-gravity.z * t) / 2 - pos.z/t + e/t)
-		this.setVel( vec3( Cos(tangle.radians()) * speed, Sin(tangle.radians()) * speed, startZVelocity) )
+		this.setVel( vec3( tangle.radians().cos() * speed, tangle.radians().sin() * speed, startZVelocity) )
 				
 	/** This function is called every ANIMATION_PERIOD tick if the Entity is active */
 	abstract function update()
