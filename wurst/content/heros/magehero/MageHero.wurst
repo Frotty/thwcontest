@@ -3,7 +3,7 @@ import Hero
 import MapStuff
 import ChannelAbilityPreset
 
-int MAGE_HERO_ID
+var MAGE_HERO_ID
 
 public class MageHero extends Hero
 
