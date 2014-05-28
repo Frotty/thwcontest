@@ -1,0 +1,11 @@
+package Creep
+import public Entity
+import public PhysicsEntity
+import MapStuff
+
+public class Creep extends UnitEntity
+	use PhysicsModule
+	
+	construct(vec2 pos, vec2 target, int id)
+		super(pos.toVec3(), createUnit(CREEP_PLAYER, id, pos, angle(0)))
+	

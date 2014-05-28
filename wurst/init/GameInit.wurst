@@ -1,11 +1,16 @@
 package GameInit
 import MageHero
+import ClosureTimers
 
 function initResources(boolean compileTime)
 	init_MageHero(compileTime)	
 	
-function initGame()
-	initResources(false)
+	
+init
+	doAfter(0.01, () -> begin
+		initResources(false)
+		createUnit(Player(0), 'hfoo', vec2(0,0), angle(0))
+	end)	
 	
 @compiletime function generateObjects()
 	initResources(true)

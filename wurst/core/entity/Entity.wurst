@@ -80,7 +80,7 @@ public abstract class Entity
 		
 	function setTarget( vec2 tpos, real speed )
 		var t = pos.distToVec2d(tpos) / speed
-		let tangle = pos.angle2d(tpos)
+		let tangle = pos.angleTo2d(tpos)
 		let e = getTerrainZ(tpos)
 		if t < 1.
 			t = 1./speed
