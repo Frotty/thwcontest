@@ -1,6 +1,6 @@
 package MageHero
 import Hero
-import MapStuff
+import ObjectIdGenerator
 import ChannelAbilityPreset
 
 int MAGE_HERO_ID
@@ -17,7 +17,7 @@ public class MageHero extends Hero
 	override function onPointCast(int spellId, vec2 target)
 
 public function init_MageHero(boolean compiletime)
-	MAGE_HERO_ID = heroGenerator.getId()
+	MAGE_HERO_ID = HERO_ID_GEN.next()
 	if compiletime
 		let preset = new HeroPreset(MAGE_HERO_ID, 'Oshd', "Mage")
 		preset.addProperName("Daffa")

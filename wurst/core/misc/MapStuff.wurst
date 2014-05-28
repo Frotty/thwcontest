@@ -1,6 +1,4 @@
 package MapStuff
 import ObjectIdGenerator
 
-public ObjectIdGenerator unitGenerator 		= new ObjectIdGenerator('s000')
-public ObjectIdGenerator heroGenerator 		= new ObjectIdGenerator('H000')
-public ObjectIdGenerator abilityGenerator 	= new ObjectIdGenerator('A000')
+public constant CREEP_PLAYER = Player(11)
