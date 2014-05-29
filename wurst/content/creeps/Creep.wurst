@@ -2,10 +2,55 @@ package Creep
 import public Entity
 import public PhysicsEntity
 import MapStuff
+import UnitObjEditing
+import HashMap
+
+
+HashMap<int, CreepDefinition> creepDefs = new HashMap<int, CreepDefinition>()
+string array nameToId
+int defcount = 0
+
+public function copyCreepDef(string name) returns CreepDefinition
+	for i = 0 to defcount
+		if nameToId[i] == name
+			return creepDefs.get(i).copy()
+	error("No CreepDefinition saved for name: \"" + name + "\"")
+	return null
 
 public class Creep extends UnitEntity
 	use PhysicsModule
 	
-	construct(vec2 pos, vec2 target, int id)
-		super(pos.toVec3(), createUnit(CREEP_PLAYER, id, pos, angle(0)))
+	construct(vec3 pos, int id)
+		super(pos, createUnit(CREEP_PLAYER, id, pos, angle(0)))
+
+public class CreepDefinition
+	use PhysicsModule
+	int id
+	int hp
+	int armor
+	string modelPath
+	string name
 	
+	construct(string name)
+		this.name = name
+		nameToId[defcount] = name
+		creepDefs.put(defcount, this)
+		defcount++
+		id = UNIT_ID_GEN.next()
+		
+	function copy() returns CreepDefinition
+		let cd = new CreepDefinition(name)
+		cd.hp = hp
+		cd.armor = armor
+		cd.modelPath = modelPath
+		cd.id = UNIT_ID_GEN.next()
+		return cd
+
+	function createCreepEntity(vec3 pos) returns Creep
+		let creep = new Creep(pos, id)
+		return creep
+	
+	function generateObject()
+		let def = new UnitDefinition(id, 'ugho')
+		def..setName(name)..setHitPointsMaximumBase(hp)
+		..setDefenseBase(armor)..setModelFile(modelPath)

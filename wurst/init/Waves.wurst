@@ -1,0 +1,49 @@
+package Waves
+import WavePool
+
+/** Creates and returns a list of all Waves */
+public function allWaves() returns LinkedList<WavePool>
+	let list = new LinkedList<WavePool>()
+	// Add the waves from below here
+	list.add(wave_1())
+	list.add(wave_2())
+	// Return all waves
+	return list
+
+/** Every Single Wave creates a WavePool and returns it */
+public function wave_1() returns WavePool
+	// Create the pool
+	let pool = new WavePool()
+	// Create a CreepDefinition. Use a distinctive Name here for later copies
+	var def = new CreepDefinition("Zombie")
+	// Set Values..
+	def.hp = 100
+	// Add Def to pool with amount and time (when to spawn after wave started)
+	// Add Spawns chronologically, cause the Pool doesn't get sorted
+	// You can implement a sort if you want kari :D
+	pool.addSpawn(def,10,0)
+	
+	// Return the pool
+	return pool
+	
+// Copy Example
+public function wave_2() returns WavePool
+	// Create the pool
+	let pool = new WavePool()
+	// Copy an existing CreepDef
+	// This still creates a new Object (as needed by the system)
+	// But reduces codeLength and copy-paste work (readability too)
+	pool.addSpawn(copyCreepDef("Zombie"), 20, 0)
+	return pool
+
+init
+	// This Creates the Definitions as well but doesn#t generate the Objects (obviously we can't do this ingame)
+	let waves = allWaves()
+	// TODO Send this to the WaveManager (or whateva) which then spawns the actual units
+	
+
+// Only in compieltime the objects will be generated
+@compiletime function generateAllCreeps()
+	let waves = allWaves()
+	for w in waves
+		w.generateObjects()
