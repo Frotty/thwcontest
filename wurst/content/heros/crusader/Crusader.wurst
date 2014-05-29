@@ -1,10 +1,11 @@
 package Crusader
 import MapStuff
+import Fx
 import Creep
 import Hero
 import DummyCaster
 import ChannelAbilityPreset
-import AbilityPreset
+import AbilityObjEditing
 import TempGroups
 
 		
@@ -37,11 +38,9 @@ public class Crusader extends Hero
 	override function onPointCast(int spellId, vec2 target)
 	
 	function castBackOff() // Q ability of Crusader. Instant cast.
-		DummyCaster dc = new DummyCaster(DUMMY_SPELL_ID,"thunderbolt",owner, true) //Create dummy for stun
-		real offset = 100 // Stomp in front of the hero
-		vec2 temp = pos.toVec2().polarOffset(actor.getFacingAngle(), 100)
-		GroupEnumUnitsInRange(ENUM_GROUP,temp.x,temp.y,300,null/*Filter(() -> GetEnumUnit().getEntity() instanceof Creep)*/) // Cool lambda expr
-		dc.castOnGroup(ENUM_GROUP)
+		DummyCaster dc = new DummyCaster(DUMMY_SPELL_ID,"stomp",owner, true) //Create dummy for stun
+		dc.recycleDelay = .5
+		dc.castInPoint(pos.toVec2().polarOffset(actor.getFacingAngle(), 100))
 		print("boo")//fortesting
 		
 public function init_Crusader(boolean compiletime)
@@ -57,9 +56,9 @@ public function init_Crusader(boolean compiletime)
 		spreset..removeChannelProperties(true)..setName("Back Off")..setButtonPositionNormalX(0)..setButtonPositionNormalY(2)
 			..setIcon("BTNWarStomp")..setOption(Option.VISIBLE, true) //Or whatever...
 			
-		let apreset = new AbilityPreset(DUMMY_SPELL_ID, 'AHtb', 1)
-		apreset..setCooldown(1, 0)..setManaCost(1, 0) //Missing presets ehre
-		..setMissileArt("")..setHeroAbility(false)..setMissileSpeed(6000) // Done
+		let adef = new AbilityDefinitionWarStompcreep(DUMMY_SPELL_ID)
+		adef..setCooldown(1, 0)..setManaCost(1, 0) //Missing presets ehre
+		..setLevels(1)..setAreaofEffect(1, 300) // Done
 		let preset = new HeroPreset(CRUSADER_ID, 'Oshd', "Kari")
 		preset..addProperName("Crusader")
 			..addHeroAbility(idInteger2IdString(MY_SPELL_ID))

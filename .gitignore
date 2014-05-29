@@ -192,6 +192,7 @@ wurst/war3map.j
 wurst.dependencies
 objectEditingOutput/WurstExportedObjects_w3d.wurst.txt
 objectEditingOutput/WurstExportedObjects_w3b.wurst.txt
-*.w3d
 *.w3b
 wurst.dependencies
+objectEditingOutput/WurstExportedObjects_w3d.wurst.txt
+*.w3d

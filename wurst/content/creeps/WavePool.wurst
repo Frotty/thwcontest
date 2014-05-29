@@ -14,7 +14,7 @@ class SpawnContainer
 
 
 public class WavePool
-	LinkedList<SpawnContainer> spawns	
+	LinkedList<SpawnContainer> spawns = new LinkedList<SpawnContainer>()
 
 	function addSpawn(CreepDefinition def, int amount, int time)
 		spawns.add(new SpawnContainer(def, amount, time))
