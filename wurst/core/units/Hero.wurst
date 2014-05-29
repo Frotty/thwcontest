@@ -1,6 +1,7 @@
 package Hero
 import public Entity
 import public HeroPreset
+import public ObjectIds
 import PhysicsEntity
 
 public abstract class Hero extends UnitEntity
@@ -8,6 +9,7 @@ public abstract class Hero extends UnitEntity
 	
 	construct(vec3 pos, player owner, int id)
 		super(pos, createUnit(owner, id, pos, angle(0)))
+		castTrigger.registerUnitEvent(actor, EVENT_UNIT_SPELL_EFFECT)
 		
 	abstract function onCast(int spellId)
 		
@@ -25,12 +27,16 @@ init
 		let targetUnit = GetSpellTargetUnit()
 		let targetX = GetSpellTargetX()
 		let targetY = GetSpellTargetY()
+		print("duh " + targetUnit.getName())
 		
-		if targetUnit != null
+		if targetUnit != null and targetUnit != hero.actor
+			print("onCast Unit")
 			hero.onUnitCast(id, targetUnit)
 		else if targetX != 0 
+			print("onCast Point")
 			hero.onPointCast(id, vec2(targetX, targetY))
 		else
+			print("onCast")
 			hero.onCast(id)
 		
 	end)

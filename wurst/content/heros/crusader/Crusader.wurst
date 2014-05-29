@@ -1,0 +1,69 @@
+package Crusader
+import MapStuff
+import Creep
+import Hero
+import DummyCaster
+import ChannelAbilityPreset
+import AbilityPreset
+import TempGroups
+
+		
+constant int BACKOFF_ID = 'A000'
+constant int BACKOFF_STUN_ID = 'A001'
+constant int SAFEGUARD_ID = 'A000'
+constant int lastResort_ID = 'A000'
+
+int CRUSADER_ID
+// I'm showing you how to do it
+int MY_SPELL_ID
+
+int DUMMY_SPELL_ID
+
+public class Crusader extends Hero
+	real safeguard_timer // Counts back from 6 seconds
+	real safeguard_damage // saves incoming damage for healback
+	
+	construct(vec3 pos, player owner )
+		super(pos, owner, CRUSADER_ID)
+		
+	override function onCast(int spellId)
+		print("You even called?")
+		switch spellId
+			case MY_SPELL_ID
+				castBackOff() 
+	
+	override function onUnitCast(int spellId, unit target)
+		
+	override function onPointCast(int spellId, vec2 target)
+	
+	function castBackOff() // Q ability of Crusader. Instant cast.
+		DummyCaster dc = new DummyCaster(DUMMY_SPELL_ID,"thunderbolt",owner, true) //Create dummy for stun
+		real offset = 100 // Stomp in front of the hero
+		vec2 temp = pos.toVec2().polarOffset(actor.getFacingAngle(), 100)
+		GroupEnumUnitsInRange(ENUM_GROUP,temp.x,temp.y,300,null/*Filter(() -> GetEnumUnit().getEntity() instanceof Creep)*/) // Cool lambda expr
+		dc.castOnGroup(ENUM_GROUP)
+		print("boo")//fortesting
+		
+public function init_Crusader(boolean compiletime)
+	CRUSADER_ID = HERO_ID_GEN.next()
+	// generate valid id
+	MY_SPELL_ID = ABIL_ID_GEN.next()
+	DUMMY_SPELL_ID = ABIL_ID_GEN.next()
+	
+	if compiletime
+		// Generate def if compieltime
+		let spreset = new ChannelAbilityPreset(MY_SPELL_ID, 4)
+		// Set Attributes
+		spreset..removeChannelProperties(true)..setName("Back Off")..setButtonPositionNormalX(0)..setButtonPositionNormalY(2)
+			..setIcon("BTNWarStomp")..setOption(Option.VISIBLE, true) //Or whatever...
+			
+		let apreset = new AbilityPreset(DUMMY_SPELL_ID, 'AHtb', 1)
+		apreset..setCooldown(1, 0)..setManaCost(1, 0) //Missing presets ehre
+		..setMissileArt("")..setHeroAbility(false)..setMissileSpeed(6000) // Done
+		let preset = new HeroPreset(CRUSADER_ID, 'Oshd', "Kari")
+		preset..addProperName("Crusader")
+			..addHeroAbility(idInteger2IdString(MY_SPELL_ID))
+		// Build at the end
+			..buildHero()
+		
+		
