@@ -1,4 +1,4 @@
 package MapStuff
-import ObjectIdGenerator
+import public ObjectIdGenerator
 
 public constant CREEP_PLAYER = Player(11)

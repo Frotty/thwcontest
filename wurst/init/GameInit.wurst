@@ -1,10 +1,11 @@
 package GameInit
 import MageHero
+import Spawner
 import ClosureTimers
 
 function initResources(boolean compileTime)
 	init_MageHero(compileTime)	
-	
+	init_Spawner(compileTime)
 	
 init
 	doAfter(0.01, () -> begin

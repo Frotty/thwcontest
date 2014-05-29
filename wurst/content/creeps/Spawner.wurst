@@ -1,3 +1,28 @@
 package Spawner
+import LinkedList
+import MapStuff
+import UnitObjEditing
+
+LinkedList<Spawner> spawners = new LinkedList<Spawner>()
+int SPAWNER_ID
 
 public class Spawner
+	unit actor
+	vec2 pos
+
+	construct(vec2 pos)
+		this.pos = pos
+		actor = createUnit(CREEP_PLAYER, SPAWNER_ID, pos, angle(0))
+		spawners.add(this)
+		
+	
+public function init_Spawner(boolean c)
+	SPAWNER_ID = UNIT_ID_GEN.next()
+	if c
+		let def = new BuildingDefinition(SPAWNER_ID, 'hhou')
+		def..setFoodProduced(0)
+		..setModelFile("buildings\\other\\PowerGenerator\\PowerGenerator.mdx")
+		..setName("Spawner")
+		..setNormalAbilities("Avul")
+		..setTintingColorRed(150)..setTintingColorBlue(150)..setTintingColorGreen(150)
+		
