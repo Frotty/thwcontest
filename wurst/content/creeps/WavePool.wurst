@@ -1,14 +1,14 @@
 package WavePool
-import LinkedList
-import Creep
+import public LinkedList
+import public Creep
 
 class SpawnContainer
-	int creepId
+	CreepDefinition creepDef
 	int amount
 	int time
 	
-	construct(int id, int am, int tm)
-		creepId = id
+	construct(CreepDefinition def, int am, int tm)
+		creepDef = def
 		amount = am
 		time = tm
 
@@ -16,5 +16,9 @@ class SpawnContainer
 public class WavePool
 	LinkedList<SpawnContainer> spawns	
 
-	function addSpawn(int creepId, int amount, int time)
-		spawns.add(new SpawnContainer(creepId, amount, time))
+	function addSpawn(CreepDefinition def, int amount, int time)
+		spawns.add(new SpawnContainer(def, amount, time))
+		
+	function generateObjects()
+		for s in spawns
+			s.creepDef.generateObject()
