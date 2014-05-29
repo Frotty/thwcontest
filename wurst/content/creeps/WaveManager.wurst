@@ -1,0 +1,8 @@
+package WaveManager
+import Waves
+
+public class WaveManager
+	static LinkedList<WavePool> waves
+
+	static function addAllWaves(LinkedList<WavePool> waves)
+		this.waves = waves

@@ -1,5 +1,5 @@
 package Waves
-import WavePool
+import public WavePool
 
 /** Creates and returns a list of all Waves */
 public function allWaves() returns LinkedList<WavePool>
