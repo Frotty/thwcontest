@@ -135,3 +135,17 @@ import ObjEditingNatives
 	u.setLvlDataString("dfil", 0, 0, "war3mapImported\\barrensarbre.mdl")
 
 
+@compiletime function create_w3d_D006()
+	let u = createObjectDefinition("w3d", 'D006', 'OOal')
+	u.setLvlDataString("dtil", 0, 0, "*")
+	u.setLvlDataString("dptx", 0, 0, "")
+	u.setLvlDataString("dnam", 0, 0, "Particle: Fog (Edit in Object Editor)")
+	u.setLvlDataString("dfil", 0, 0, "war3mapImported\\glow.mdl")
+	u.setLvlDataString("dcat", 0, 0, "Z")
+	u.setLvlDataUnreal("ddes", 0, 0, 8.0)
+	u.setLvlDataInt("dvg1", 1, 0, 100)
+	u.setLvlDataInt("dvb1", 1, 0, 125)
+	u.setLvlDataInt("dvr1", 1, 0, 100)
+	u.setLvlDataUnreal("dmas", 0, 0, 5.0)
+
+
