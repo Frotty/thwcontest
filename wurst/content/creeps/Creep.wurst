@@ -20,8 +20,9 @@ public function copyCreepDef(string name) returns CreepDefinition
 public class Creep extends UnitEntity
 	use PhysicsModule
 	
-	construct(vec3 pos, int id)
-		super(pos, createUnit(CREEP_PLAYER, id, pos, angle(0)))
+	construct(vec3 pos, int id, angle a, vec2 target)
+		super(pos, createUnit(CREEP_PLAYER, id, pos, a))
+		actor.issuePointOrder("attack", target)
 		
 	override function update()
 		super.update()
@@ -68,9 +69,9 @@ public class CreepDefinition
 		cd.id = UNIT_ID_GEN.next()
 		return cd
 
-	function createCreepEntity(vec3 pos) returns Creep
-		let creep = new Creep(pos, id)
-		return creep
+//	function createCreepEntity(vec3 pos) returns Creep
+//		let creep = new Creep(pos, id)
+//		return creep
 	
 	function generateObject()
 		print("generate")

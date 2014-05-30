@@ -22,8 +22,7 @@ public class Spawner
 		
 	function spawnCreep(CreepDefinition def)
 		print("Spawning Creep with id: " + idInteger2IdString(def.id))
-		createUnit(CREEP_PLAYER, def.id, pos, pos.angleTo(mapCenter))
-		..issuePointOrder("attack", target)
+		new Creep(pos.toVec3(), def.id, pos.angleTo(mapCenter), target)
 		
 	
 public function init_Spawner(boolean c)

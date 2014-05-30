@@ -49,14 +49,13 @@ public class Crusader extends Hero
 		//dc.castInPoint(pos.toVec2().polarOffset(actor.getFacingAngle(), 100))
 		real abilityrange = 400 //could be dynamic later?
 		GroupEnumUnitsInRange(ENUM_GROUP, pos.x,pos.y, abilityrange,null)
-		for unit u in ENUM_GROUP
-			if filterBackOff(u) //Check if selected by the spell
+		for u in ENUM_GROUP
+			print("group loop")
+			if filterBackOff(u)//Check if selected by the spell
 				Creep c = u.getEntity() castTo Creep
-				real dist = (pos-c.pos).toVec2().length()
-				if dist < 2*abilityrange/3
-					vec3 v = (vec2(0,0).polarOffset(angleBetweenCoords(pos.x,pos.y,c.pos.x,c.pos.y), 10+((abilityrange*3/2)-dist * .05))).toVec3()
-					v.z = ((abilityrange*3/2)-dist)*0.1
-					//c.addVel(v) // Adding the knockback
+				if c.pos.distToVecSquared(pos) < 256*256
+					let angl = pos.angleTo2d(c.pos)
+					c.addVel(vec3(angl.cos() * 10, angl.sin() * 10, 10)) // Adding the knockback
 				//dc.castOnTarget(c.actor)
 				//ENUM_GROUP.removeUnit(u) // Will this fuck the for cylce up?
 		//dc.castOnGroup(ENUM_GROUP) //Using dummycaster's corresponding function.
@@ -68,7 +67,7 @@ public class Crusader extends Hero
 		boolean notthis = u != actor //wont matter cause of iscreep
 		boolean inangle = (angleBetweenCoords(pos.x,pos.y,u.getPos().x,u.getPos().y).degrees() - actor.getFacing()).abs() % 360 < 60
 		boolean iscreep = u.getEntity() instanceof Creep
-		return iscreep and inangle and notthis
+		return notthis and inangle and iscreep
 		
 		
 	function castSafeGuard(unit target) // E ability of Crusader. Allied hero cast.
