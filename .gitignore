@@ -189,10 +189,11 @@ objectEditingOutput/wurstCreatedObjects.w3o
 objectEditingOutput/wurstCreatedObjects.w3u
 wurst/war3map.j
 *.dependencies
-wurst.dependencies
 objectEditingOutput/WurstExportedObjects_w3d.wurst.txt
 objectEditingOutput/WurstExportedObjects_w3b.wurst.txt
 *.w3b
-wurst.dependencies
 objectEditingOutput/WurstExportedObjects_w3d.wurst.txt
 *.w3d
+objectEditingOutput/WurstExportedObjects_w3d.wurst.txt
+objectEditingOutput/wurstCreatedObjects.w3d
+wurst.dependencies
