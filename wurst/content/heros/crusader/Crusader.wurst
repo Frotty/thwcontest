@@ -8,17 +8,13 @@ import ChannelAbilityPreset
 import AbilityObjEditing
 import TempGroups
 
-		
-constant int BACKOFF_ID = 'A000'
-constant int BACKOFF_STUN_ID = 'A001'
-constant int SAFEGUARD_ID = 'A000'
-constant int lastResort_ID = 'A000'
 
 int CRUSADER_ID
-// I'm showing you how to do it
-int MY_SPELL_ID
 
-int DUMMY_SPELL_ID
+int BACKOFF_SPELL_ID
+int SAFEGUARD_SPELL_ID
+
+int DUMBACKOFF_SPELL_ID
 
 public class Crusader extends Hero
 	real safeguard_timer // Counts back from 6 seconds
@@ -30,34 +26,44 @@ public class Crusader extends Hero
 	override function onCast(int spellId)
 		print("You even called?")
 		switch spellId
-			case MY_SPELL_ID
+			case BACKOFF_SPELL_ID
 				castBackOff() 
 	
 	override function onUnitCast(int spellId, unit target)
+		print("You even called?")
+		switch spellId
+			case BACKOFF_SPELL_ID
+				castBackOff() 
 		
 	override function onPointCast(int spellId, vec2 target)
 	
 	function castBackOff() // Q ability of Crusader. Instant cast.
-		DummyCaster dc = new DummyCaster(DUMMY_SPELL_ID,"stomp",owner, true) //Create dummy for stun
-		dc.recycleDelay = .5
-		dc.castInPoint(pos.toVec2().polarOffset(actor.getFacingAngle(), 100)) //TODO: Move this into the forGroup
-		real abilityrange = 400
+		DummyCaster dc = new DummyCaster(DUMBACKOFF_SPELL_ID,"stomp",owner, false) //Create dummy for stun
+		//dc.recycleDelay = .5
+		//dc.castInPoint(pos.toVec2().polarOffset(actor.getFacingAngle(), 100))
+		real abilityrange = 400 //could be dynamic later?
 		GroupEnumUnitsInRange(ENUM_GROUP, pos.x,pos.y, abilityrange,null)
 		for unit u in ENUM_GROUP
 			if filterBackOff(u) //Check if selected by the spell
 				Creep c = u.getEntity() castTo Creep
-				vec3 v = (vec2(0,0).polarOffset(actor.getFacingAngle(), 100)).toVec3()
-				v.z = 100
-				c.addVel(v) // Adding the knockback
+				real dist = (pos-c.pos).toVec2().length()
+				if dist < 2*abilityrange/3
+					vec3 v = (vec2(0,0).polarOffset(angleBetweenCoords(pos.x,pos.y,c.pos.x,c.pos.y), ((abilityrange*3/2)-dist * .1))).toVec3()
+					v.z = ((abilityrange*3/2)-dist)
+					//c.addVel(v) // Adding the knockback
+				dc.castOnTarget(c.actor)
+				//ENUM_GROUP.removeUnit(u) // Will this fuck the for cylce up?
 				print("Kickaah")
+		//dc.castOnGroup(ENUM_GROUP) //Using dummycaster's corresponding function.
+		destroy dc
 		
 		
 	function filterBackOff(unit u) returns boolean // We want to filter the units. Only effect the units in a sector in front of Crusader
 		//unit u = GetEnumUnit()
-		//boolean notthis = u != actor //wont matter cause of iscreep
-		boolean inangle = (angleBetweenCoords(pos.x,pos.y,u.getPos().x,u.getPos().y) - actor.getFacingAngle()).degrees().abs() < 60
+		boolean notthis = u != actor //wont matter cause of iscreep
+		boolean inangle = (angleBetweenCoords(pos.x,pos.y,u.getPos().x,u.getPos().y).degrees() - actor.getFacing()).abs() % 360 < 60
 		boolean iscreep = u.getEntity() instanceof Creep
-		return /*notthis and*/ inangle //and iscreep
+		return iscreep and inangle and notthis
 		
 			
 		
@@ -65,22 +71,34 @@ public class Crusader extends Hero
 public function init_Crusader(boolean compiletime)
 	CRUSADER_ID = HERO_ID_GEN.next()
 	// generate valid id
-	MY_SPELL_ID = ABIL_ID_GEN.next()
-	DUMMY_SPELL_ID = ABIL_ID_GEN.next()
+	BACKOFF_SPELL_ID = ABIL_ID_GEN.next()
+	SAFEGUARD_SPELL_ID = ABIL_ID_GEN.next()
+	DUMBACKOFF_SPELL_ID = ABIL_ID_GEN.next()
 	
 	if compiletime
+		let apreset = new AbilityPreset(DUMBACKOFF_SPELL_ID, 'ACfb', 1)
+		apreset..setCooldown(1, 0)..setManaCost(1, 0)
+		..setMissileArt("")..setHeroAbility(false)..setMissileSpeed(6000) // Done
+		
 		// Generate def if compieltime
-		let spreset = new ChannelAbilityPreset(MY_SPELL_ID, 4)
+		var spreset = new ChannelAbilityPreset(BACKOFF_SPELL_ID, 4)
 		// Set Attributes
 		spreset..removeChannelProperties(true)..setName("Back Off")..setButtonPositionNormalX(0)..setButtonPositionNormalY(2)
 			..setIcon("BTNWarStomp")..setOption(Option.VISIBLE, true) //Or whatever...
-			
-		let adef = new AbilityDefinitionWarStompcreep(DUMMY_SPELL_ID)
-		adef..setCooldown(1, 0)..setManaCost(1, 0) //Missing presets ehre
+		
+		spreset = new ChannelAbilityPreset(SAFEGUARD_SPELL_ID, 4)
+		// Set Attributes
+		spreset..removeChannelProperties(true)..setName("Safeguard")..setButtonPositionNormalX(1)..setButtonPositionNormalY(2)
+			..setIcon("BTNDefend")..setOption(Option.VISIBLE, true)
+			..setCastRange(400)..setTargetType(Targettype.UTARGET)..setTargetsAllowed(1,"allied")
+		
+		/*let adef = new AbilityDefinitionWarStompcreep(DUMBACKOFF_SPELL_ID)
+		adef..setCooldown(1, 0)..setManaCost(1, 0) //Missing presets ehre 
 		..setLevels(1)..setAreaofEffect(1, 300) // Done
+		*/
 		let preset = new HeroPreset(CRUSADER_ID, 'Oshd', "Kari")
 		preset..addProperName("Crusader")
-			..addHeroAbility(idInteger2IdString(MY_SPELL_ID))
+			..addHeroAbility(idInteger2IdString(BACKOFF_SPELL_ID))
 		// Build at the end
 			..buildHero()
 		
