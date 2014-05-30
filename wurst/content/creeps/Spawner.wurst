@@ -2,22 +2,33 @@ package Spawner
 import LinkedList
 import MapStuff
 import UnitObjEditing
+import Creep
+import MapBounds
+import ObjectIds
 
-LinkedList<Spawner> spawners = new LinkedList<Spawner>()
+public LinkedList<Spawner> spawners = new LinkedList<Spawner>()
 int SPAWNER_ID
 
 public class Spawner
 	unit actor
 	vec2 pos
+	vec2 target
 
-	construct(vec2 pos)
+	construct(vec2 pos, vec2 target)
 		this.pos = pos
 		actor = createUnit(CREEP_PLAYER, SPAWNER_ID, pos, angle(0))
 		spawners.add(this)
+		this.target = target
+		
+	function spawnCreep(CreepDefinition def)
+		print("Spawning Creep with id: " + idInteger2IdString(def.id))
+		createUnit(CREEP_PLAYER, def.id, pos, pos.angleTo(mapCenter))
+		..issuePointOrder("attack", target)
 		
 	
 public function init_Spawner(boolean c)
 	SPAWNER_ID = UNIT_ID_GEN.next()
+	
 	if c
 		let def = new BuildingDefinition(SPAWNER_ID, 'hhou')
 		def..setFoodProduced(0)
@@ -25,4 +36,8 @@ public function init_Spawner(boolean c)
 		..setName("Spawner")
 		..setNormalAbilities("Avul")
 		..setTintingColorRed(150)..setTintingColorBlue(150)..setTintingColorGreen(150)
+	else
+		new Spawner(vec2(-1500,-1500),mapCenter)
+		new Spawner(vec2(-1800,1500),mapCenter)
+		new Spawner(vec2(1700,-400),mapCenter)
 		

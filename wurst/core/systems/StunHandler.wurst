@@ -1,14 +1,19 @@
 package StunHandler
 import MapStuff
+import BuffObjEditing
+int SPELL_ID 
+int BUFF_ID
 
-//constant SPELL_ID = ABIL_ID_GEN.next()
-//constant BUFF_ID = ABIL_ID_GEN.next()
-
-//@compiletime function generateObjects()
-//	let def = new AbilityDefinitionFireBoltcreep(SPELL_ID)
-//	def..setDurationHero(1, 9999)
-//	..setDurationNormal(1, 9999)
-//	..setCastRange(1, 9999)
-//	..setManaCost(1, 0)
-//	..setCooldown(1, 0)
-//	..setTargetsAllowed(1, "")
+public function generateObjects(boolean c)
+	SPELL_ID = ABIL_ID_GEN.next()
+	BUFF_ID = ABIL_ID_GEN.next()
+	if c
+		let def = new AbilityDefinitionFireBoltcreep(SPELL_ID)
+		def..setDurationHero(1, 9999)
+		..setDurationNormal(1, 9999)
+		..setCastRange(1, 9999)
+		..setManaCost(1, 0)
+		..setCooldown(1, 0)
+		..setTargetsAllowed(1, "")
+		let bdef = new BuffDefinition(BUFF_ID, 'BPSE')
+		bdef.setTargetAttachments(1, 1)

@@ -1,14 +1,15 @@
 package Waves
 import public WavePool
+import WaveManager
 
 /** Creates and returns a list of all Waves */
-public function allWaves() returns LinkedList<WavePool>
-	let list = new LinkedList<WavePool>()
+public function allWaves() returns Queue<WavePool>
+	let queue = new Queue<WavePool>()
 	// Add the waves from below here
-	list.add(wave_1())
-	list.add(wave_2())
+	queue.enqueue(wave_1())
+	queue.enqueue(wave_2())
 	// Return all waves
-	return list
+	return queue
 
 /** Every Single Wave creates a WavePool and returns it */
 public function wave_1() returns WavePool
@@ -36,14 +37,14 @@ public function wave_2() returns WavePool
 	pool.addSpawn(copyCreepDef("Zombie"), 20, 0)
 	return pool
 
-init
+public function init_Waves(boolean c)
+	let waves = allWaves()
 	// This Creates the Definitions as well but doesn#t generate the Objects (obviously we can't do this ingame)
-	let waves = allWaves()
-	// TODO Send this to the WaveManager (or whateva) which then spawns the actual units
-	
+	WaveManager.addAllWaves(waves)
+	print("added")
+	if c
+		for w in waves
+			print("wave for in ")
+			w.generateObjects()
 
-// Only in compieltime the objects will be generated
-@compiletime function generateAllCreeps()
-	let waves = allWaves()
-	for w in waves
-		w.generateObjects()
+	
