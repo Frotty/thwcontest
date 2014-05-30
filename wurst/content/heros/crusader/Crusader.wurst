@@ -7,6 +7,8 @@ import DummyCaster
 import ChannelAbilityPreset
 import AbilityObjEditing
 import TempGroups
+import TimerUtils
+import ClosureEvents
 
 
 int CRUSADER_ID
@@ -17,28 +19,32 @@ int SAFEGUARD_SPELL_ID
 int DUMBACKOFF_SPELL_ID
 
 public class Crusader extends Hero
-	real safeguard_timer // Counts back from 6 seconds
-	real safeguard_damage // saves incoming damage for healback
+	timer sg_timer //sg stands for SafeGuard spell
+	real sg_remaining // Counts back from 6 seconds
+	real sg_damage // saves incoming damage for healback
+	Hero sg_target
+	lightning sg_lighting
+	real sg_damagewindow
 	
 	construct(vec3 pos, player owner )
 		super(pos, owner, CRUSADER_ID)
 		
 	override function onCast(int spellId)
-		print("You even called?")
+		print("Crusader - onCast function called")
 		switch spellId
 			case BACKOFF_SPELL_ID
 				castBackOff() 
 	
 	override function onUnitCast(int spellId, unit target)
-		print("You even called?")
+		print("Crusader - onUnitCast function called")
 		switch spellId
-			case BACKOFF_SPELL_ID
-				castBackOff() 
+			case SAFEGUARD_SPELL_ID
+				castSafeGuard(target) 
 		
 	override function onPointCast(int spellId, vec2 target)
 	
 	function castBackOff() // Q ability of Crusader. Instant cast.
-		DummyCaster dc = new DummyCaster(DUMBACKOFF_SPELL_ID,"stomp",owner, false) //Create dummy for stun
+		//DummyCaster dc = new DummyCaster(DUMBACKOFF_SPELL_ID,"stomp",owner, false) //Create dummy for stun
 		//dc.recycleDelay = .5
 		//dc.castInPoint(pos.toVec2().polarOffset(actor.getFacingAngle(), 100))
 		real abilityrange = 400 //could be dynamic later?
@@ -48,14 +54,13 @@ public class Crusader extends Hero
 				Creep c = u.getEntity() castTo Creep
 				real dist = (pos-c.pos).toVec2().length()
 				if dist < 2*abilityrange/3
-					vec3 v = (vec2(0,0).polarOffset(angleBetweenCoords(pos.x,pos.y,c.pos.x,c.pos.y), ((abilityrange*3/2)-dist * .1))).toVec3()
-					v.z = ((abilityrange*3/2)-dist)
+					vec3 v = (vec2(0,0).polarOffset(angleBetweenCoords(pos.x,pos.y,c.pos.x,c.pos.y), 10+((abilityrange*3/2)-dist * .05))).toVec3()
+					v.z = ((abilityrange*3/2)-dist)*0.1
 					//c.addVel(v) // Adding the knockback
-				dc.castOnTarget(c.actor)
+				//dc.castOnTarget(c.actor)
 				//ENUM_GROUP.removeUnit(u) // Will this fuck the for cylce up?
-				print("Kickaah")
 		//dc.castOnGroup(ENUM_GROUP) //Using dummycaster's corresponding function.
-		destroy dc
+		//destroy dc
 		
 		
 	function filterBackOff(unit u) returns boolean // We want to filter the units. Only effect the units in a sector in front of Crusader
@@ -65,8 +70,33 @@ public class Crusader extends Hero
 		boolean iscreep = u.getEntity() instanceof Creep
 		return iscreep and inangle and notthis
 		
-			
 		
+	function castSafeGuard(unit target) // E ability of Crusader. Allied hero cast.
+		if target.getEntity() instanceof Hero
+			Hero hero = target.getEntity() castTo Hero
+			if target == actor //Different effect if casted on self.
+				print("yuo cheating!")
+			else
+				sg_target = hero
+				sg_lighting = AddLightning("big",true,pos.x,pos.y,hero.pos.x,hero.pos.y)
+				SetLightningColor(sg_lighting,255,255,255,255)
+				sg_timer = getTimer()
+				sg_timer.setData(this castTo int)
+				sg_timer.startPeriodic(0.02,function safeGuard_loop)
+	
+	static function safeGuard_loop()
+		real sg_range = 200
+		Crusader c = GetExpiredTimer().getData() castTo Crusader
+		real transparency = ((c.pos-c.sg_target.pos).toVec2().length()/sg_range).squared()
+		real coloring = min(1,10/c.sg_damagewindow)
+		SetLightningColor(c.sg_lighting,255,coloring*255,coloring*255,transparency*255)
+		c.sg_damagewindow = max(c.sg_damagewindow/2-10,0)
+		
+		
+	function safeGuard_onDamage()
+		real damage = 10 //to be set normally
+		sg_damage += damage
+		sg_damagewindow += damage
 		
 public function init_Crusader(boolean compiletime)
 	CRUSADER_ID = HERO_ID_GEN.next()
@@ -91,14 +121,16 @@ public function init_Crusader(boolean compiletime)
 		spreset..removeChannelProperties(true)..setName("Safeguard")..setButtonPositionNormalX(1)..setButtonPositionNormalY(2)
 			..setIcon("BTNDefend")..setOption(Option.VISIBLE, true)
 			..setCastRange(0,400)..setTargetType(Targettype.UTARGET)
+			..setTargetsAllowed(0,"allies")
 		
 		/*let adef = new AbilityDefinitionWarStompcreep(DUMBACKOFF_SPELL_ID)
 		adef..setCooldown(1, 0)..setManaCost(1, 0) //Missing presets ehre 
 		..setLevels(1)..setAreaofEffect(1, 300) // Done
 		*/
-		let preset = new HeroPreset(CRUSADER_ID, 'Oshd', "Kari")
-		preset..addProperName("Crusader")
+		let preset = new HeroPreset(CRUSADER_ID, 'Oshd', "Crusader")
+		preset..addProperName("Matija")
 			..addHeroAbility(idInteger2IdString(BACKOFF_SPELL_ID))
+			..addHeroAbility(idInteger2IdString(SAFEGUARD_SPELL_ID))
 		// Build at the end
 			..buildHero()
 		
