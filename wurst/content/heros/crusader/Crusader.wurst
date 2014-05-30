@@ -40,8 +40,27 @@ public class Crusader extends Hero
 	function castBackOff() // Q ability of Crusader. Instant cast.
 		DummyCaster dc = new DummyCaster(DUMMY_SPELL_ID,"stomp",owner, true) //Create dummy for stun
 		dc.recycleDelay = .5
-		dc.castInPoint(pos.toVec2().polarOffset(actor.getFacingAngle(), 100))
-		print("boo")//fortesting
+		dc.castInPoint(pos.toVec2().polarOffset(actor.getFacingAngle(), 100)) //TODO: Move this into the forGroup
+		real abilityrange = 400
+		GroupEnumUnitsInRange(ENUM_GROUP, pos.x,pos.y, abilityrange,null)
+		for unit u in ENUM_GROUP
+			if filterBackOff(u) //Check if selected by the spell
+				Creep c = u.getEntity() castTo Creep
+				vec3 v = (vec2(0,0).polarOffset(actor.getFacingAngle(), 100)).toVec3()
+				v.z = 100
+				c.addVel(v) // Adding the knockback
+				print("Kickaah")
+		
+		
+	function filterBackOff(unit u) returns boolean // We want to filter the units. Only effect the units in a sector in front of Crusader
+		//unit u = GetEnumUnit()
+		//boolean notthis = u != actor //wont matter cause of iscreep
+		boolean inangle = (angleBetweenCoords(pos.x,pos.y,u.getPos().x,u.getPos().y) - actor.getFacingAngle()).degrees().abs() < 60
+		boolean iscreep = u.getEntity() instanceof Creep
+		return /*notthis and*/ inangle //and iscreep
+		
+			
+		
 		
 public function init_Crusader(boolean compiletime)
 	CRUSADER_ID = HERO_ID_GEN.next()
