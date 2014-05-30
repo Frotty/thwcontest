@@ -90,7 +90,7 @@ public function init_Crusader(boolean compiletime)
 		// Set Attributes
 		spreset..removeChannelProperties(true)..setName("Safeguard")..setButtonPositionNormalX(1)..setButtonPositionNormalY(2)
 			..setIcon("BTNDefend")..setOption(Option.VISIBLE, true)
-			..setCastRange(400)..setTargetType(Targettype.UTARGET)..setTargetsAllowed(1,"allied")
+			..setCastRange(0,400)..setTargetType(Targettype.UTARGET)
 		
 		/*let adef = new AbilityDefinitionWarStompcreep(DUMBACKOFF_SPELL_ID)
 		adef..setCooldown(1, 0)..setManaCost(1, 0) //Missing presets ehre 

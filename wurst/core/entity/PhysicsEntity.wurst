@@ -7,7 +7,7 @@ import GameConstants
 public module PhysicsModule
 	/** Affected by gravity */
 	boolean affectedByGravity = true
-	boolean flying = false
+	boolean flying = true
 	// Physical factors
 	
 	// The higher the more slide. Should be < 1.
@@ -22,7 +22,7 @@ public module PhysicsModule
 		if e.pos.z <= terrainZ + 2
 			onGround(e)
 		else
-			if e.vel.lengthSquared() < 1
+			if e.vel.lengthSquared() < 1 and not flying
 				onGround(e)
 			else
 				inAir(e)
