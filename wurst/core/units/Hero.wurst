@@ -15,6 +15,24 @@ public abstract class Hero extends UnitEntity
 		super.update()
 		physicsUpdate(this)
 		
+	override function onGround()
+		pos += vel
+		actor.setXY(pos)
+		
+		
+	override function inAir()
+		pos += vel
+		actor.setXY(pos)
+		actor.setFlyHeight(pos.z-terrainZ,0)
+		
+	override function onEscapeGround()
+		actor.setPropWindow(0)
+		
+	override function onGroundHit()
+		actor.setPropWindow(180)
+		pos.z = terrainZ 
+		vel.z = 0
+		
 	abstract function onCast(int spellId)
 		
 	abstract function onUnitCast(int spellId, unit target)

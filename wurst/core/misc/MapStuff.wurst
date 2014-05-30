@@ -1,4 +1,5 @@
 package MapStuff
 import public ObjectIdGenerator
+import public AbilityObjEditing
 
 public constant CREEP_PLAYER = Player(11)

@@ -14,14 +14,18 @@ public module PhysicsModule
 	real friction = 0.9
 	// Defines the bounciness
 	real restitution = 0.5
-	
+	real terrainZ = 0
 		
 		
 	function physicsUpdate(Entity e)
-		if e.pos.z <= getTerrainZ(e.pos.x, e.pos.y) + .2
+		terrainZ = getTerrainZ(e.pos.x, e.pos.y)
+		if e.pos.z <= terrainZ + 2
 			onGround(e)
 		else
-			inAir(e)
+			if e.vel.lengthSquared() < 1
+				onGround(e)
+			else
+				inAir(e)
 			
 	function onGroundHit()
 		
@@ -36,6 +40,7 @@ public module PhysicsModule
 		if flying
 			flying = false
 			onGroundHit()
+		e.pos.z = terrainZ
 		e.vel *= friction
 		onGround()
 		
