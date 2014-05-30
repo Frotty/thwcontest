@@ -48,7 +48,7 @@ public class Crusader extends Hero
 				Creep c = u.getEntity() castTo Creep
 				vec3 v = (vec2(0,0).polarOffset(actor.getFacingAngle(), 100)).toVec3()
 				v.z = 100
-				c.addVel(v) // Adding the knockback
+				c.addVel(vec3(5,0,50)) // Adding the knockback
 				print("Kickaah")
 		
 		
