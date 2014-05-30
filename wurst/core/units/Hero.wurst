@@ -11,6 +11,10 @@ public abstract class Hero extends UnitEntity
 		super(pos, createUnit(owner, id, pos, angle(0)))
 		castTrigger.registerUnitEvent(actor, EVENT_UNIT_SPELL_EFFECT)
 		
+	override function update()
+		super.update()
+		physicsUpdate(this)
+		
 	abstract function onCast(int spellId)
 		
 	abstract function onUnitCast(int spellId, unit target)

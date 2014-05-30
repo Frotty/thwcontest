@@ -17,7 +17,6 @@ public module PhysicsModule
 	
 		
 		
-	// This function is called every ANIMATION_PERIOD tick if the Entity is active
 	function physicsUpdate(Entity e)
 		if e.pos.z <= getTerrainZ(e.pos.x, e.pos.y) + .2
 			onGround(e)
