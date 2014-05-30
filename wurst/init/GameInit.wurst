@@ -3,6 +3,8 @@ import MageHero
 import Spawner
 import ClosureTimers
 import Entity
+import WaveManager
+import Waves
 
 import Crusader
 
@@ -10,13 +12,14 @@ function initResources(boolean compileTime)
 	init_MageHero(compileTime)
 	init_Crusader(compileTime)	
 	init_Spawner(compileTime)
+	init_Waves(compileTime)
 	
 init
 	doAfter(0.01, () -> begin
 		initResources(false)
 		createUnit(Player(0), 'hfoo', vec2(0,0), angle(0))
 		new Crusader(vec3(0,100,1200),Player(0) )  // Fortesting
-		
+		WaveManager.startNextWave()
 		startEntityLoop()
 	end)	
 	

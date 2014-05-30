@@ -1,8 +1,30 @@
 package WaveManager
-import Waves
+import WavePool
+import Spawner
 
 public class WaveManager
-	static LinkedList<WavePool> waves
+	static Queue<WavePool> waves
+	static WavePool currentWave
+	static timer waveTimer = CreateTimer()
 
-	static function addAllWaves(LinkedList<WavePool> waves)
+	static function addAllWaves(Queue<WavePool> waves)
+		print("WaveQueue Size " + waves.getSize().toString())
 		WaveManager.waves = waves
+		
+	static function startNextWave()
+		print("starting Wave")
+		currentWave = waves.dequeue()
+		if currentWave.spawns.getSize() > 0
+			let spawn = currentWave.spawns.dequeue()
+			waveTimer..setData(spawn castTo int)..start(spawn.time * 1., function WaveManager.spawn)
+			
+	static function spawn()
+		let expt = GetExpiredTimer()
+		let sc = expt.getData() castTo SpawnContainer
+		sc.amount--
+		for s in spawners
+			s.spawnCreep(sc.creepDef)
+		if sc.amount <= 0
+			expt.start(45., function WaveManager.startNextWave)
+		else
+			expt.start(0.5, function WaveManager.spawn)

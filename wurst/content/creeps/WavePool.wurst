@@ -1,8 +1,8 @@
 package WavePool
-import public LinkedList
+import public Queue
 import public Creep
 
-class SpawnContainer
+public class SpawnContainer
 	CreepDefinition creepDef
 	int amount
 	int time
@@ -14,11 +14,13 @@ class SpawnContainer
 
 
 public class WavePool
-	LinkedList<SpawnContainer> spawns = new LinkedList<SpawnContainer>()
+	Queue<SpawnContainer> spawns = new Queue<SpawnContainer>()
 
 	function addSpawn(CreepDefinition def, int amount, int time)
-		spawns.add(new SpawnContainer(def, amount, time))
+		spawns.enqueue(new SpawnContainer(def, amount, time))
 		
 	function generateObjects()
+		print("POOL GENERATE size: " + spawns.getSize().toString())
 		for s in spawns
+			print("POOL GENERATE -> for in")
 			s.creepDef.generateObject()
