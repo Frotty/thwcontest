@@ -68,21 +68,23 @@ public class Crusader extends Hero
 			if target == actor //Different effect if casted on self.
 				print("yuo cheating!")
 			else
+				print("created")
 				sg_target = hero
-				sg_lighting = AddLightning("big",true,pos.x,pos.y,hero.pos.x,hero.pos.y)
-				SetLightningColor(sg_lighting,255,255,255,255)
+				sg_lighting = AddLightning("LEAS",true,pos.x,pos.y,hero.pos.x,hero.pos.y)
+				SetLightningColor(sg_lighting,1,1,1,1)
 				sg_timer = getTimer()
-				sg_timer.setData(this castTo int)
-				sg_timer.startPeriodic(0.02,function safeGuard_loop)
+				sg_timer..setData(this castTo int)
+					..startPeriodic(0.05,function safeGuard_loop)
 	
 	static function safeGuard_loop()
-		real sg_range = 200
+		print("looping")
+		real sg_range = 500
 		Crusader c = GetExpiredTimer().getData() castTo Crusader
-		real transparency = ((c.pos-c.sg_target.pos).toVec2().length()/sg_range).squared()
+		real transparency = min(SquareRoot(c.pos.distToVec2d(c.sg_target.pos)/sg_range),1)
 		real coloring = min(1,10/c.sg_damagewindow)
-		SetLightningColor(c.sg_lighting,255,coloring*255,coloring*255,transparency*255)
-		c.sg_damagewindow = max(c.sg_damagewindow/2-10,0)
-		
+		SetLightningColor(c.sg_lighting,1,coloring,coloring,1-transparency)
+		MoveLightning(c.sg_lighting,true,c.pos.x,c.pos.y,c.sg_target.pos.x,c.sg_target.pos.y)
+		c.sg_damagewindow = max(c.sg_damagewindow/2-10,1)
 		
 	function safeGuard_onDamage()
 		real damage = 10 //to be set normally
@@ -112,7 +114,7 @@ public function init_Crusader(boolean compiletime)
 		spreset..removeChannelProperties(true)..setName("Safeguard")..setButtonPositionNormalX(1)..setButtonPositionNormalY(2)
 			..setIcon("BTNDefend")..setOption(Option.VISIBLE, true)
 			..setCastRange(0,400)..setTargetType(Targettype.UTARGET)
-			..setTargetsAllowed(0,"allies")
+			..setTargetsAllowed(0,"allied")
 		
 		/*let adef = new AbilityDefinitionWarStompcreep(DUMBACKOFF_SPELL_ID)
 		adef..setCooldown(1, 0)..setManaCost(1, 0) //Missing presets ehre 

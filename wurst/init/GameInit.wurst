@@ -19,6 +19,7 @@ init
 		initResources(false)
 		createUnit(Player(0), 'hfoo', vec2(0,0), angle(0))
 		new Crusader(vec3(0,100,1200),Player(0) )  // Fortesting
+		new MageHero(vec3(200,200,1200),Player(1) )  // Fortesting
 		WaveManager.startNextWave()
 		startEntityLoop()
 	end)	
