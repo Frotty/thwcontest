@@ -9,6 +9,7 @@ import AbilityObjEditing
 import TempGroups
 import TimerUtils
 import ClosureEvents
+import StunHandler
 
 
 int CRUSADER_ID
@@ -56,13 +57,18 @@ public class Crusader extends Hero
 			if (angl - actor.getFacingAngle()).degrees().abs() < 60
 				if c.pos.distToVecSquared(pos) < 256*256
 					c.addVel(vec3(angl.cos() * 10, angl.sin() * 10, 10)) // Adding the knockback
+					c.actor.applyStun(false, 2, c.owner)
 				//dc.castOnTarget(c.actor)
 				//ENUM_GROUP.removeUnit(u) // Will this fuck the for cylce up?
 		//dc.castOnGroup(ENUM_GROUP) //Using dummycaster's corresponding function.
 		//destroy dc
 		
+	OnDamage onDamageClosure
 		
 	function castSafeGuard(unit target) // E ability of Crusader. Allied hero cast.
+		onDamageClosure = (unit damaged, unit source, real amount) -> print("Do your stuff here")
+		onDamage(target, onDamageClosure)
+		destroy onDamageClosure
 		if target.getEntity() instanceof Hero
 			Hero hero = target.getEntity() castTo Hero
 			if target == actor //Different effect if casted on self.
