@@ -10,7 +10,9 @@ import TempGroups
 import TimerUtils
 import ClosureEvents
 import StunHandler
-
+import ClosureForGroups
+import ClosureTimers
+import Lightning
 
 int CRUSADER_ID
 
@@ -24,7 +26,6 @@ public class Crusader extends Hero
 	real sg_remaining // Counts back from 6 seconds
 	real sg_damage // saves incoming damage for healback
 	Hero sg_target
-	lightning sg_lighting
 	real sg_damagewindow
 	
 	construct(vec3 pos, player owner )
@@ -49,15 +50,25 @@ public class Crusader extends Hero
 		//dc.recycleDelay = .5
 		//dc.castInPoint(pos.toVec2().polarOffset(actor.getFacingAngle(), 100))
 		real abilityrange = 400 //could be dynamic later?
-		GroupEnumUnitsInRange(ENUM_GROUP, pos.x,pos.y, abilityrange, Condition(() -> GetFilterUnit().getEntity() instanceof Creep))
-		for u from ENUM_GROUP
-			print("group loop")
-			let c = u.getEntity() castTo Creep
-			let angl = pos.angleTo2d(c.pos)
-			if (angl - actor.getFacingAngle()).degrees().abs() < 60
-				if c.pos.distToVecSquared(pos) < 256*256
-					c.addVel(vec3(angl.cos() * 10, angl.sin() * 10, 10)) // Adding the knockback
-					c.actor.applyStun(false, 2, c.owner)
+		// From ClosureForGroups
+		// forUnitsInRange(pos.toVec2(), abilityrange, (unit u) -> begin
+		//       ^										  ^			  ^
+		//       |										  |			  |
+		//   (Function from package)	(parameter of the lambda expr)(starts a block if the expressions is more than 1 line)
+		// This is an anonymous function (as you might know it from c++)
+		// In this case it creates a closure which means it can capture local variables by value
+		// FOr example see safe Guard
+		// For more information on the topic: https://peq.github.io/WurstScript/manual.html#lambda_expressions_and_closures
+		forUnitsInRange(pos.toVec2(), abilityrange, (unit u) -> begin
+			if u.getEntity() instanceof Creep
+				let creep = u.getEntity() castTo Creep
+				let angl = pos.angleTo2d(creep.pos)
+				if (angl - actor.getFacingAngle()).degrees().abs() < 60
+					if creep.pos.distToVecSquared(pos) < 256*256
+						creep.addVel(vec3(angl.cos() * 10, angl.sin() * 10, 10))
+						c.actor.applyStun(false, 2, c.owner)
+		end)
+
 				//dc.castOnTarget(c.actor)
 				//ENUM_GROUP.removeUnit(u) // Will this fuck the for cylce up?
 		//dc.castOnGroup(ENUM_GROUP) //Using dummycaster's corresponding function.
@@ -66,29 +77,24 @@ public class Crusader extends Hero
 	OnDamage onDamageClosure
 		
 	function castSafeGuard(unit target) // E ability of Crusader. Allied hero cast.
-		onDamageClosure = (unit damaged, unit source, real amount) -> print("Do your stuff here")
-		onDamage(target, onDamageClosure)
-		destroy onDamageClosure
-		if target.getEntity() instanceof Hero
-			Hero hero = target.getEntity() castTo Hero
-			if target == actor //Different effect if casted on self.
-				print("yuo cheating!")
-			else
-				sg_target = hero
-				sg_lighting = AddLightning("big",true,pos.x,pos.y,hero.pos.x,hero.pos.y)
-				SetLightningColor(sg_lighting,255,255,255,255)
-				sg_timer = getTimer()
-				sg_timer.setData(this castTo int)
-				sg_timer.startPeriodic(0.02,function safeGuard_loop)
+		// Should probably work on summouns (of there every happen any) too
+		let targetEntity = target.getEntity()
+		if target == actor //Different effect if casted on self.
+			print("yuo cheating!")
+		else
+			print("created")
+			// Create local vars to be captured by closure (ignore warning)
+			let lng = addLightning("LEAS", true, pos, targetEntity.pos)
+			let maxDistance = 500
+			doPeriodicallyTimed(ANIMATION_PERIOD, 5, (CallbackCounted cb) -> begin
+				var col = lng.getColor()
+				col.alpha = ((maxDistance - (pos.distToVec(targetEntity.pos) / maxDistance)) * 255).toInt()
+				lng..move(true, pos, targetEntity.pos)
+				..setColor(col)
+				if cb.isLast()
+					lng.destr()
+			end)
 	
-	static function safeGuard_loop()
-		real sg_range = 200
-		Crusader c = GetExpiredTimer().getData() castTo Crusader
-		real transparency = ((c.pos-c.sg_target.pos).toVec2().length()/sg_range).squared()
-		real coloring = min(1,10/c.sg_damagewindow)
-		SetLightningColor(c.sg_lighting,255,coloring*255,coloring*255,transparency*255)
-		c.sg_damagewindow = max(c.sg_damagewindow/2-10,0)
-		
 		
 	function safeGuard_onDamage()
 		real damage = 10 //to be set normally
@@ -103,10 +109,6 @@ public function init_Crusader(boolean compiletime)
 	DUMBACKOFF_SPELL_ID = ABIL_ID_GEN.next()
 	
 	if compiletime
-		let apreset = new AbilityPreset(DUMBACKOFF_SPELL_ID, 'ACfb', 1)
-		apreset..setCooldown(1, 0)..setManaCost(1, 0)
-		..setMissileArt("")..setHeroAbility(false)..setMissileSpeed(6000) // Done
-		
 		// Generate def if compieltime
 		var spreset = new ChannelAbilityPreset(BACKOFF_SPELL_ID, 4)
 		// Set Attributes
@@ -117,8 +119,8 @@ public function init_Crusader(boolean compiletime)
 		// Set Attributes
 		spreset..removeChannelProperties(true)..setName("Safeguard")..setButtonPositionNormalX(1)..setButtonPositionNormalY(2)
 			..setIcon("BTNDefend")..setOption(Option.VISIBLE, true)
-			..setCastRange(0,400)..setTargetType(Targettype.UTARGET)
-			..setTargetsAllowed(0,"allies")
+			..setCastRange(1,400)..setTargetType(Targettype.UTARGET)
+			..setTargetsAllowed(1,"allied")
 		
 		/*let adef = new AbilityDefinitionWarStompcreep(DUMBACKOFF_SPELL_ID)
 		adef..setCooldown(1, 0)..setManaCost(1, 0) //Missing presets ehre 
