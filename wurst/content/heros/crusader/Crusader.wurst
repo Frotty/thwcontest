@@ -94,22 +94,23 @@ public class Crusader extends Hero
 			// Create local vars to be captured by closure (ignore warning)
 			let speed = 20.
 			setTarget(targetEntity.pos.toVec2(),speed)
-			var duration = pos.distToVec2d(targetEntity.pos) / speed //Using the same formula as the setTarget() function here.
-			if duration < 1.
-				duration = 1./speed
-			duration *= ANIMATION_PERIOD
-			doAfter(duration, () -> begin //We only add the effects of the ability when the jump is done.
-				let lng = addLightning("LEAS", true, pos, targetEntity.pos)
+			var jump_duration = pos.distToVec2d(targetEntity.pos) / speed //Using the same formula as the setTarget() function here.
+			if jump_duration < 1.
+				jump_duration = 1./speed
+			jump_duration *= ANIMATION_PERIOD
+			doAfter(jump_duration, () -> begin //We only add the effects of the ability when the jump is done.
+				let channel_duration = 5.
 				let maxDistance = 500
+				let lng = addLightning("LEAS", true, pos, targetEntity.pos)
 				let eff = AddSpecialEffectTarget("Abilities\\Spells\\Human\\ManaShield\\ManaShieldCaster.mdl",targetEntity.actor,"origin")
-				doPeriodicallyTimed(ANIMATION_PERIOD, 5, (CallbackCounted cb) -> begin
+				doAfter((channel_duration-5.), ()-> eff.destr())
+				doPeriodicallyTimed(ANIMATION_PERIOD, channel_duration, (CallbackCounted cb) -> begin
 					var col = lng.getColor()
 					col.alpha = ((maxDistance - (pos.distToVec(targetEntity.pos) / maxDistance)) * 255).toInt()
 					lng..move(true, pos, targetEntity.pos)
 					..setColor(col)
 					if cb.isLast()
 						lng.destr()
-						eff.destr()
 				end)
 			end)
 	
