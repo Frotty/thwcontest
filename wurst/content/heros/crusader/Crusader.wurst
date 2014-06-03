@@ -60,13 +60,19 @@ public class Crusader extends Hero
 		// FOr example see safe Guard
 		// For more information on the topic: https://peq.github.io/WurstScript/manual.html#lambda_expressions_and_closures
 		forUnitsInRange(pos.toVec2(), abilityrange, (unit u) -> begin
+			print("loop")
 			if u.getEntity() instanceof Creep
+				print("is creep")
 				let creep = u.getEntity() castTo Creep
-				let angl = pos.angleTo2d(creep.pos)
+				var angl = pos.angleTo2d(creep.pos)
+				if angl.radians < 0
+					angl = angle(PI2 + angl.radians)
+				print("angl = " + angl.degrees().toString() + "°")
+				print("actor = " + actor.getFacingAngle().degrees().toString() + "°")
 				if (angl - actor.getFacingAngle()).degrees().abs() < 60
-					if creep.pos.distToVecSquared(pos) < 256*256
-						creep.addVel(vec3(angl.cos() * 10, angl.sin() * 10, 10))
-						c.actor.applyStun(false, 2, c.owner)
+					print("is angle")
+					creep.addVel(vec3(angl.cos() * 10, angl.sin() * 10, 10))
+					creep.actor.applyStun(false, 2, creep.owner)
 		end)
 
 				//dc.castOnTarget(c.actor)
@@ -126,7 +132,7 @@ public function init_Crusader(boolean compiletime)
 		adef..setCooldown(1, 0)..setManaCost(1, 0) //Missing presets ehre 
 		..setLevels(1)..setAreaofEffect(1, 300) // Done
 		*/
-		let preset = new HeroPreset(CRUSADER_ID, 'Oshd', "Crusader")
+		let preset = new HeroPreset(CRUSADER_ID, 'Hlgr', "Crusader")
 		preset..addProperName("Matija")
 			..addHeroAbility(idInteger2IdString(BACKOFF_SPELL_ID))
 			..addHeroAbility(idInteger2IdString(SAFEGUARD_SPELL_ID))

@@ -17,6 +17,7 @@ public function unit.applyStun(boolean stacking, real amount, player damager)
 	if stunTable.loadReal(this.getHandleId()) <= 0
 		let dc = new DummyCaster(SPELL_ID,"firebolt", damager, true)
 		dc.castOnTarget(this)
+		stunnedUnits.add(this)
 		if checkTimer == null
 			checkTimer = getTimer()
 			checkTimer.startPeriodic(0.05, () -> begin
@@ -26,6 +27,7 @@ public function unit.applyStun(boolean stacking, real amount, player damager)
 						stunTable.saveReal(u.getHandleId(), remain)
 					else
 						u.removeAbility(BUFF_ID)
+						stunnedUnits.remove(u)
 			end)
 	if stacking
 		stunTable.saveReal( this.getHandleId(), amount + stunTable.loadReal(this.getHandleId()))
@@ -46,6 +48,7 @@ public function init_StunHandler(boolean c)
 		..setCastRange(1, 9999)
 		..setManaCost(1, 0)
 		..setCooldown(1, 0)
+		..setDamage(1, 0)
 		..setTargetsAllowed(1, "")
 		..setMissileSpeed(0)
 		..setBuffs(1, idInteger2IdString(BUFF_ID))
