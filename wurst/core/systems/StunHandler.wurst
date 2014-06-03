@@ -3,7 +3,7 @@ import MapStuff
 import BuffObjEditing
 import HashMap
 import ObjectIds
-import DummyCaster
+import InstantDummyCaster
 int SPELL_ID 
 int BUFF_ID
 
@@ -13,10 +13,10 @@ LinkedList<unit> stunnedUnits = new LinkedList<unit>()
 
 timer checkTimer
 
+
 public function unit.applyStun(boolean stacking, real amount, player damager)
 	if stunTable.loadReal(this.getHandleId()) <= 0
-		let dc = new DummyCaster(SPELL_ID,"firebolt", damager, true)
-		dc.castOnTarget(this)
+		InstantDummyCaster.castTarget(damager, SPELL_ID, 1, "firebolt", this)
 		stunnedUnits.add(this)
 		if checkTimer == null
 			checkTimer = getTimer()
@@ -37,6 +37,8 @@ public function unit.applyStun(boolean stacking, real amount, player damager)
 	
 
 public function init_StunHandler(boolean c)
+	if not c
+		init_InstantDummyCaster()
 	SPELL_ID = ABIL_ID_GEN.next()
 	BUFF_ID = ABIL_ID_GEN.next()
 	if c
@@ -44,7 +46,7 @@ public function init_StunHandler(boolean c)
 		def..setName("Stun System Ability")
 		..setDurationHero(1, 9999)
 		..setDurationNormal(1, 9999)
-		..setCastRange(1, 9999)
+		..setCastRange(1, 92083)
 		..setManaCost(1, 0)
 		..setCooldown(1, 0)
 		..setDamage(1, 0)
