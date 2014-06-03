@@ -53,6 +53,9 @@ public class CreepDefinition
 	int armor
 	string modelPath
 	string name
+	real scale = 0.8
+	real collisionSize = 16
+	int attackRange = 80
 	
 	construct(string name)
 		this.name = name
@@ -78,3 +81,6 @@ public class CreepDefinition
 		let def = new UnitDefinition(id, 'ugho')
 		def..setName(name)..setHitPointsMaximumBase(hp)
 		..setDefenseBase(armor)..setModelFile(modelPath)
+		..setScalingValue(scale)..setCollisionSize(collisionSize)
+		..setAttack1Range(attackRange)
+	

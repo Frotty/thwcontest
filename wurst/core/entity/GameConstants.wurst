@@ -7,6 +7,6 @@ public constant OBJ_ED_PREFIX_SPELL 	= ('x'-'0')*256*256*256
 public constant OBJ_ED_PREFIX_BUILDING 	= ('b'-'0')*256*256*256
 public constant OBJ_ED_PREFIX_HERO		= ('Y'-'0')*256*256*256
 
-public var gravity = vec3(0,0,-0.8)
+public var gravity = vec3(0,0,-1.4)
 public constant MAP_VER = "001"
 
