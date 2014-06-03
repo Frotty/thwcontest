@@ -7,7 +7,6 @@ import DummyCaster
 import ChannelAbilityPreset
 import AbilityObjEditing
 import TempGroups
-import TimerUtils
 import ClosureEvents
 import StunHandler
 import ClosureForGroups
@@ -135,11 +134,6 @@ public class Crusader extends Hero
 				end)
 			end)
 	
-		
-	function safeGuard_onDamage()
-		real damage = 10 //to be set normally
-		sg_damage += damage
-		sg_damagewindow += damage
 		
 public function init_Crusader(boolean compiletime)
 	CRUSADER_ID = HERO_ID_GEN.next()
