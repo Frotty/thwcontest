@@ -5,6 +5,7 @@ import ClosureTimers
 import Entity
 import WaveManager
 import Waves
+import StunHandler
 
 import Crusader
 
@@ -13,6 +14,7 @@ function initResources(boolean compileTime)
 	init_Crusader(compileTime)	
 	init_Spawner(compileTime)
 	init_Waves(compileTime)
+	init_StunHandler(compileTime)
 	
 init
 	doAfter(0.01, () -> begin
