@@ -58,6 +58,8 @@ public class Crusader extends Hero
 		// In this case it creates a closure which means it can capture local variables by value
 		// FOr example see safe Guard
 		// For more information on the topic: https://peq.github.io/WurstScript/manual.html#lambda_expressions_and_closures
+		let eff = AddSpecialEffectTarget("Abilities\\Spells\\Items\\SpellShieldAmulet\\SpellShieldCaster.mdl",actor,"chest")
+		eff.destr()
 		forUnitsInRange(pos.toVec2(), abilityrange, (unit u) -> begin
 			if u.getEntity() instanceof Creep
 				let creep = u.getEntity() castTo Creep
@@ -81,15 +83,25 @@ public class Crusader extends Hero
 		else
 			print("created")
 			// Create local vars to be captured by closure (ignore warning)
-			let lng = addLightning("LEAS", true, pos, targetEntity.pos)
-			let maxDistance = 500
-			doPeriodicallyTimed(ANIMATION_PERIOD, 5, (CallbackCounted cb) -> begin
-				var col = lng.getColor()
-				col.alpha = ((maxDistance - (pos.distToVec(targetEntity.pos) / maxDistance)) * 255).toInt()
-				lng..move(true, pos, targetEntity.pos)
-				..setColor(col)
-				if cb.isLast()
-					lng.destr()
+			let speed = 20.
+			setTarget(targetEntity.pos.toVec2(),speed)
+			var duration = pos.distToVec2d(targetEntity.pos) / speed //Using the same formula as the setTarget() function here.
+			if duration < 1.
+				duration = 1./speed
+			duration *= ANIMATION_PERIOD
+			doAfter(duration, () -> begin //We only add the effects of the ability when the jump is done.
+				let lng = addLightning("LEAS", true, pos, targetEntity.pos)
+				let maxDistance = 500
+				let eff = AddSpecialEffectTarget("Abilities\\Spells\\Human\\ManaShield\\ManaShieldCaster.mdl",targetEntity.actor,"origin")
+				doPeriodicallyTimed(ANIMATION_PERIOD, 5, (CallbackCounted cb) -> begin
+					var col = lng.getColor()
+					col.alpha = ((maxDistance - (pos.distToVec(targetEntity.pos) / maxDistance)) * 255).toInt()
+					lng..move(true, pos, targetEntity.pos)
+					..setColor(col)
+					if cb.isLast()
+						lng.destr()
+						eff.destr()
+				end)
 			end)
 	
 		
@@ -125,6 +137,7 @@ public function init_Crusader(boolean compiletime)
 		*/
 		let preset = new HeroPreset(CRUSADER_ID, 'Oshd', "Crusader")
 		preset..addProperName("Matija")
+			..setModelFile("units\\human\\TheCaptain\\TheCaptain.mdl")
 			..addHeroAbility(idInteger2IdString(BACKOFF_SPELL_ID))
 			..addHeroAbility(idInteger2IdString(SAFEGUARD_SPELL_ID))
 		// Build at the end
