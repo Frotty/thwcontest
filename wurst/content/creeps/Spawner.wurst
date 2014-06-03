@@ -8,6 +8,9 @@ import ObjectIds
 
 public LinkedList<Spawner> spawners = new LinkedList<Spawner>()
 int SPAWNER_ID
+public Spawner NORTH
+public Spawner EAST
+public Spawner WEST
 
 public class Spawner
 	unit actor
@@ -25,10 +28,10 @@ public class Spawner
 		new Creep(pos.toVec3(), def.id, pos.angleTo(mapCenter), target)
 		
 	
-public function init_Spawner(boolean c)
+public function init_Spawner(boolean compiletime)
 	SPAWNER_ID = UNIT_ID_GEN.next()
 	
-	if c
+	if compiletime
 		let def = new BuildingDefinition(SPAWNER_ID, 'hhou')
 		def..setFoodProduced(0)
 		..setModelFile("buildings\\other\\PowerGenerator\\PowerGenerator.mdx")
@@ -36,7 +39,7 @@ public function init_Spawner(boolean c)
 		..setNormalAbilities("Avul")
 		..setTintingColorRed(150)..setTintingColorBlue(150)..setTintingColorGreen(150)
 	else
-		new Spawner(vec2(-1500,-1500),mapCenter)
-		new Spawner(vec2(-1800,1500),mapCenter)
-		new Spawner(vec2(1700,-400),mapCenter)
+		WEST = new Spawner(vec2(-1500,-1500),mapCenter)
+		NORTH = new Spawner(vec2(-1800,1500),mapCenter)
+		EAST = new Spawner(vec2(1700,-400),mapCenter)
 		

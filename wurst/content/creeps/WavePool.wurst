@@ -1,23 +1,35 @@
 package WavePool
 import public Queue
 import public Creep
+import HashMap
+
+public enum SpawnerGroup
+	ALL
+	NORTH
+	EAST
+	WEST
+
+//HashMap<int, boolean> generatedCreeps = new HashMap<int, boolean>()
+
 
 public class SpawnContainer
 	CreepDefinition creepDef
 	int amount
 	int time
+	SpawnerGroup where
 	
-	construct(CreepDefinition def, int am, int tm)
+	construct(CreepDefinition def, int am, int tm, SpawnerGroup wh)
 		creepDef = def
 		amount = am
 		time = tm
+		where = wh
 
 
 public class WavePool
 	Queue<SpawnContainer> spawns = new Queue<SpawnContainer>()
 
-	function addSpawn(CreepDefinition def, int amount, int time)
-		spawns.enqueue(new SpawnContainer(def, amount, time))
+	function addSpawn(CreepDefinition def, int amount, int time, SpawnerGroup where)
+		spawns.enqueue(new SpawnContainer(def, amount, time, where))
 		
 	function generateObjects()
 		print("POOL GENERATE size: " + spawns.getSize().toString())

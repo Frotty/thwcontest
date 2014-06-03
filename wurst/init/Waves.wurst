@@ -16,13 +16,17 @@ public function wave_1() returns WavePool
 	// Create the pool
 	let pool = new WavePool()
 	// Create a CreepDefinition. Use a distinctive Name here for later copies
-	var def = new CreepDefinition("Zombie")
+	var def = new CreepDefinition("Lesser Zombie")
 	// Set Values..
 	def.hp = 100
+	def.modelPath = "units\\creeps\\Zombie\\Zombie.mdl"
+	def.scale *=0.8
+	def.collisionSize = 8
 	// Add Def to pool with amount and time (when to spawn after wave started)
 	// Add Spawns chronologically, cause the Pool doesn't get sorted
 	// You can implement a sort if you want kari :D
-	pool.addSpawn(def,10,0)
+	pool.addSpawn(def,10,0,SpawnerGroup.WEST)
+	pool.addSpawn(copyCreepDef("Lesser Zombie"),10,3,SpawnerGroup.NORTH)
 	
 	// Return the pool
 	return pool
@@ -34,7 +38,7 @@ public function wave_2() returns WavePool
 	// Copy an existing CreepDef
 	// This still creates a new Object (as needed by the system)
 	// But reduces codeLength and copy-paste work (readability too)
-	pool.addSpawn(copyCreepDef("Zombie"), 20, 0)
+	pool.addSpawn(copyCreepDef("Lesser Zombie"), 10, 0, SpawnerGroup.ALL)
 	return pool
 
 public function init_Waves(boolean c)
