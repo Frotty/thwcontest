@@ -48,6 +48,7 @@ public class Creep extends UnitEntity
 
 public class CreepDefinition
 	use PhysicsModule
+	boolean generated = false
 	int id
 	int hp
 	int armor
@@ -73,11 +74,12 @@ public class CreepDefinition
 		return cd
 
 //	function createCreepEntity(vec3 pos) returns Creep
-//		let creep = new Creep(pos, id)
+//		let creep = new T(pos, id)
 //		return creep
 	
 	function generateObject()
 		print("generate")
+		generated = true
 		let def = new UnitDefinition(id, 'ugho')
 		def..setName(name)..setHitPointsMaximumBase(hp)
 		..setDefenseBase(armor)..setModelFile(modelPath)

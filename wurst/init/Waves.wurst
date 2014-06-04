@@ -23,6 +23,9 @@ public function wave_1() returns WavePool
 	// Add Spawns chronologically, cause the Pool doesn't get sorted
 	// You can implement a sort if you want kari :D
 	pool.addSpawn(def,10,0)
+	pool.addSpawn(def,15,0)
+	pool.addSpawn(def,20,0)
+	pool.addSpawn(def,40,0)
 	
 	// Return the pool
 	return pool

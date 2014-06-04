@@ -2,6 +2,8 @@ package Hero
 import public Entity
 import public HeroPreset
 import public ObjectIds
+import public ObjectIdGenerator
+import public ChannelAbilityPreset
 import PhysicsEntity
 
 public abstract class Hero extends UnitEntity
@@ -51,7 +53,7 @@ init
 		let targetY = GetSpellTargetY()
 		print("duh " + targetUnit.getName())
 		
-		if targetUnit != null and targetUnit != hero.actor
+		if targetUnit != null
 			print("onCast Unit")
 			hero.onUnitCast(id, targetUnit)
 		else if targetX != 0 

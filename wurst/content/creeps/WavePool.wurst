@@ -1,6 +1,8 @@
 package WavePool
 import public Queue
 import public Creep
+import HashMap
+
 
 public class SpawnContainer
 	CreepDefinition creepDef
@@ -20,7 +22,7 @@ public class WavePool
 		spawns.enqueue(new SpawnContainer(def, amount, time))
 		
 	function generateObjects()
-		print("POOL GENERATE size: " + spawns.getSize().toString())
 		for s in spawns
-			print("POOL GENERATE -> for in")
-			s.creepDef.generateObject()
+			if  not s.creepDef.generated
+				s.creepDef.generateObject()
+				
