@@ -22,8 +22,16 @@ public class WaveManager
 		let expt = GetExpiredTimer()
 		let sc = expt.getData() castTo SpawnContainer
 		sc.amount--
-		for s in spawners
-			s.spawnCreep(sc.creepDef)
+		switch sc.where
+			case SpawnerGroup.ALL
+				for s in spawners
+					s.spawnCreep(sc.creepDef)
+			case SpawnerGroup.NORTH
+				NORTH.spawnCreep(sc.creepDef)
+			case SpawnerGroup.EAST
+				EAST.spawnCreep(sc.creepDef)
+			case SpawnerGroup.WEST
+				WEST.spawnCreep(sc.creepDef)
 		if sc.amount <= 0
 			expt.start(45., function WaveManager.startNextWave)
 		else

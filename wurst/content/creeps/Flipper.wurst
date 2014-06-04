@@ -1,0 +1,41 @@
+package Flipper
+import Creep
+import Hero
+import ClosureTimers
+
+string model_name = "units\\creeps\\Sasquatch\\Sasquatch.mdl"
+
+trigger range_t
+
+public class Flipper extends Creep
+	boolean flipped
+	trigger range_trigger
+	
+
+	construct(vec3 pos, int id, angle a, vec2 target)
+		super( pos, id, a, target)
+		flipped = false
+		range_trigger = CreateTrigger()
+		range_trigger.registerUnitInRangeSource(actor,80)
+		range_trigger.addAction(function onFlipperRange)
+		
+	function onInRange(unit target)
+		Entity e = target.getEntity()
+		if e instanceof Hero and not flipped
+			flipped = true
+			actor.setAnimation("Spell Slam")
+			doAfter(.3,()-> begin
+				if actor.isAlive() and (pos.distToVec2d(e.pos) < 100)
+					let angl = e.pos.angleTo2d(pos)
+					let speed = 10 
+					e.addVel(vec3(angl.cos() * speed,angl.sin() * speed, speed*1.2))
+				else
+					flipped = false
+			end)
+			
+	static function onFlipperRange()
+		unit source = GetTriggeringTrigger().getSource()
+		unit u = GetTriggerUnit()
+		Flipper f = source.getEntity() castTo Flipper
+		f.onInRange(u)
+		
