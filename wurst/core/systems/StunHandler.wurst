@@ -37,8 +37,6 @@ public function unit.applyStun(boolean stacking, real amount, player damager)
 	
 
 public function init_StunHandler(boolean c)
-	if not c
-		init_InstantDummyCaster()
 	SPELL_ID = ABIL_ID_GEN.next()
 	BUFF_ID = ABIL_ID_GEN.next()
 	if c
