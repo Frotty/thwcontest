@@ -1,0 +1,33 @@
+package Explosive
+import Entity
+import Fx 
+
+public abstract class Explosive extends Entity
+	Fx model
+
+	real radius
+	real power
+	
+	boolean activated = false
+	boolean timed = false
+	real timeout = 0.
+	
+	construct( vec3 pos, real radius, player owner, real power, boolean activated, boolean timed )
+		super( pos, radius, owner )
+		
+		this.radius = radius
+		this.power = power
+		
+		this.activated = activated
+		this.timed = timed
+		
+	function setModel(string path)
+		model = new Fx(pos.toVec2(), angle(GetRandomReal(0, PI2)), path)
+
+	override function update()
+		if timed and activated
+			timeout -= ANIMATION_PERIOD
+			if timeout <= 0.
+				explode()
+	
+	abstract function explode()

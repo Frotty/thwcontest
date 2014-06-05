@@ -32,19 +32,19 @@ public class Crusader extends Hero
 	construct(vec3 pos, player owner )
 		super(pos, owner, CRUSADER_ID)
 		
-	override function onCast(int spellId)
+	override function onCast(int spellId, int lvl)
 		print("Crusader - onCast function called")
 		switch spellId
 			case BACKOFF_SPELL_ID
 				castBackOff() 
 	
-	override function onUnitCast(int spellId, unit target)
+	override function onUnitCast(int spellId, unit target, int lvl)
 		print("Crusader - onUnitCast function called")
 		switch spellId
 			case SAFEGUARD_SPELL_ID
 				castSafeGuard(target) 
 		
-	override function onPointCast(int spellId, vec2 target)
+	override function onPointCast(int spellId, vec2 target, int lvl)
 	
 	function castBackOff() // Q ability of Crusader. Instant cast.
 		//DummyCaster dc = new DummyCaster(DUMBACKOFF_SPELL_ID,"stomp",owner, false) //Create dummy for stun
@@ -163,8 +163,8 @@ public function init_Crusader(boolean compiletime)
 		let preset = new HeroPreset(CRUSADER_ID, 'Hlgr', "Crusader")
 		preset..addProperName("Matija")
 			..setModelFile("units\\human\\TheCaptain\\TheCaptain.mdl")
-			..addHeroAbility(idInteger2IdString(BACKOFF_SPELL_ID))
-			..addHeroAbility(idInteger2IdString(SAFEGUARD_SPELL_ID))
+			..addHeroAbility(BACKOFF_SPELL_ID)
+			..addHeroAbility(SAFEGUARD_SPELL_ID)
 		// Build at the end
 			..buildHero()
 		

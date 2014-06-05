@@ -35,11 +35,11 @@ public abstract class Hero extends UnitEntity
 		pos.z = terrainZ 
 		vel.z = 0
 		
-	abstract function onCast(int spellId)
+	abstract function onCast(int spellId, int lvl)
 		
-	abstract function onUnitCast(int spellId, unit target)
+	abstract function onUnitCast(int spellId, unit target, int lvl)
 		
-	abstract function onPointCast(int spellId, vec2 target)
+	abstract function onPointCast(int spellId, vec2 target, int lvl)
 		
 	
 constant castTrigger = CreateTrigger()
@@ -51,16 +51,17 @@ init
 		let targetUnit = GetSpellTargetUnit()
 		let targetX = GetSpellTargetX()
 		let targetY = GetSpellTargetY()
+		let lvl = hero.actor.getAbilityLevel(id)
 		print("duh " + targetUnit.getName())
 		
 		if targetUnit != null
 			print("onCast Unit")
-			hero.onUnitCast(id, targetUnit)
+			hero.onUnitCast(id, targetUnit, lvl)
 		else if targetX != 0 
 			print("onCast Point")
-			hero.onPointCast(id, vec2(targetX, targetY))
+			hero.onPointCast(id, vec2(targetX, targetY), lvl)
 		else
 			print("onCast")
-			hero.onCast(id)
+			hero.onCast(id, lvl)
 		
 	end)

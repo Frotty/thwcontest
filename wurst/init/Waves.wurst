@@ -27,7 +27,7 @@ public function wave_1() returns WavePool
 	// You can implement a sort if you want kari :D
 
 	pool.addSpawn(def,10,0,SpawnerGroup.WEST)
-	pool.addSpawn(def,10,3,SpawnerGroup.NORTH)
+	pool.addSpawn(def,10,10,SpawnerGroup.NORTH)
 	
 	// Return the pool
 	return pool
