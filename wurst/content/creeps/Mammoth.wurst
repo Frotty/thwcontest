@@ -4,6 +4,7 @@ import MapBounds
 import ObjectIds
 
 CreepDefinition PARASITE_DEF
+let parasite_dropping_rate = 7
 
 //Units\\Creeps\\MammothBlack\\MammothBlack.mdl
 
@@ -17,10 +18,11 @@ public class Mammoth extends Creep//Upon taking damage parasites fall from it.
 	override function update()
 		super.update()
 		let percent = actor.getHP()/actor.getMaxHP() * 100
-		if percent <= lastPercent - 5
+		if percent <= lastPercent - parasite_dropping_rate
+			
 			print("it is called! " + lastPercent.toString())
 			throwParasite()
-			lastPercent -= 5
+			lastPercent -= parasite_dropping_rate
 			
 	function throwParasite()
 		print("parasite id: " + idInteger2IdString(PARASITE_DEF.id))
