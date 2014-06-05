@@ -1,6 +1,7 @@
 package Mammoth
 import Creep
 import MapBounds
+import ObjectIds
 
 CreepDefinition PARASITE_DEF
 
@@ -22,6 +23,7 @@ public class Mammoth extends Creep//Upon taking damage parasites fall from it.
 			lastPercent -= 5
 			
 	function throwParasite()
+		print("parasite id: " + idInteger2IdString(PARASITE_DEF.id))
 		var par = new Creep(pos + vec3(0,0,30), PARASITE_DEF.id, actor.getFacingAngle(), mapCenter)
 		let rand = GetRandomReal(3,8)
 		print("but it's not created :(")
@@ -29,7 +31,8 @@ public class Mammoth extends Creep//Upon taking damage parasites fall from it.
 		
 
 public function init_Mammoth(boolean compiletime)
-	var PARASITE_DEF = new CreepDefinition("Parasite")
+	print("Mammoth inited")
+	PARASITE_DEF = new CreepDefinition("Parasite")
 	// Set Values..
 	PARASITE_DEF.hp = 30
 	PARASITE_DEF.modelPath = "units\\critters\\DuneWorm\\DuneWorm.mdl"

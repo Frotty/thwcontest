@@ -1,9 +1,8 @@
 package Technician
 import Hero
 import Xplosives
+import Fx
 int TECHNICIAN_ID
-
-
 int NAPALM_SPELL_ID
 
 public class Technician extends Hero
@@ -20,13 +19,13 @@ public class Technician extends Hero
 	override function onPointCast(int spellId, vec2 target, int lvl)
 		switch spellId
 			case EXPLOSIVES_SPELL_ID
+				print("new explo")
 				new Xplosive(target, owner, lvl)
 	
 public function init_Technician(boolean compiletime)
 	TECHNICIAN_ID = HERO_ID_GEN.next()
-	EXPLOSIVES_SPELL_ID = ABIL_ID_GEN.next()
 	NAPALM_SPELL_ID = ABIL_ID_GEN.next()
-	
+	init_Xplosives(compiletime)
 	if compiletime
 		// Generate def if compieltime
 

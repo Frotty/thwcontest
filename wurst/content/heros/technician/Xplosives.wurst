@@ -8,7 +8,7 @@ public class Xplosive extends Explosive
 
 	construct(vec2 target, player owner, int lvl)
 		super(target.withZ(0), 128. + 64. * lvl, owner, 100.*lvl, false, false)
-		setModel("Units\\Other\\TNTBarrel\\TNTBarrel.mdl")
+		setModel("Units\\Other\\TNTBarrel\\TNTBarrel.mdx")
 		
 	override function explode()
 	
@@ -20,4 +20,6 @@ public function init_Xplosives(boolean c)
 		xplosivePreset..removeChannelProperties(true)..setName("Xplosives")
 		..setButtonPosNormal(0,2)..setIcon("BTNSoulBurn")
 		..setOption(Option.VISIBLE, true)..setTargetType(Targettype.PTARGET)..setOption(Option.TARGETIMAGE, true)
-		..setAreaOfEffect(128) 
+		..setAreaOfEffect(128)
+		..setMissileArt("Units\\Creeps\\HeroTinkerFactory\\HeroTinkerFactoryMissle.mdl")..setMissileHomingEnabled(true)
+		..setMissileSpeed(1000)..setMissileArc(0.25)

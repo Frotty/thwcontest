@@ -1,0 +1,8 @@
+package Boolean
+import NoWurst
+
+public function boolean.toInt() returns int
+	if this
+		return 1
+	else
+		return 0
