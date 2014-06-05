@@ -1,7 +1,9 @@
 package Technician
 import Hero
 import Xplosives
-import Fx
+import Molotov
+
+
 int TECHNICIAN_ID
 int NAPALM_SPELL_ID
 
@@ -11,21 +13,22 @@ public class Technician extends Hero
 		super(pos, owner, TECHNICIAN_ID)
 
 	override function onCast(int spellId, int lvl)
-		print("Crusader - onCast function called")
 	
 	override function onUnitCast(int spellId, unit target, int lvl)
-		print("Crusader - onUnitCast function called")
 		
 	override function onPointCast(int spellId, vec2 target, int lvl)
 		switch spellId
 			case EXPLOSIVES_SPELL_ID
 				print("new explo")
 				new Xplosive(target, owner, lvl)
+			case MOLOTOV_SPELL_ID
+				new Molotov(pos + vec3(0,0,50), target, owner, lvl)
 	
 public function init_Technician(boolean compiletime)
 	TECHNICIAN_ID = HERO_ID_GEN.next()
 	NAPALM_SPELL_ID = ABIL_ID_GEN.next()
 	init_Xplosives(compiletime)
+	init_Molotov(compiletime)
 	if compiletime
 		// Generate def if compieltime
 
@@ -43,5 +46,6 @@ public function init_Technician(boolean compiletime)
 		preset..addProperName("Robi")
 			..addHeroAbility(EXPLOSIVES_SPELL_ID)
 			..addHeroAbility(NAPALM_SPELL_ID)
+			..addHeroAbility(MOLOTOV_SPELL_ID)
 		// Build at the end
 			..buildHero()

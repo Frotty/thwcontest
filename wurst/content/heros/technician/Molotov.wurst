@@ -1,0 +1,49 @@
+package Molotov
+import Projectile
+import PhysicsEntity
+import Terrain
+import MapStuff
+import ChannelAbilityPreset
+
+public int MOLOTOV_SPELL_ID
+
+public class Molotov extends Projectile
+	use PhysicsModule
+	
+	int bounces
+	
+	construct(vec3 pos, vec2 target, player owner, int lvl)
+		super(pos, owner, pos.angleTo2d(target), "Models\\Molotov.mdx")
+		flying = true
+		bounces = min(lvl, 3)
+		setTarget(target, 500)
+		
+	override function update()
+		if bounces < 0
+			destroy this
+		else
+			physicsUpdate(this)
+			super.update()
+		
+
+	override function onGroundHit()
+		let nrml = getTerrainNormal(pos.x, pos.y, 4).norm()
+		if vel.dot(nrml) > 0
+			return
+			
+		var v = vel.project(nrml)
+		v *= -1.8
+		vel += v
+		fx.flash("Models\\FlameBomb.mdx")
+		bounces--
+
+
+public function init_Molotov(boolean c)
+	MOLOTOV_SPELL_ID = ABIL_ID_GEN.next()
+	
+	if c
+		let molotovPreset = new ChannelAbilityPreset(MOLOTOV_SPELL_ID, 4)
+		molotovPreset..setName("Molotov")..removeChannelProperties(true)..setOption(Option.VISIBLE, true)
+		..setIcon("BTNLavaSpawn")..setTargetType(Targettype.PTARGET)
+		..setCastRange(1, 400)
+		

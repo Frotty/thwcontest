@@ -79,17 +79,21 @@ public abstract class Entity
 		this.vel += vel
 		
 	function setTarget( vec2 tpos, real speed )
-		var t = pos.distToVec2d(tpos) / speed
+		let spd = (speed * ANIMATION_PERIOD)
+		var t = pos.distToVec2d(tpos) / spd
 		let tangle = pos.angleTo2d(tpos)
 		let e = getTerrainZ(tpos)
 		if t < 1.
-			t = 1./speed
+			t = 1. / spd
 		
 		let startZVelocity = ((-gravity.z * t) / 2 - pos.z/t + e/t)
-		this.setVel( vec3( tangle.radians().cos() * speed, tangle.radians().sin() * speed, startZVelocity) )
+		this.setVel( vec3( tangle.radians().cos() * spd, tangle.radians().sin() * spd, startZVelocity) )
 				
 	/** This function is called every ANIMATION_PERIOD tick if the Entity is active */
 	abstract function update()
+	
+	ondestroy
+		print("ondestroy Entity")
 	
 abstract public class UnitEntity extends Entity
 	unit actor
@@ -136,7 +140,7 @@ abstract public class UnitEntity extends Entity
 		
 
 abstract public class FxEntity extends Entity
-	protected Fx fx
+	Fx fx
 	
 	construct( vec3 pos, real radius, player owner, angle xyAngle, string sfxpath )
 		super(pos, radius, owner)
@@ -171,8 +175,9 @@ abstract public class FxEntity extends Entity
 		fx.setPos(tpos.x,tpos.y)
 		
 	ondestroy
+		print("ondestroy FxEntity1")
 		destroy fx
-
+		print("ondestroy FxEntity2")
 
 function updateEntities()
 	Entity e = Entity.first

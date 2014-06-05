@@ -1,10 +1,10 @@
 package Explosive
 import Entity
-import Fx 
+import LinkedList
 
-public abstract class Explosive extends Entity
-	Fx model
+public LinkedList<Explosive> explosiveEntities = new LinkedList<Explosive>()
 
+public abstract class Explosive extends FxEntity
 	real radius
 	real power
 	
@@ -12,17 +12,14 @@ public abstract class Explosive extends Entity
 	boolean timed = false
 	real timeout = 0.
 	
-	construct( vec3 pos, real radius, player owner, real power, boolean activated, boolean timed )
-		super( pos, radius, owner )
-		
+	construct( vec3 pos, real radius, player owner, angle a)
+		super( pos, radius, owner, a )
 		this.radius = radius
 		this.power = power
-		
-		this.activated = activated
-		this.timed = timed
+		explosiveEntities.add(this)
 		
 	function setModel(string path)
-		model = new Fx(pos.toVec2(), angle(GetRandomReal(0, PI2)), path)
+		setFx(path)
 
 	override function update()
 		if timed and activated
@@ -31,3 +28,6 @@ public abstract class Explosive extends Entity
 				explode()
 	
 	abstract function explode()
+	
+	ondestroy
+		explosiveEntities.remove(this)
