@@ -7,6 +7,7 @@ import WaveManager
 import Waves
 import StunHandler
 import Technician
+import Mammoth
 import Crusader
 
 function initResources(boolean compileTime)
@@ -16,6 +17,7 @@ function initResources(boolean compileTime)
 	init_Waves(compileTime)
 	init_StunHandler(compileTime)
 	init_Technician(compileTime)
+	init_Mammoth(compileTime)
 	
 init
 	doAfter(0.01, () -> begin

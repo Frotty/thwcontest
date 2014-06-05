@@ -5,6 +5,10 @@ import MapStuff
 import UnitObjEditing
 import HashMap
 
+public enum CreepType
+	CREEP
+	FLIPPER
+	MAMMOTH
 
 HashMap<int, CreepDefinition> creepDefs = new HashMap<int, CreepDefinition>()
 string array nameToId
@@ -57,13 +61,23 @@ public class CreepDefinition
 	real scale = 0.8
 	real collisionSize = 16
 	int attackRange = 80
+	CreepType ctype //Decides what class will be used for the creep.
 	
-	construct(string name)
+	construct(string name) //Creates creep with default behaviour
 		this.name = name
 		nameToId[defcount] = name
 		creepDefs.put(defcount, this)
 		defcount++
 		id = UNIT_ID_GEN.next()
+		ctype = CREEP
+		
+	construct(string name, CreepType ct) //Use this if you want to create creep with advanced behaviour
+		this.name = name
+		nameToId[defcount] = name
+		creepDefs.put(defcount, this)
+		defcount++
+		id = UNIT_ID_GEN.next()
+		ctype = ct
 		
 	function copy() returns CreepDefinition
 		let cd = new CreepDefinition(name)
@@ -79,10 +93,11 @@ public class CreepDefinition
 	
 	function generateObject()
 		print("generate")
-		generated = true
-		let def = new UnitDefinition(id, 'ugho')
-		def..setName(name)..setHitPointsMaximumBase(hp)
-		..setDefenseBase(armor)..setModelFile(modelPath)
-		..setScalingValue(scale)..setCollisionSize(collisionSize)
-		..setAttack1Range(attackRange)
+		if not generated
+			generated = true
+			let def = new UnitDefinition(id, 'ugho')
+			def..setName(name)..setHitPointsMaximumBase(hp)
+			..setDefenseBase(armor)..setModelFile(modelPath)
+			..setScalingValue(scale)..setCollisionSize(collisionSize)
+			..setAttack1Range(attackRange)
 	
