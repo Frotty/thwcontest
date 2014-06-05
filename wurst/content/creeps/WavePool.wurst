@@ -42,7 +42,10 @@ public class WavePool
 		return duration
 		
 	function generateObjects()
-		print("POOL GENERATE size: " + spawns.getSize().toString())
 		for s in spawns
-			print("POOL GENERATE -> for in")
 			s.creepDef.generateObject()
+			
+	ondestroy
+		destroy spawns
+		
+			

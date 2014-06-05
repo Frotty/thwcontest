@@ -2,25 +2,28 @@ package WaveManager
 import WavePool
 import Spawner
 import ClosureTimers
+import GameTimer
 
 public class WaveManager
 	static Queue<WavePool> waves
-	static WavePool currentWave
+	static WavePool currentWave = null
 	static timer waveTimer = CreateTimer()
-
+	static real waveStartTime
 	static function addAllWaves(Queue<WavePool> waves)
 		print("WaveQueue Size " + waves.getSize().toString())
 		WaveManager.waves = waves
 		
 	static function startNextWave()
+		if currentWave != null
+			destroy currentWave
 		currentWave = waves.dequeue()
+		waveStartTime = getElapsedGameTime()
 		let wave_duration = currentWave.getDuration()
-		doPeriodicallyTimed(ANIMATION_PERIOD, wave_duration, (CallbackCounted cb) -> begin
+		doPeriodicallyTimed(0.25, wave_duration, (CallbackCounted cb) -> begin
+			let gameTime = getElapsedGameTime()
 			for sp in currentWave.spawns
-				let passed = (wave_duration - cb.getCount()*ANIMATION_PERIOD)
-				if (sp.time - passed ) <= ANIMATION_PERIOD
+				if waveStartTime + sp.time < gameTime and sp.amount > 0
 					spawn(sp)
-					doAfter(ANIMATION_PERIOD/2,()-> currentWave.spawns.remove(sp))
 			if cb.isLast()
 				startNextWave()
 				print("next wave called: " + waves.peek().getDuration().toString())
@@ -43,17 +46,19 @@ public class WaveManager
 			startNextWave()
 */			
 	static function spawn(SpawnContainer sc)
-		for i = 1 to sc.amount
-			switch sc.where
-				case SpawnerGroup.ALL
-					for s in spawners
-						s.spawnCreep(sc.creepDef)
-				case SpawnerGroup.NORTH
-					NORTH.spawnCreep(sc.creepDef)
-				case SpawnerGroup.EAST
-					EAST.spawnCreep(sc.creepDef)
-				case SpawnerGroup.WEST
-					WEST.spawnCreep(sc.creepDef)
+		switch sc.where
+			case SpawnerGroup.ALL
+				for s in spawners
+					s.spawnCreep(sc.creepDef)
+			case SpawnerGroup.NORTH
+				NORTH.spawnCreep(sc.creepDef)
+			case SpawnerGroup.EAST
+				EAST.spawnCreep(sc.creepDef)
+			case SpawnerGroup.WEST
+				WEST.spawnCreep(sc.creepDef)
+		sc.amount--
+					
+	
 			
 /*	static function spawn()
 		let sc = waveTimer.getData() castTo SpawnContainer
