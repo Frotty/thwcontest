@@ -6,6 +6,7 @@ import Creep
 import MapBounds
 import ObjectIds
 import Flipper
+import Mammoth
 
 public LinkedList<Spawner> spawners = new LinkedList<Spawner>()
 int SPAWNER_ID
@@ -31,6 +32,8 @@ public class Spawner
 				new Creep(pos.toVec3(), def.id, pos.angleTo(mapCenter), target)
 			case FLIPPER
 				new Flipper(pos.toVec3(), def.id, pos.angleTo(mapCenter), target)
+			case MAMMOTH
+				new Mammoth(pos.toVec3(), def.id, pos.angleTo(mapCenter), target)
 			default
 				new Creep(pos.toVec3(), def.id, pos.angleTo(mapCenter), target)
 				

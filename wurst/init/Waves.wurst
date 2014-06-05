@@ -6,8 +6,8 @@ import WaveManager
 public function allWaves() returns Queue<WavePool>
 	let queue = new Queue<WavePool>()
 	// Add the waves from below here
-	queue.enqueue(wave_1())
 	queue.enqueue(wave_2())
+	queue.enqueue(wave_1())
 	// Return all waves
 	return queue
 
@@ -31,7 +31,7 @@ public function wave_1() returns WavePool
 	def2.scale *= 0.7
 	def2.collisionSize = 4
 
-	pool.addSpawn(def,10,0,SpawnerGroup.WEST)
+	//pool.addSpawn(def,10,0,SpawnerGroup.WEST)
 	pool.addSpawn(def2,1,0,SpawnerGroup.EAST)
 	pool.addSpawn(def,10,10,SpawnerGroup.NORTH)
 	
@@ -45,7 +45,12 @@ public function wave_2() returns WavePool
 	// Copy an existing CreepDef
 	// This still creates a new Object (as needed by the system)
 	// But reduces codeLength and copy-paste work (readability too)
-	pool.addSpawn(copyCreepDef("Lesser Zombie"), 10, 0, SpawnerGroup.ALL)
+	var mam = new CreepDefinition("Assault Zombie", CreepType.MAMMOTH)
+	mam.hp = 300
+	mam.modelPath = "Units\\Creeps\\MammothBlack\\MammothBlack.mdl"
+	mam.scale *= 1.2
+	mam.collisionSize = 4
+	pool.addSpawn(mam, 1, 0, SpawnerGroup.EAST)
 	return pool
 
 

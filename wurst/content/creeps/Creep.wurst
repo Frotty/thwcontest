@@ -8,6 +8,7 @@ import HashMap
 public enum CreepType
 	CREEP
 	FLIPPER
+	MAMMOTH
 
 HashMap<int, CreepDefinition> creepDefs = new HashMap<int, CreepDefinition>()
 string array nameToId

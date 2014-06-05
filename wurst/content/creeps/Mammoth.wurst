@@ -15,14 +15,16 @@ public class Mammoth extends Creep//Upon taking damage parasites fall from it.
 		
 	override function update()
 		super.update()
-		let percent = actor.getMaxHP()/actor.getHP() * 100
+		let percent = actor.getHP()/actor.getMaxHP() * 100
 		if percent <= lastPercent - 5
+			print("it is called! " + lastPercent.toString())
 			throwParasite()
 			lastPercent -= 5
 			
 	function throwParasite()
 		var par = new Creep(pos + vec3(0,0,30), PARASITE_DEF.id, actor.getFacingAngle(), mapCenter)
 		let rand = GetRandomReal(3,8)
+		print("but it's not created :(")
 		par.addVel(vec3(rand.cos(),rand.sin(),rand))
 		
 
@@ -33,3 +35,4 @@ public function init_Mammoth(boolean compiletime)
 		PARASITE_DEF.hp = 30
 		PARASITE_DEF.modelPath = "units\\critters\\DuneWorm\\DuneWorm.mdl"
 		PARASITE_DEF.collisionSize = 4
+		PARASITE_DEF.generateObject()
