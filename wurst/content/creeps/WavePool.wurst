@@ -1,5 +1,6 @@
 package WavePool
 import public Queue
+import public LinkedList
 import public Creep
 import HashMap
 
@@ -26,10 +27,19 @@ public class SpawnContainer
 
 
 public class WavePool
-	Queue<SpawnContainer> spawns = new Queue<SpawnContainer>()
+	LinkedList<SpawnContainer> spawns = new LinkedList<SpawnContainer>()
+	protected real duration = 30
 
 	function addSpawn(CreepDefinition def, int amount, int time, SpawnerGroup where)
-		spawns.enqueue(new SpawnContainer(def, amount, time, where))
+		spawns.add(new SpawnContainer(def, amount, time, where))
+		if duration < time
+			duration = time.toReal()
+			
+	function setDuration(real d)
+		duration = d
+		
+	function getDuration() returns real
+		return duration
 		
 	function generateObjects()
 		print("POOL GENERATE size: " + spawns.getSize().toString())

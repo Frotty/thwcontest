@@ -6,13 +6,16 @@ import WaveManager
 public function allWaves() returns Queue<WavePool>
 	let queue = new Queue<WavePool>()
 	// Add the waves from below here
-	queue.enqueue(wave_2())
 	queue.enqueue(wave_1())
+	queue.enqueue(wave_2())
+	queue.enqueue(wave_3())
 	// Return all waves
 	return queue
 
 /** Every Single Wave creates a WavePool and returns it */
 public function wave_1() returns WavePool
+	//Wave 1 spawns zombies to make players ready, and to let them know their heroes. Survivable with basic attacks
+
 	// Create the pool
 	let pool = new WavePool()
 	// Create a CreepDefinition. Use a distinctive Name here for later copies
@@ -25,15 +28,11 @@ public function wave_1() returns WavePool
 	// Add Def to pool with amount and time (when to spawn after wave started)
 	// Add Spawns chronologically, cause the Pool doesn't get sorted
 	// You can implement a sort if you want kari :D
-	var def2 = new CreepDefinition("Assault Zombie", CreepType.FLIPPER)
-	def2.hp = 30
-	def2.modelPath = "units\\creeps\\Sasquatch\\Sasquatch.mdl"
-	def2.scale *= 0.7
-	def2.collisionSize = 4
+	pool.setDuration(5)
 
-	pool.addSpawn(def,10,0,SpawnerGroup.WEST)
-	pool.addSpawn(def2,1,0,SpawnerGroup.EAST)
-	pool.addSpawn(def,10,10,SpawnerGroup.NORTH)
+	pool.addSpawn(def,5,0,SpawnerGroup.WEST)
+	pool.addSpawn(def,5,10,SpawnerGroup.NORTH)
+	pool.addSpawn(def,5,20,SpawnerGroup.EAST)
 	
 	// Return the pool
 	return pool
@@ -49,11 +48,23 @@ public function wave_2() returns WavePool
 	mam.hp = 300
 	mam.modelPath = "Units\\Creeps\\MammothBlack\\MammothBlack.mdl"
 	mam.scale *= 1.2
-	mam.collisionSize = 4
-	pool.addSpawn(mam, 1, 0, SpawnerGroup.EAST)
+	
+	pool.addSpawn(mam, 1, 0, SpawnerGroup.ALL)
+	pool.setDuration(10)
 	return pool
 
-
+public function wave_3() returns WavePool
+	let pool = new WavePool()
+	
+	var def2 = new CreepDefinition("Assault Zombie", CreepType.FLIPPER)
+	def2.hp = 30
+	def2.modelPath = "units\\creeps\\Sasquatch\\Sasquatch.mdl"
+	def2.scale *= 0.7
+	def2.collisionSize = 4
+	
+	pool.addSpawn(def2,1,0,SpawnerGroup.EAST)
+	pool.setDuration(10)
+	return pool
 
 public function init_Waves(boolean c)
 	let waves = allWaves()

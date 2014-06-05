@@ -1,6 +1,7 @@
 package WaveManager
 import WavePool
 import Spawner
+import ClosureTimers
 
 public class WaveManager
 	static Queue<WavePool> waves
@@ -12,6 +13,21 @@ public class WaveManager
 		WaveManager.waves = waves
 		
 	static function startNextWave()
+		currentWave = waves.dequeue()
+		let wave_duration = currentWave.getDuration()
+		doPeriodicallyTimed(ANIMATION_PERIOD, wave_duration, (CallbackCounted cb) -> begin
+			for sp in currentWave.spawns
+				let passed = (wave_duration - cb.getCount()*ANIMATION_PERIOD)
+				if (sp.time - passed ) <= ANIMATION_PERIOD
+					spawn(sp)
+					doAfter(ANIMATION_PERIOD/2,()-> currentWave.spawns.remove(sp))
+			if cb.isLast()
+				startNextWave()
+				print("next wave called: " + waves.peek().getDuration().toString())
+		end)
+		
+		
+	/*static function startNextWave()
 		print("starting Wave")
 		currentWave = waves.dequeue()
 		if currentWave.spawns.getSize() > 0
@@ -23,9 +39,23 @@ public class WaveManager
 			let spawn = currentWave.spawns.dequeue()
 			waveTimer..setData(spawn castTo int)..start(spawn.time * 1., function WaveManager.spawn)
 		else
+			//TODO shield
 			startNextWave()
+*/			
+	static function spawn(SpawnContainer sc)
+		for i = 1 to sc.amount
+			switch sc.where
+				case SpawnerGroup.ALL
+					for s in spawners
+						s.spawnCreep(sc.creepDef)
+				case SpawnerGroup.NORTH
+					NORTH.spawnCreep(sc.creepDef)
+				case SpawnerGroup.EAST
+					EAST.spawnCreep(sc.creepDef)
+				case SpawnerGroup.WEST
+					WEST.spawnCreep(sc.creepDef)
 			
-	static function spawn()
+/*	static function spawn()
 		let sc = waveTimer.getData() castTo SpawnContainer
 		sc.amount--
 		switch sc.where
@@ -42,3 +72,4 @@ public class WaveManager
 			WaveManager.continueWave()
 		else
 			waveTimer.start(0.5, function WaveManager.spawn)
+*/
