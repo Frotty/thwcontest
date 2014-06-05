@@ -17,8 +17,7 @@ public function init_Xplosives(boolean c)
 	
 	if c
 		let xplosivePreset = new ChannelAbilityPreset(EXPLOSIVES_SPELL_ID, 4)
-		// Set Attributes
 		xplosivePreset..removeChannelProperties(true)..setName("Xplosives")
 		..setButtonPosNormal(0,2)..setIcon("BTNSoulBurn")
 		..setOption(Option.VISIBLE, true)..setTargetType(Targettype.PTARGET)..setOption(Option.TARGETIMAGE, true)
-		..setAreaOfEffect(128) //Or whatever...
+		..setAreaOfEffect(128) 
