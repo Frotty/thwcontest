@@ -3,8 +3,6 @@ import Creep
 import Hero
 import ClosureTimers
 
-string model_name = "units\\creeps\\Sasquatch\\Sasquatch.mdl"
-
 trigger range_t
 
 public class Flipper extends Creep

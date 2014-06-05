@@ -6,6 +6,7 @@ import Entity
 import WaveManager
 import Waves
 import StunHandler
+import Mammoth
 
 import Crusader
 
@@ -15,6 +16,7 @@ function initResources(boolean compileTime)
 	init_Spawner(compileTime)
 	init_Waves(compileTime)
 	init_StunHandler(compileTime)
+	init_Mammoth(compileTime)
 	
 init
 	doAfter(0.01, () -> begin

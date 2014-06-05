@@ -3,12 +3,13 @@ import public Queue
 import public Creep
 import HashMap
 
-
 public enum SpawnerGroup
 	ALL
 	NORTH
 	EAST
 	WEST
+
+//HashMap<int, boolean> generatedCreeps = new HashMap<int, boolean>()
 
 
 public class SpawnContainer
@@ -31,7 +32,7 @@ public class WavePool
 		spawns.enqueue(new SpawnContainer(def, amount, time, where))
 		
 	function generateObjects()
+		print("POOL GENERATE size: " + spawns.getSize().toString())
 		for s in spawns
-			if  not s.creepDef.generated
-				s.creepDef.generateObject()
-				
+			print("POOL GENERATE -> for in")
+			s.creepDef.generateObject()

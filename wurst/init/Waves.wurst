@@ -25,9 +25,15 @@ public function wave_1() returns WavePool
 	// Add Def to pool with amount and time (when to spawn after wave started)
 	// Add Spawns chronologically, cause the Pool doesn't get sorted
 	// You can implement a sort if you want kari :D
+	var def2 = new CreepDefinition("Assault Zombie", CreepType.FLIPPER)
+	def2.hp = 30
+	def2.modelPath = "units\\creeps\\Sasquatch\\Sasquatch.mdl"
+	def2.scale *= 0.7
+	def2.collisionSize = 4
 
 	pool.addSpawn(def,10,0,SpawnerGroup.WEST)
-	pool.addSpawn(def,10,3,SpawnerGroup.NORTH)
+	pool.addSpawn(def2,1,0,SpawnerGroup.EAST)
+	pool.addSpawn(def,10,10,SpawnerGroup.NORTH)
 	
 	// Return the pool
 	return pool
@@ -41,6 +47,8 @@ public function wave_2() returns WavePool
 	// But reduces codeLength and copy-paste work (readability too)
 	pool.addSpawn(copyCreepDef("Lesser Zombie"), 10, 0, SpawnerGroup.ALL)
 	return pool
+
+
 
 public function init_Waves(boolean c)
 	let waves = allWaves()
