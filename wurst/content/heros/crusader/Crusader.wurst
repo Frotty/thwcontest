@@ -60,7 +60,7 @@ public class Crusader extends Hero
 		// In this case it creates a closure which means it can capture local variables by value
 		// FOr example see safe Guard
 		// For more information on the topic: https://peq.github.io/WurstScript/manual.html#lambda_expressions_and_closures
-		let eff = AddSpecialEffectTarget("Abilities\\Spells\\Items\\SpellShieldAmulet\\SpellShieldCaster.mdl",actor,"chest")
+		let eff = AddSpecialEffectTarget("Abilities\\Spells\\Items\\SpellShieldAmulet\\MagicShieldBlue.mdx",actor,"chest")
 		eff.destr()
 		forUnitsInRange(pos.toVec2(), abilityrange, (unit u) -> begin
 			print("loop")
@@ -104,8 +104,7 @@ public class Crusader extends Hero
 				let channel_duration = 5.
 				let maxDistance = 500
 				let lng = addLightning("SPLK", true, pos+zoffset, targetEntity.pos+zoffset)
-				let eff = AddSpecialEffectTarget("Abilities\\Spells\\Human\\ManaShield\\ManaShieldCaster.mdl",targetEntity.actor,"origin")
-				doAfter((channel_duration-5.), ()-> eff.destr())
+				let eff = AddSpecialEffectTarget("Models\\MagicShieldBlue.mdx",targetEntity.actor,"origin")
 
 				OnDamage ond = (unit damaged, unit source, real amount) -> begin
 					let dmg = getDamage() * 0.75
@@ -130,6 +129,7 @@ public class Crusader extends Hero
 					..setColor(col)
 					if cb.isLast()
 						lng.destr()
+						eff.destr()
 						destroy ond
 				end)
 			end)

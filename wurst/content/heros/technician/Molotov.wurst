@@ -16,7 +16,7 @@ public class Molotov extends Projectile
 		super(pos, owner, pos.angleTo2d(target), "Models\\Molotov.mdx")
 		flying = true
 		bounces = min(lvl, 3)
-		setTarget(target, 500)
+		setTarget(target, 300)
 		
 	override function update()
 		if bounces < 0
