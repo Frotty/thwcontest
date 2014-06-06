@@ -60,7 +60,7 @@ public class Crusader extends Hero
 		// In this case it creates a closure which means it can capture local variables by value
 		// FOr example see safe Guard
 		// For more information on the topic: https://peq.github.io/WurstScript/manual.html#lambda_expressions_and_closures
-		let eff = AddSpecialEffectTarget("Abilities\\Spells\\Items\\SpellShieldAmulet\\SpellShieldCaster.mdl",actor,"chest")
+		let eff = AddSpecialEffectTarget("Models\\MagicShieldBlue.mdx",actor,"chest")
 		eff.destr()
 		forUnitsInRange(pos.toVec2(), abilityrange, (unit u) -> begin
 			print("loop")
