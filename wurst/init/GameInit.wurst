@@ -23,7 +23,7 @@ init
 	doAfter(0.01, () -> begin
 		initResources(false)
 		createUnit(Player(0), 'hfoo', vec2(0,0), angle(0))
-		new Technician(vec3(0,100,1200),Player(0) )  // Fortesting
+		new Crusader(vec3(0,100,1200),Player(0) )  // Fortesting
 		new MageHero(vec3(200,200,1200),Player(1) )  // Fortesting
 		WaveManager.startNextWave()
 		startEntityLoop()
