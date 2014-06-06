@@ -28,7 +28,7 @@ public function wave_1() returns WavePool
 	// Add Def to pool with amount and time (when to spawn after wave started)
 	// Add Spawns chronologically, cause the Pool doesn't get sorted
 	// You can implement a sort if you want kari :D
-	pool.setDuration(5)
+	pool.setDuration(60)
 
 	pool.addSpawn(def,5,0,SpawnerGroup.WEST)
 	pool.addSpawn(def,5,10,SpawnerGroup.NORTH)
@@ -44,13 +44,18 @@ public function wave_2() returns WavePool
 	// Copy an existing CreepDef
 	// This still creates a new Object (as needed by the system)
 	// But reduces codeLength and copy-paste work (readability too)
-	var mam = new CreepDefinition("Assault Zombie", CreepType.MAMMOTH)
+	var mam = new CreepDefinition("Mammoth", CreepType.MAMMOTH)
 	mam.hp = 300
+	mam.movementSpeed = 200
 	mam.modelPath = "Units\\Creeps\\MammothBlack\\MammothBlack.mdl"
 	mam.scale *= 1.2
 	
-	pool.addSpawn(mam, 1, 0, SpawnerGroup.ALL)
-	pool.setDuration(10)
+	pool.addSpawn(copyCreepDef("Lesser Zombie"), 3, 0, SpawnerGroup.ALL)
+	pool.addSpawn(copyCreepDef("Lesser Zombie"), 3, 5, SpawnerGroup.ALL)
+	pool.addSpawn(copyCreepDef("Lesser Zombie"), 3, 20, SpawnerGroup.ALL)
+	pool.addSpawn(mam,1,21,SpawnerGroup.NORTH)
+	pool.addSpawn(copyCreepDef("Lesser Zombie"), 3, 22, SpawnerGroup.ALL)
+	pool.setDuration(50)
 	return pool
 
 public function wave_3() returns WavePool
@@ -61,9 +66,20 @@ public function wave_3() returns WavePool
 	def2.modelPath = "units\\creeps\\Sasquatch\\Sasquatch.mdl"
 	def2.scale *= 0.7
 	def2.collisionSize = 4
+	def2.movementSpeed = 300
 	
-	pool.addSpawn(def2,1,0,SpawnerGroup.EAST)
-	pool.setDuration(10)
+	var zom =new CreepDefinition("Zombie")
+	zom.hp = 200
+	zom.modelPath = "units\\creeps\\Zombie\\Zombie.mdl"
+	zom.collisionSize = 12
+	zom.damage = 30
+	
+	pool.addSpawn(def2,1,2.5,SpawnerGroup.ALL)
+	for i = 0 to 10
+		pool.addSpawn(zom, 1, 0.5*i, SpawnerGroup.ALL)
+	
+	
+	pool.setDuration(40)
 	return pool
 
 public function init_Waves(boolean c)

@@ -37,6 +37,7 @@ public function init_Mammoth(boolean compiletime)
 	PARASITE_DEF = new CreepDefinition("Parasite")
 	// Set Values..
 	PARASITE_DEF.hp = 30
+	PARASITE_DEF.damage = 6
 	PARASITE_DEF.modelPath = "units\\critters\\DuneWorm\\DuneWorm.mdl"
 	PARASITE_DEF.collisionSize = 4
 	if compiletime

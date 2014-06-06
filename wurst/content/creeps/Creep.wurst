@@ -60,6 +60,8 @@ public class CreepDefinition
 	string name
 	real scale = 0.8
 	real collisionSize = 16
+	integer movementSpeed = 270
+	int damage = 10
 	int attackRange = 80
 	CreepType ctype //Decides what class will be used for the creep.
 	
@@ -99,5 +101,6 @@ public class CreepDefinition
 			def..setName(name)..setHitPointsMaximumBase(hp)
 			..setDefenseBase(armor)..setModelFile(modelPath)
 			..setScalingValue(scale)..setCollisionSize(collisionSize)
-			..setAttack1Range(attackRange)
+			..setAttack1Range(attackRange)..setSpeedBase(movementSpeed)
+			..setAttack1DamageBase(damage)..setAttack1DamageNumberofDice(3)..setAttack1DamageSidesperDie(2)
 	

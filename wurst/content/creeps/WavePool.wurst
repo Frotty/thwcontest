@@ -16,10 +16,10 @@ public enum SpawnerGroup
 public class SpawnContainer
 	CreepDefinition creepDef
 	int amount
-	int time
+	real time
 	SpawnerGroup where
 	
-	construct(CreepDefinition def, int am, int tm, SpawnerGroup wh)
+	construct(CreepDefinition def, int am, real tm, SpawnerGroup wh)
 		creepDef = def
 		amount = am
 		time = tm
@@ -30,10 +30,10 @@ public class WavePool
 	LinkedList<SpawnContainer> spawns = new LinkedList<SpawnContainer>()
 	protected real duration = 30
 
-	function addSpawn(CreepDefinition def, int amount, int time, SpawnerGroup where)
+	function addSpawn(CreepDefinition def, int amount, real time, SpawnerGroup where)
 		spawns.add(new SpawnContainer(def, amount, time, where))
 		if duration < time
-			duration = time.toReal()
+			duration = time
 			
 	function setDuration(real d)
 		duration = d

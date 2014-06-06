@@ -133,6 +133,9 @@ public class Crusader extends Hero
 						destroy ond
 				end)
 			end)
+			
+	function phalanx()
+			
 	
 		
 public function init_Crusader(boolean compiletime)
