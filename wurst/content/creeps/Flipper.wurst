@@ -26,7 +26,7 @@ public class Flipper extends Creep
 				if actor.isAlive() and (pos.distToVec2d(e.pos) < 100)
 					let angl = e.pos.angleTo2d(pos)
 					let speed = 10 
-					e.addVel(vec3(angl.cos() * speed,angl.sin() * speed, speed*1.2))
+					e.addVel(vec3(angl.cos() * speed,angl.sin() * speed, speed*1.4))
 				else
 					flipped = false
 			end)
