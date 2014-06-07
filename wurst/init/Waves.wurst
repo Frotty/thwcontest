@@ -75,8 +75,7 @@ public function wave_3() returns WavePool
 	zom.damage = 30
 	
 	pool.addSpawn(def2,1,2.5,SpawnerGroup.ALL)
-	for i = 0 to 10
-		pool.addSpawn(zom, 1, 0.5*i, SpawnerGroup.ALL)
+	pool.addSpawn(zom, 10,0, SpawnerGroup.ALL)
 	
 	
 	pool.setDuration(40)
