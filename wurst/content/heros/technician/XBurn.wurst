@@ -1,0 +1,21 @@
+package XBurn
+import BuffHandler
+import Hero
+
+public BuffDef XBurnBuffDef
+
+public function unit.addXBurn(Hero caster)
+	let tt = createTTEx(this.getPos().withZ(100), "", 10, colorA(255,122,122,255))
+	this.applyBuff(XBurnBuffDef, 3, 5, caster, (BuffContainer buffContainer) -> begin
+		buffContainer.caster.actor.damageTarget(buffContainer.buffed, 2. * buffContainer.stacks)
+		tt..setText(buffContainer.stacks.toString(), 10)..setPos(this.getPos().withZ(100))
+		if buffContainer.isLast()
+			tt.destr()
+	end)
+
+public function init_XBurn(boolean c)
+	XBurnBuffDef = new BuffDef("Xburn", "This unit gets damaged depending on stacks", "BTNevil")
+	XBurnBuffDef.stacking = true
+	XBurnBuffDef.buffArt = "Abilities\\Spells\\Human\\FlameStrike\\FlameStrikeEmbers.mdl"
+	if c
+		XBurnBuffDef.generate()

@@ -2,12 +2,13 @@ package StunHandler
 import MapStuff
 import BuffObjEditing
 import HashMap
+import Entity
 import ObjectIds
 import InstantDummyCaster
 int SPELL_ID 
 int BUFF_ID
 
-Table stunTable = new Table()
+real array stunTimes
 
 LinkedList<unit> stunnedUnits = new LinkedList<unit>()
 
@@ -15,23 +16,25 @@ timer checkTimer
 
 
 public function unit.applyStun(boolean stacking, real amount, player damager)
-	if stunTable.loadReal(this.getHandleId()) <= 0
+	if stunTimes[this.getEntity() castTo int] <= 0
 		InstantDummyCaster.castTarget(damager, SPELL_ID, 1, "firebolt", this)
 		stunnedUnits.add(this)
 		if checkTimer == null
 			checkTimer = getTimer()
 			checkTimer.startPeriodic(0.05, () -> begin
 				for u in stunnedUnits
-					let remain = stunTable.loadReal(u.getHandleId()) - 0.05
-					stunTable.saveReal(u.getHandleId(), remain)
+					let id = u.getEntity() castTo int
+					let remain = stunTimes[id] - 0.05
+					stunTimes[id] = remain
 					if remain <= 0
-						u.removeAbility(BUFF_ID)
+						if u != null
+							u.removeAbility(BUFF_ID)
 						stunnedUnits.remove(u)
 			end)
 	if stacking
-		stunTable.saveReal( this.getHandleId(), amount + stunTable.loadReal(this.getHandleId()))
+		stunTimes[this.getEntity() castTo int] += amount
 	else
-		stunTable.saveReal( this.getHandleId(), amount)
+		stunTimes[this.getEntity() castTo int] = amount
 		
 
 	

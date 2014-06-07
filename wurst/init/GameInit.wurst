@@ -9,6 +9,7 @@ import StunHandler
 import Technician
 import Mammoth
 import Crusader
+import OrderStringFactory
 
 function initResources(boolean compileTime)
 	init_MageHero(compileTime)
@@ -23,10 +24,14 @@ init
 	doAfter(0.01, () -> begin
 		initResources(false)
 		createUnit(Player(0), 'hfoo', vec2(0,0), angle(0))
-		new Crusader(vec3(0,100,1200),Player(0) )  // Fortesting
+		let h = new Technician(vec3(0,100,1200),Player(0) )  // Fortesting
+		SetHeroLevel(h.actor, 4, false)
 		new MageHero(vec3(200,200,1200),Player(1) )  // Fortesting
 		WaveManager.startNextWave()
 		startEntityLoop()
+		OrderStringFactory odf = new OrderStringFactory()
+		for i = 0 to 10
+			print(odf.getOrderString())
 	end)	
 	
 @compiletime function generateObjects()

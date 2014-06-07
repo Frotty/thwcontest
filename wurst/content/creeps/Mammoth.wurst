@@ -20,7 +20,6 @@ public class Mammoth extends Creep//Upon taking damage parasites fall from it.
 		let percent = actor.getHP()/actor.getMaxHP() * 100
 		if percent <= lastPercent - parasite_dropping_rate
 			
-			print("it is called! " + lastPercent.toString())
 			throwParasite()
 			lastPercent -= parasite_dropping_rate
 			
@@ -31,7 +30,6 @@ public class Mammoth extends Creep//Upon taking damage parasites fall from it.
 		
 
 public function init_Mammoth(boolean compiletime)
-	print("Mammoth inited")
 	PARASITE_DEF = new CreepDefinition("Parasite")
 	// Set Values..
 	PARASITE_DEF.hp = 30

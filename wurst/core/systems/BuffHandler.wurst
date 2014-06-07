@@ -1,0 +1,128 @@
+package BuffHandler
+import BuffObjEditing
+import AbilityObjEditing
+import MapStuff
+import Entity
+import LinkedListModule
+import HashMap
+import ObjectIds
+import Hero
+
+constant BUFF_EFFECT_PERIOD = 0.25
+
+public function unit.applyBuff(BuffDef def, real duration)
+	this.applyBuff(def, duration, null, null)
+
+public function unit.applyBuff(BuffDef def, real duration, Hero caster, BuffEffect bfe)
+	this.applyBuff(def, 1, duration, caster, bfe)
+	
+public function unit.applyBuff(BuffDef def, int maxStacks, real duration, Hero caster, BuffEffect bfe)
+	var buffs = buffMap.get(this)
+	if buffs == null
+		buffMap.put(this, new LinkedList<BuffContainer>)
+		buffs = buffMap.get(this)
+	for bf in buffs
+		if bf.def == def
+			if def.stacking and bf.stacks < maxStacks
+				bf.addStack(maxStacks, duration)
+				return
+			else
+				return
+	buffs.add(new BuffContainer(def, this, duration, caster, bfe))
+	
+
+public abstract class BuffEffect
+	abstract function run(BuffContainer buffContainer)
+
+public class BuffDef
+	int tornado_id
+	int buff_id
+	
+	string buffArt = ""
+	string name
+	string tooltip
+	string iconPath
+	boolean stacking = false
+	
+	construct(string name, string tooltip, string iconPath)
+		tornado_id = ABIL_ID_GEN.next()
+		buff_id = BUFF_ID_GEN.next()
+		this.name = name
+		this.tooltip = tooltip
+		this.iconPath = iconPath
+		
+	function generate()
+		let bid = new BuffDefinition(buff_id, 'Basl')
+		bid..setName(1, name)..setTooltipNormal(1, tooltip)
+		..setIcon(iconPath)..setTarget(1, buffArt)
+		..setEditorSuffix(1, "(BuffHandler)")
+		let tid = new AbilityDefinitionAuraSlow(tornado_id)
+		tid..setName(name)..setTooltipNormal(1, tooltip)
+		..setBuffs(1, idInteger2IdString(buff_id))..setMovementSpeedFactor(1, 0)
+		..setTargetsAllowed(1, "self")..setArtTarget( buffArt)..setArtCaster(buffArt)
+		..setEditorSuffix("(BuffHandler)")
+		
+HashMap<unit, LinkedList<BuffContainer>> buffMap = new HashMap<unit, LinkedList<BuffContainer>>()
+
+public class BuffContainer
+	use LinkedListModule
+	unit buffed
+	BuffDef def
+	int stacks = 1
+	real duration
+	Hero caster
+	
+	BuffEffect buffEffect
+	
+	construct(BuffDef def, unit u, real dur, Hero caster, BuffEffect bfe)
+		this.def = def
+		buffed = u
+		duration = dur
+		print("trying to add abil " + idInteger2IdString(def.tornado_id))
+		u.addAbility(def.tornado_id)
+		
+		buffEffect = bfe
+		this.caster = caster
+		
+	function addStack(int maxStacks, real dur)
+		if stacks < maxStacks
+			stacks++
+			
+		this.duration = dur
+		
+	function isLast() returns boolean
+		return duration <= 0
+		
+	function update()
+		duration -= BUFF_EFFECT_PERIOD
+		if not buffed.isAliveTrick()
+			duration = 0
+		if buffEffect != null
+			buffEffect.run(this)
+		if duration <= 0
+			destroy this
+
+			
+	ondestroy
+		duration = 0
+		buffed..removeAbility(def.tornado_id)..removeAbility(def.buff_id)
+		let bfs = buffMap.get(buffed)
+		bfs.remove(this)
+		if bfs.getSize() <= 0
+			destroy bfs
+			buffMap.put(buffed, null)
+			
+		
+init
+	CreateTimer().startPeriodic(BUFF_EFFECT_PERIOD, () -> begin
+		var e = BuffContainer.first
+		while e != null
+			e.update()
+			e = e.next
+	end)
+		
+	
+
+
+		
+	

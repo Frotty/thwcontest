@@ -34,15 +34,15 @@ public class Crusader extends Hero
 		
 	override function onCast(int spellId, int lvl)
 		print("Crusader - onCast function called")
-		switch spellId
-			case BACKOFF_SPELL_ID
-				castBackOff() 
+			
 	
 	override function onUnitCast(int spellId, unit target, int lvl)
 		print("Crusader - onUnitCast function called")
 		switch spellId
 			case SAFEGUARD_SPELL_ID
 				castSafeGuard(target) 
+			case BACKOFF_SPELL_ID
+				castBackOff() 
 		
 	override function onPointCast(int spellId, vec2 target, int lvl)
 	

@@ -1,0 +1,72 @@
+package Napalm
+import Explosive
+import Image
+import ChannelAbilityPreset
+import MapStuff
+import ClosureTimers
+import Interpolation
+
+public constant IGNITE_DISTANCE_SQ = 75*75
+
+public int NAPALM_SPELL_ID
+
+public LinkedList<NapalmDroplet> activeNapalms = new LinkedList<NapalmDroplet>()
+
+
+public class NapalmDroplet
+	player owner
+	vec2 pos
+	effect fireSfx = null
+	image img
+	colorA col = colorA(255,255,255,0)
+	
+	construct(vec2 pos, player owner)
+		this.pos = pos
+		this.owner = owner
+		var path = "Textures\\NapalmDrop"
+		path += GetRandomInt(0, 7).toString()
+		path += ".blp"
+		img = createImage(path, pos, 64, 64)..show()..setLevel(Layer.L4)
+		activeNapalms.add(this)
+		
+	function ignite()
+		fireSfx = addEffect(firePaths[GetRandomInt(0, firePathCount)], pos)
+		activeNapalms.remove(this)
+		doPeriodicallyTimed(0.25, 10, (CallbackCounted cb) -> begin
+			col.alpha = (255 * (cb.getCount()/40)).toInt()
+			img.setColor(col)
+			for n in activeNapalms
+				if pos.distToVecSquared(n.pos) < IGNITE_DISTANCE_SQ
+					n.ignite()					
+			for e in explosiveEntities
+				if pos.distToVecSquared(e.pos.toVec2()) < IGNITE_DISTANCE_SQ
+					e.explode()
+					
+			if cb.isLast()
+				destroy this
+		end)
+		
+	ondestroy
+		fireSfx.destr()
+		img.remove()
+		
+	
+public function init_Napalm(boolean c)
+	NAPALM_SPELL_ID = ABIL_ID_GEN.next()
+	if c
+		let spreset = new ChannelAbilityPreset(NAPALM_SPELL_ID, 4)
+		// Set Attributes
+		spreset..removeChannelProperties(true)..setName("Napalm")..setButtonPositionNormalX(1)..setButtonPositionNormalY(2)
+			..setIcon("BTNevil")..setOption(Option.VISIBLE, true)
+			
+		
+string array firePaths
+int firePathCount = 5
+
+init
+	firePaths[0] = "Environment\\LargeBuildingFire\\LargeBuildingFire1.mdl" 
+	firePaths[1] = "Environment\\LargeBuildingFire\\LargeBuildingFire2.mdl" 
+	firePaths[2] = "Environment\\SmallBuildingFire\\SmallBuildingFire2.mdl" 
+	firePaths[3] ="Environment\\NightElfBuildingFire\\ElfLargeBuildingFire1.mdl" 
+	firePaths[4] = "Environment\\NightElfBuildingFire\\ElfLargeBuildingFire2.mdl" 
+	firePaths[5] = "Environment\\UndeadBuildingFire\\UndeadLargeBuildingFire2.mdl" 

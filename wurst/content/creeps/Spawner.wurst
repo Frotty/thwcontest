@@ -26,7 +26,6 @@ public class Spawner
 		this.target = target
 		
 	function spawnCreep(CreepDefinition def)
-		print("Spawning Creep with id: " + idInteger2IdString(def.id))
 		switch def.ctype
 			case CREEP
 				new Creep(pos.toVec3(), def.id, pos.angleTo(mapCenter), target)

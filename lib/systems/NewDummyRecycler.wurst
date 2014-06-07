@@ -62,24 +62,42 @@ class DelayNode
 	DelayNode prev = null
 	DelayNode next = null
 	static DelayNode first = null
+	static DelayNode last = null
 	
 	construct(unit u, real time)
 		this.u = u
 		this.delayTime = getElapsedGameTime() + time
 		if first == null
 			first = this
+			last = first
 		else
 			DelayNode tmp = first
 			while tmp.next != null and tmp.delayTime < this.delayTime
 				tmp = tmp.next
 			if tmp.delayTime < this.delayTime
-				tmp.next = this
-				this.prev = tmp
+				if tmp == last
+					tmp.next = this
+					this.prev = tmp
+					last = this
+				else
+					tmp.next.prev = this
+					this.next = tmp.next
+					tmp.next = this
+					this.prev = tmp
 			else
-				tmp.prev.next = this
-				this.prev = tmp.prev
-				this.next = tmp
-				tmp.prev = this
+				if tmp == first
+					tmp.prev = this
+					first = this
+					this.next = tmp
+				else if tmp == last
+					tmp.next = this
+					this.prev = tmp
+					last = tmp
+				else
+					this.prev = tmp
+					this.next = tmp.next
+					tmp.next.prev = this
+					tmp.next = this
 			if t.getRemaining() > 0 and time < t.getRemaining()
 				t.start(time, function DelayNode.recycle)
 			else if t.getRemaining() <= 0
@@ -89,6 +107,8 @@ class DelayNode
 		DummyRecycler.recycle(first.u)
 		print("delay recycled")
 		let tmp = first
+		if first.next == null
+			first = null
 		if first.next != null
 			first = first.next
 			first.prev = null

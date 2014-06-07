@@ -12,6 +12,9 @@ public class Xplosive extends Explosive
 		setModel("Units\\Other\\TNTBarrel\\TNTBarrel.mdx")
 		
 	override function explode()
+		addEffect("Models\\SapperExplo.mdx", pos).destr()
+		destroy this
+		
 	
 	ondestroy
 		count--
@@ -22,7 +25,7 @@ public function init_Xplosives(boolean c)
 	if c
 		let xplosivePreset = new ChannelAbilityPreset(EXPLOSIVES_SPELL_ID, 4)
 		xplosivePreset..removeChannelProperties(true)..setName("Xplosives")
-		..setButtonPosNormal(0,2)..setIcon("BTNSoulBurn")
+		..setButtonPosNormal(0,2)..setIcon("BTNExplosiveBarrel")
 		..setOption(Option.VISIBLE, true)..setTargetType(Targettype.PTARGET)..setOption(Option.TARGETIMAGE, true)
 		..setAreaOfEffect(128)
 		..setCastRange(1, 180)

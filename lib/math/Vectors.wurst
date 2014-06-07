@@ -122,6 +122,10 @@ public function vec3.distToVec2d( vec3 v ) returns real
 /** Get the distance to another Vector */
 public function vec3.distToVec2d( vec2 v ) returns real
 	return SquareRoot((v.x - this.x).squared() + (v.y - this.y).squared())
+	
+/** Get the squared distance to another Vector */
+public function vec3.distToVec2dSquared( vec2 v ) returns real
+	return (v.x - this.x).squared() + (v.y - this.y).squared()
 
 /** Get the squared distance to another Vector */
 public function vec3.distToVecSquared( vec3 v ) returns real

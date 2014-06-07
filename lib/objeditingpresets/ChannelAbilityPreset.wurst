@@ -1,7 +1,12 @@
 package ChannelAbilityPreset
 import public AbilityPreset
+import OrderStringFactory
 
 constant CHANNEL_ID = 'ANcl'
+
+OrderStringFactory odf = new OrderStringFactory()
+@compiletime function initOdf()
+	odf = new OrderStringFactory()
 
 public enum Option
 	VISIBLE
@@ -34,7 +39,7 @@ public function Targettype.toString() returns string
 			return "Point & Unit Target"
 	return ""
 
-public class ChannelAbilityPreset extends AbilityPreset
+public class ChannelAbilityPreset extends AbilityDefinitionIllidanChannel
 	boolean VISIBLE
 	boolean TARGETIMAGE
 	boolean PHYSICALSPELL
@@ -42,10 +47,12 @@ public class ChannelAbilityPreset extends AbilityPreset
 	boolean UNIQUECAST
 	int optionval = 0
 	
-	
+	int lvl
 	
 	construct(int newId, int lvls)
-		super(newId, CHANNEL_ID, lvls)
+		super(newId)
+		this.lvl = lvls
+		setBaseOrderId(odf.getOrderString())
 		
 	function removeChannelProperties(boolean removeVisuals)
 		setDisablesOther(false)
@@ -55,14 +62,31 @@ public class ChannelAbilityPreset extends AbilityPreset
 			setArtCaster("")
 			setArtEffect("")
 			setArtSpecial("")
+			
+		
+	function setIcon(string name)
+		string s = "ReplaceableTextures\\CommandButtons\\" + name
+		if not name.endsWith(".blp")
+			s += ".blp"
+
+		setIconResearch(s)
+		setIconNormal(s)
+		
+	function setAreaOfEffect(real range)
+		for i = 1 to lvl
+			setAreaofEffect(i, range)
+			
+	function setButtonPosNormal(int x, int y)
+		setButtonPositionNormalX(x)
+		setButtonPositionNormalY(y)
 		
 	function setArtDuration(real value)
 		for i = 1 to lvl
 			def.setLvlDataUnreal("Ncl4", i, 4, value)
 		
-	function setBaseOrderID(string value)
+	function setBaseOrderId(string value)
 		for i = 1 to lvl
-			def.setLvlDataString("Ncl6", i, 6, value)
+			setBaseOrderID(i, value)
 				
 	function setDisablesOther(boolean flag)
 		int v = 0

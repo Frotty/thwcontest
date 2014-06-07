@@ -8,6 +8,9 @@ native UnitAlive(unit id) returns boolean
 
 public function unit.isAlive() returns boolean
 	return UnitAlive(this)
+	
+public function unit.isAliveTrick() returns boolean
+	return this.getHP() > .405
 
 public function unit.addXp(int toAdd, boolean showEyeCandy)
 	AddHeroXP(this, toAdd, showEyeCandy)

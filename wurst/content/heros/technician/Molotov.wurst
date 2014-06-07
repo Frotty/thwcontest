@@ -4,6 +4,11 @@ import PhysicsEntity
 import Terrain
 import MapStuff
 import ChannelAbilityPreset
+import ClosureForGroups
+import XBurn
+import Hero
+import Napalm
+import Explosive
 
 public int MOLOTOV_SPELL_ID
 
@@ -11,12 +16,19 @@ public class Molotov extends Projectile
 	use PhysicsModule
 	
 	int bounces
-	
+	Hero caster = null
 	construct(vec3 pos, vec2 target, player owner, int lvl)
 		super(pos, owner, pos.angleTo2d(target), "Models\\Molotov.mdx")
 		flying = true
 		bounces = min(lvl, 3)
 		setTarget(target, 300)
+		
+	construct(vec3 pos, vec2 target, Hero caster, int lvl)
+		super(pos, caster.owner, pos.angleTo2d(target), "Models\\Molotov.mdx")
+		flying = true
+		bounces = min(lvl, 3)
+		setTarget(target, 300)
+		this.caster = caster
 		
 	override function update()
 		if bounces < 0
@@ -35,6 +47,16 @@ public class Molotov extends Projectile
 		v *= -1.8
 		vel += v
 		fx.flash("Models\\FlameBomb.mdx")
+		forUnitsInRange(pos.toVec2(), 128, (unit u) -> begin
+			if u.getOwner().isEnemyOf(this.owner)
+				u.addXBurn(caster)
+		end)
+		for n in activeNapalms
+			if pos.distToVec2dSquared(n.pos) < IGNITE_DISTANCE_SQ
+				n.ignite()
+		for e in explosiveEntities
+			if pos.distToVec2dSquared(e.pos.toVec2()) < IGNITE_DISTANCE_SQ
+				e.explode()
 		bounces--
 
 
@@ -44,6 +66,6 @@ public function init_Molotov(boolean c)
 	if c
 		let molotovPreset = new ChannelAbilityPreset(MOLOTOV_SPELL_ID, 4)
 		molotovPreset..setName("Molotov")..removeChannelProperties(true)..setOption(Option.VISIBLE, true)
-		..setIcon("BTNLavaSpawn")..setTargetType(Targettype.PTARGET)
+		..setIcon("BTNSunFragment")..setTargetType(Targettype.PTARGET)
 		..setCastRange(1, 400)
 		

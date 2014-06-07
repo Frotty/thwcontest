@@ -2,12 +2,14 @@ package Technician
 import Hero
 import Xplosives
 import Molotov
-
+import Napalm
+import ClosureTimers
+import XBurn
 
 int TECHNICIAN_ID
-int NAPALM_SPELL_ID
 
 public class Technician extends Hero
+	private vec2 napalm_Last = vec2(0,0)
 	
 	construct(vec3 pos, player owner )
 		super(pos, owner, TECHNICIAN_ID)
@@ -15,28 +17,33 @@ public class Technician extends Hero
 	override function onCast(int spellId, int lvl)
 	
 	override function onUnitCast(int spellId, unit target, int lvl)
-		
+		switch spellId
+			case NAPALM_SPELL_ID
+				napalm_Last = pos.toVec2()
+				new NapalmDroplet(napalm_Last, owner)
+				doPeriodicallyTimed(ANIMATION_PERIOD, 3. + lvl, (CallbackCounted cb) -> begin
+					if pos.distToVec2dSquared(napalm_Last) > 40*40
+						napalm_Last = pos.toVec2()
+						new NapalmDroplet(napalm_Last, owner)
+				end)		
 	override function onPointCast(int spellId, vec2 target, int lvl)
 		switch spellId
 			case EXPLOSIVES_SPELL_ID
-				print("new explo")
 				new Xplosive(target, owner, lvl)
 			case MOLOTOV_SPELL_ID
-				new Molotov(pos + vec3(0,0,50), target, owner, lvl)
+				new Molotov(pos + vec3(0,0,50), target, this, lvl)
+			
 	
 public function init_Technician(boolean compiletime)
 	TECHNICIAN_ID = HERO_ID_GEN.next()
-	NAPALM_SPELL_ID = ABIL_ID_GEN.next()
+	
 	init_Xplosives(compiletime)
 	init_Molotov(compiletime)
+	init_XBurn(compiletime)
+	init_Napalm(compiletime)
 	if compiletime
 		// Generate def if compieltime
 
-		
-		let spreset = new ChannelAbilityPreset(NAPALM_SPELL_ID, 4)
-		// Set Attributes
-		spreset..removeChannelProperties(true)..setName("Napalm")..setButtonPositionNormalX(1)..setButtonPositionNormalY(2)
-			..setIcon("BTNUnholyFrenzy")..setOption(Option.VISIBLE, true)
 		
 		/*let adef = new AbilityDefinitionWarStompcreep(DUMBACKOFF_SPELL_ID)
 		adef..setCooldown(1, 0)..setManaCost(1, 0) //Missing presets ehre 

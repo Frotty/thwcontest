@@ -94,7 +94,6 @@ public class CreepDefinition
 //		return creep
 	
 	function generateObject()
-		print("generate")
 		if not generated
 			generated = true
 			let def = new UnitDefinition(id, 'ugho')

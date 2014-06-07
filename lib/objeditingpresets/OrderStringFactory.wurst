@@ -11,7 +11,7 @@ public class OrderStringFactory
 
 string array orderStrings
 
-init
+@compiletime function initS()
 	orderStrings[0] = "absorb"
 	orderStrings[1] = "acidbomb"
 	orderStrings[2] = "acolyteharvest"
