@@ -14,6 +14,7 @@ import ClosureTimers
 import Lightning
 import DamageMod
 import Damager
+import BonusHandler
 
 int CRUSADER_ID
 
@@ -35,12 +36,13 @@ public class Crusader extends Hero
 	unit ph_unit1
 	unit ph_unit2
 	boolean ph_1_set = false
+	int ph_armor
 	
 	
 	construct(vec3 pos, player owner )
 		super(pos, owner, CRUSADER_ID)
 		summontrigger = CreateTrigger()
-		summontrigger.registerAnyUnitEvent(EVENT_PLAYER_UNIT_SUMMON)
+		summontrigger.registerUnitEvent(actor,EVENT_UNIT_SUMMON)
 		summontrigger.addAction(function addPhalanx)
 		
 	override function onCast(int spellId, int lvl)
@@ -49,8 +51,8 @@ public class Crusader extends Hero
 			case PHALANX_SPELL_ID
 				ph_pos = actor.getPos()
 				ph_facing = actor.getFacingAngle()
-				print("poos:" + ph_pos.x.toString() +","+ph_pos.y.toString()+" angle: "+ ph_facing.degrees().toString())
 				ph_1_set = false
+				addUnitBonus(actor,Bonus.ARMOR, - ph_armor)
 	
 	override function onUnitCast(int spellId, unit target, int lvl)
 		print("Crusader - onUnitCast function called")
@@ -80,7 +82,7 @@ public class Crusader extends Hero
 		eff.destr()
 		forUnitsInRange(pos.toVec2(), abilityrange, (unit u) -> begin
 			print("loop")
-			if u.getEntity() instanceof Creep
+			if u.getEntity() instanceof Creep and u.isAlive()
 				print("is creep")
 				let creep = u.getEntity() castTo Creep
 				var angl = pos.angleTo2d(creep.pos)
@@ -151,31 +153,57 @@ public class Crusader extends Hero
 			end)
 			
 	function phalanx()
+		if (pos - ph_pos).length() > 20
+			ph_unit1.kill()
+			ph_unit2.kill()
+			ph_active = false
+		GroupEnumUnitsInRange(ENUM_GROUP, pos.x, pos.y, 800, Condition(function ph_filter))
+		ph_armor = CountUnitsInGroup(ENUM_GROUP)
+		ENUM_GROUP.clear()
+	
+	static function ph_filter()returns boolean
+		return GetFilterUnit().getEntity() instanceof Creep and GetFilterUnit().isAlive()
 		
 	static function addPhalanx()
-		unit source = GetTriggeringTrigger().getSource()
+		unit source = GetSummoningUnit()
 		Crusader c = source.getEntity() castTo Crusader
-		if c.actor == GetTriggerUnit()
-			doAfter(0.5,()->begin
-				c.actor.setFacing(c.ph_facing)
-				c.actor.setPos(c.ph_pos)
-				c.actor.setPropWindow(0)
+		if not IsUnitIllusion(GetSummonedUnit())
+			print("setting Caster")
+			c.actor.setFacing(c.ph_facing)
+			c.actor.setPos(c.ph_pos)
+			c.actor.issueImmediateOrderById(851993) //Hold Position
+			c.ph_active = true
+			c.ph_armor = 0
+			doPeriodically(1., (CallbackPeriodic cb)->begin
+				GroupEnumUnitsInRange(ENUM_GROUP, c.pos.x, c.pos.y, 800, Condition(function ph_filter))
+				int armor = CountUnitsInGroup(ENUM_GROUP)
+				addUnitBonus(c.actor,Bonus.ARMOR, armor - c.ph_armor)
+				c.ph_armor = armor
+				ENUM_GROUP.clear()
+				if (c.pos.toVec2() - c.ph_pos).length() > 50
+					c.ph_unit1.kill()
+					c.ph_unit2.kill()
+					c.ph_active = false
+					addUnitBonus(c.actor,Bonus.ARMOR, - c.ph_armor)
+					c.ph_armor = 0
+					destroy cb
 			end)
-			//c.phalanx()
 		else
+			angle f = c.ph_facing + angle(PI/2)
+			print("setting Illusion")
 			if c.ph_1_set == false
-				c.ph_unit1 = GetTriggerUnit()
-				doAfter(0.5,()->begin
-					c.ph_unit1.setFacing(c.ph_facing)
-					c.ph_unit1.setPos(c.ph_pos + vec2(100*c.ph_facing.cos(),100*c.ph_facing.sin()))
-				end)
+				c.ph_unit1 = GetSummonedUnit()
+				c.ph_unit1.setFacing(c.ph_facing)
+				c.ph_unit1.setPos(c.ph_pos + vec2(100*f.cos(),100*f.sin()))
+				c.ph_unit1.setPropWindow(0)
 				c.ph_1_set = true
+				print("1st set")
 			else
-				c.ph_unit2 = GetTriggerUnit()
-				doAfter(0.5,()->begin
-					c.ph_unit2.setFacing(c.ph_facing)
-					c.ph_unit2.setPos(c.ph_pos + vec2(-100*c.ph_facing.cos(),-100*c.ph_facing.sin()))
-				end)
+				c.ph_unit2 = GetSummonedUnit()
+				c.ph_unit2.setFacing(c.ph_facing)
+				c.ph_unit2.setPos(c.ph_pos + vec2(-100*f.cos(),-100*f.sin()))
+				c.ph_unit2.setPropWindow(0)
+				print("2nd set")
 		
 public function init_Crusader(boolean compiletime)
 	CRUSADER_ID = HERO_ID_GEN.next()
