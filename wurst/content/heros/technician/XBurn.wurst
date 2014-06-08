@@ -1,21 +1,41 @@
 package XBurn
 import BuffHandler
 import Hero
+import HashMap
+import Napalm
 
-public BuffDef XBurnBuffDef
+public BuffDef XBURN_BUFF_DEF
 
-public function unit.addXBurn(Hero caster)
+constant XBURN_DURATION = 4.
+
+function getXburnMaxStacks(int lvl) returns int
+	return 2 + 2 * lvl
+	
+function getXburnDamage(int lvl) returns real
+	return 2. + lvl
+	
+HashMap<unit, int> burnMap = new HashMap<unit, int>()
+
+public function unit.hasXBurn() returns boolean
+	return burnMap.get(this) > 0
+	
+public function unit.refreshXBurn()
+	this.refreshBuff(XBURN_BUFF_DEF, XBURN_DURATION)
+
+public function unit.addXBurn(Hero caster, int stacks, int lvl)
 	let tt = createTTEx(this.getPos().withZ(100), "", 10, colorA(255,122,122,255))
-	this.applyBuff(XBurnBuffDef, 3, 5, caster, (BuffContainer buffContainer) -> begin
-		buffContainer.caster.actor.damageTarget(buffContainer.buffed, 2. * buffContainer.stacks)
+	burnMap.put(this, burnMap.get(this) + 1)
+	this.applyBuff(XBURN_BUFF_DEF, stacks, getXburnMaxStacks(lvl), XBURN_DURATION, caster, (BuffContainer buffContainer) -> begin
+		buffContainer.caster.actor.damageTarget(buffContainer.buffed, getXburnDamage(lvl) * buffContainer.stacks)
 		tt..setText(buffContainer.stacks.toString(), 10)..setPos(this.getPos().withZ(100))
 		if buffContainer.isLast()
 			tt.destr()
+			burnMap.put(this, burnMap.get(this) - 1)
 	end)
 
 public function init_XBurn(boolean c)
-	XBurnBuffDef = new BuffDef("Xburn", "This unit gets damaged depending on stacks", "BTNevil")
-	XBurnBuffDef.stacking = true
-	XBurnBuffDef.buffArt = "Abilities\\Spells\\Human\\FlameStrike\\FlameStrikeEmbers.mdl"
+	XBURN_BUFF_DEF = new BuffDef("Xburn", "This unit gets damaged depending on stacks", "BTNevil")
+	XBURN_BUFF_DEF.stacking = true
+	XBURN_BUFF_DEF.buffArt = "Abilities\\Spells\\Human\\FlameStrike\\FlameStrikeEmbers.mdl"
 	if c
-		XBurnBuffDef.generate()
+		XBURN_BUFF_DEF.generate()

@@ -14,7 +14,7 @@ public class Flipper extends Creep
 		super( pos, id, a, target)
 		flipped = false
 		range_trigger = CreateTrigger()
-		range_trigger.registerUnitInRangeSource(actor,80)
+		range_trigger.registerUnitInRangeSource(actor,80, null)
 		range_trigger.addAction(function onFlipperRange)
 		
 	function onInRange(unit target)

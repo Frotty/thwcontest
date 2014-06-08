@@ -21,14 +21,25 @@ public enum Bonus
 	STRENGTH
 	AGILITY
 	INTELLIGENCE
+	
+hashtable bonusTable = InitHashtable()
+
+
+public function addUnitBonus(unit u, Bonus bonusType, int amount)
+	setUnitBonus(u, bonusType, getUnitBonus(u, bonusType) + amount)
+	
+public function getUnitBonus(unit u, Bonus bonusType) returns int
+	return bonusTable.loadInt(u.getHandleId(), bonusType castTo int)
 
 /** Sets the bonus of specified type for the unit to the given amount. */
 public function setUnitBonus(unit u, Bonus bonusType, int amount)
 	bonusTypes[bonusType castTo int].setBonus(u, amount)
+	bonusTable.saveInt(u.getHandleId(), bonusType castTo int, amount)
 
 /** Sets the bonus of specified type for the unit to zero. */
 public function clearUnitBonus(unit u, Bonus bonusType)
 	bonusTypes[bonusType castTo int].clearBonus(u)
+	bonusTable.saveInt(u.getHandleId(), bonusType castTo int, 0)
 
 /** Gets the highest applicable value for the specified bonus type. */
 public function getMaxBonus(Bonus bonusType) returns int

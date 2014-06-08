@@ -16,10 +16,12 @@ public class Molotov extends Projectile
 	use PhysicsModule
 	
 	int bounces
+	int lvl
 	Hero caster = null
 	construct(vec3 pos, vec2 target, player owner, int lvl)
 		super(pos, owner, pos.angleTo2d(target), "Models\\Molotov.mdx")
 		flying = true
+		this.lvl = lvl
 		bounces = min(lvl, 3)
 		setTarget(target, 300)
 		
@@ -49,9 +51,9 @@ public class Molotov extends Projectile
 		fx.flash("Models\\FlameBomb.mdx")
 		forUnitsInRange(pos.toVec2(), 128, (unit u) -> begin
 			if u.getOwner().isEnemyOf(this.owner)
-				u.addXBurn(caster)
+				u.addXBurn(caster, 1, lvl)
 		end)
-		for n in activeNapalms
+		for n in freshNapalms
 			if pos.distToVec2dSquared(n.pos) < IGNITE_DISTANCE_SQ
 				n.ignite()
 		for e in explosiveEntities

@@ -1,8 +1,6 @@
 package BuffHandler
 import BuffObjEditing
 import AbilityObjEditing
-import MapStuff
-import Entity
 import LinkedListModule
 import HashMap
 import ObjectIds
@@ -14,22 +12,28 @@ public function unit.applyBuff(BuffDef def, real duration)
 	this.applyBuff(def, duration, null, null)
 
 public function unit.applyBuff(BuffDef def, real duration, Hero caster, BuffEffect bfe)
-	this.applyBuff(def, 1, duration, caster, bfe)
+	this.applyBuff(def, 0, 1, duration, caster, bfe)
 	
-public function unit.applyBuff(BuffDef def, int maxStacks, real duration, Hero caster, BuffEffect bfe)
+public function unit.applyBuff(BuffDef def, int stacks, int maxStacks, real duration, Hero caster, BuffEffect bfe)
 	var buffs = buffMap.get(this)
 	if buffs == null
 		buffMap.put(this, new LinkedList<BuffContainer>)
 		buffs = buffMap.get(this)
 	for bf in buffs
 		if bf.def == def
-			if def.stacking and bf.stacks < maxStacks
-				bf.addStack(maxStacks, duration)
+			if def.stacking
+				bf.addStacks(stacks, maxStacks, duration)
 				return
 			else
 				return
 	buffs.add(new BuffContainer(def, this, duration, caster, bfe))
 	
+public function unit.refreshBuff(BuffDef def, real duration)
+	var buffs = buffMap.get(this)
+	if buffs != null and buffs.getSize() > 0
+		for bf in buffs
+			if bf.def == def
+				bf.duration = duration
 
 public abstract class BuffEffect
 	abstract function run(BuffContainer buffContainer)
@@ -62,6 +66,7 @@ public class BuffDef
 		..setTargetsAllowed(1, "self")..setArtTarget( buffArt)..setArtCaster(buffArt)
 		..setEditorSuffix("(BuffHandler)")
 		
+		
 HashMap<unit, LinkedList<BuffContainer>> buffMap = new HashMap<unit, LinkedList<BuffContainer>>()
 
 public class BuffContainer
@@ -84,10 +89,8 @@ public class BuffContainer
 		buffEffect = bfe
 		this.caster = caster
 		
-	function addStack(int maxStacks, real dur)
-		if stacks < maxStacks
-			stacks++
-			
+	function addStacks(int stacks, int maxStacks, real dur)
+		this.stacks = min(this.stacks + stacks, maxStacks)
 		this.duration = dur
 		
 	function isLast() returns boolean

@@ -5,37 +5,52 @@ import ChannelAbilityPreset
 import MapStuff
 import ClosureTimers
 import Interpolation
+import Hero
+import initlater Technician
+import initlater XBurn
+import ClosureForGroups
 
 public constant IGNITE_DISTANCE_SQ = 75*75
 
 public int NAPALM_SPELL_ID
 
-public LinkedList<NapalmDroplet> activeNapalms = new LinkedList<NapalmDroplet>()
-
+public LinkedList<NapalmDroplet> freshNapalms = new LinkedList<NapalmDroplet>()
+public LinkedList<NapalmDroplet> burningNapalms = new LinkedList<NapalmDroplet>()
 
 public class NapalmDroplet
-	player owner
+	Hero caster
 	vec2 pos
 	effect fireSfx = null
 	image img
+	unit dummy
+	int lvl
 	colorA col = colorA(255,255,255,0)
 	
-	construct(vec2 pos, player owner)
+	construct(vec2 pos, Hero caster, int lvl)
 		this.pos = pos
-		this.owner = owner
+		this.caster = caster
 		var path = "Textures\\NapalmDrop"
+		this.lvl = lvl
 		path += GetRandomInt(0, 7).toString()
 		path += ".blp"
 		img = createImage(path, pos, 64, 64)..show()..setLevel(Layer.L4)
-		activeNapalms.add(this)
+		freshNapalms.add(this)
 		
 	function ignite()
 		fireSfx = addEffect(firePaths[GetRandomInt(0, firePathCount)], pos)
-		activeNapalms.remove(this)
+		burningNapalms.add(this)
+		freshNapalms.remove(this)
+		
 		doPeriodicallyTimed(0.25, 10, (CallbackCounted cb) -> begin
 			col.alpha = (255 * (cb.getCount()/40)).toInt()
 			img.setColor(col)
-			for n in activeNapalms
+			forUnitsInRange(pos, 64, (unit u) -> begin
+				if u.hasXBurn()
+					u.refreshXBurn()
+				else
+					u.addXBurn(caster, 1, lvl)
+			end)
+			for n in freshNapalms
 				if pos.distToVecSquared(n.pos) < IGNITE_DISTANCE_SQ
 					n.ignite()					
 			for e in explosiveEntities
@@ -49,6 +64,7 @@ public class NapalmDroplet
 	ondestroy
 		fireSfx.destr()
 		img.remove()
+		burningNapalms.remove(this)
 		
 	
 public function init_Napalm(boolean c)
