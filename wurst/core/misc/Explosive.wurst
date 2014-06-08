@@ -5,16 +5,14 @@ import LinkedList
 public LinkedList<Explosive> explosiveEntities = new LinkedList<Explosive>()
 
 public abstract class Explosive extends FxEntity
-	real radius
 	real power
 	
 	boolean activated = false
 	boolean timed = false
 	real timeout = 0.
 	
-	construct( vec3 pos, real radius, player owner, angle a)
+	construct( vec3 pos, real radius, real power, player owner, angle a)
 		super( pos, radius, owner, a )
-		this.radius = radius
 		this.power = power
 		explosiveEntities.add(this)
 		

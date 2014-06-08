@@ -5,6 +5,7 @@ import HashMap
 import Napalm
 
 public BuffDef XBURN_BUFF_DEF
+public int XBURN_SPELL_ID
 
 constant XBURN_DURATION = 4.
 
@@ -22,7 +23,8 @@ public function unit.hasXBurn() returns boolean
 public function unit.refreshXBurn()
 	this.refreshBuff(XBURN_BUFF_DEF, XBURN_DURATION)
 
-public function unit.addXBurn(Hero caster, int stacks, int lvl)
+public function unit.addXBurn(Hero caster, int stacks)
+	let lvl = caster.actor.getAbilityLevel(XBURN_SPELL_ID)
 	let tt = createTTEx(this.getPos().withZ(100), "", 10, colorA(255,122,122,255))
 	burnMap.put(this, burnMap.get(this) + 1)
 	this.applyBuff(XBURN_BUFF_DEF, stacks, getXburnMaxStacks(lvl), XBURN_DURATION, caster, (BuffContainer buffContainer) -> begin
@@ -37,5 +39,9 @@ public function init_XBurn(boolean c)
 	XBURN_BUFF_DEF = new BuffDef("Xburn", "This unit gets damaged depending on stacks", "BTNevil")
 	XBURN_BUFF_DEF.stacking = true
 	XBURN_BUFF_DEF.buffArt = "Abilities\\Spells\\Human\\FlameStrike\\FlameStrikeEmbers.mdl"
+	
+	XBURN_SPELL_ID = ABIL_ID_GEN.next()
 	if c
 		XBURN_BUFF_DEF.generate()
+		let def = new AbilityDefinitionBashcreep(XBURN_SPELL_ID)
+		def..setName("Xburn")..setButtonPosNormal(1, 1)..setIcon("PASevil")

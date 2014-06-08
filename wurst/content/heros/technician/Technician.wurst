@@ -15,6 +15,8 @@ public class Technician extends Hero
 	construct(vec3 pos, player owner )
 		super(pos, owner, TECHNICIAN_ID)
 		INSTANCE = this
+		ModifyHeroSkillPoints(actor, bj_MODIFYMETHOD_SET, 1)
+		SelectHeroSkill(actor, XBURN_SPELL_ID)
 
 	override function onCast(int spellId, int lvl)
 	
@@ -31,7 +33,7 @@ public class Technician extends Hero
 	override function onPointCast(int spellId, vec2 target, int lvl)
 		switch spellId
 			case EXPLOSIVES_SPELL_ID
-				new Xplosive(target, owner, lvl)
+				createXplosive(target, this, lvl)
 			case MOLOTOV_SPELL_ID
 				new Molotov(pos + vec3(0,0,50), target, this, lvl)
 			
@@ -56,5 +58,6 @@ public function init_Technician(boolean compiletime)
 			..addHeroAbility(EXPLOSIVES_SPELL_ID)
 			..addHeroAbility(NAPALM_SPELL_ID)
 			..addHeroAbility(MOLOTOV_SPELL_ID)
+			..addHeroAbility(XBURN_SPELL_ID)
 		// Build at the end
 			..buildHero()

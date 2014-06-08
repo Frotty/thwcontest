@@ -39,6 +39,18 @@ public class AbilityDefinition
 
 	function setButtonPositionResearchY(int value)
 		def.setLvlDataInt("arpy", 0, 0, value)
+		
+	function setButtonPosNormal(int x, int y)
+		setButtonPositionNormalX(x)
+		setButtonPositionNormalY(y)
+		
+	function setIcon(string name)
+		string s = "ReplaceableTextures\\CommandButtons\\" + name
+		if not name.endsWith(".blp")
+			s += ".blp"
+
+		setIconResearch(s)
+		setIconNormal(s)
 
 	function setIconNormal(string value)
 		def.setLvlDataString("aart", 0, 0, value)

@@ -64,21 +64,11 @@ public class ChannelAbilityPreset extends AbilityDefinitionIllidanChannel
 			setArtSpecial("")
 			
 		
-	function setIcon(string name)
-		string s = "ReplaceableTextures\\CommandButtons\\" + name
-		if not name.endsWith(".blp")
-			s += ".blp"
 
-		setIconResearch(s)
-		setIconNormal(s)
 		
 	function setAreaOfEffect(real range)
 		for i = 1 to lvl
 			setAreaofEffect(i, range)
-			
-	function setButtonPosNormal(int x, int y)
-		setButtonPositionNormalX(x)
-		setButtonPositionNormalY(y)
 		
 	function setArtDuration(real value)
 		for i = 1 to lvl

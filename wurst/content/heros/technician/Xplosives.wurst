@@ -1,27 +1,72 @@
 package Xplosives
 import Explosive
 import Hero
+import ClosureForGroups
+import XBurn
+import Creep
 
 public int EXPLOSIVES_SPELL_ID
+int MAX_EXPLOSIVES_ID
+
+function getMaxXplo(int lvl) returns int
+	return 2 + lvl
+	
+function getXplosionRadius(int lvl) returns real
+	return 200. + 64 * lvl
+	
+function getXplosionPower(int lvl) returns real
+	return 50. + 10 * (lvl*lvl)
+	
+
+public function registerHeroXplo(Hero h)
+	let t = CreateTrigger()
+	t..registerPlayerUnitEvent(h.owner, EVENT_PLAYER_HERO_SKILL, null)
+	..addAction(() -> begin
+		if GetLearnedSkill() == EXPLOSIVES_SPELL_ID and GetLearningUnit().hasAbility(MAX_EXPLOSIVES_ID)
+			GetLearningUnit()..removeAbility(MAX_EXPLOSIVES_ID)..addAbility(EXPLOSIVES_SPELL_ID)
+	end)
+	
+public function createXplosive(vec2 target, Hero caster, int lvl)
+	new Xplosive(target, caster, lvl)
+	if Xplosive.count >= getMaxXplo(lvl)
+		caster.actor..removeAbility(EXPLOSIVES_SPELL_ID)..addAbility(MAX_EXPLOSIVES_ID)..setAbilityLevel(MAX_EXPLOSIVES_ID, lvl)
 
 public class Xplosive extends Explosive
 	static int count = 0
+	Hero caster
 
-	construct(vec2 target, player owner, int lvl)
-		super(target.withZ(0), 128. + 64. * lvl, owner, angle(GetRandomReal(0, PI2)))
+	construct(vec2 target, Hero caster, int lvl)
+		super(target.withZ(0), getXplosionRadius(lvl), getXplosionPower(lvl), caster.owner, angle(GetRandomReal(0, PI2)))
 		setModel("Units\\Other\\TNTBarrel\\TNTBarrel.mdx")
+		count++
 		
 	override function explode()
 		addEffect("Models\\SapperExplo.mdx", pos).destr()
+		forUnitsInRange(pos.toVec2(), radius, (unit u) -> begin
+			if u.getEntity() instanceof Creep
+				let up = u.getPos()
+				let distSQ = pos.distToVec2dSquared(up)
+				let angl = up.angleTo(pos.toVec2())
+				let p = 1 - distSQ / (radius*radius)
+				caster.actor.damageTarget(u, power*p) 
+				if p > 0.6
+					let pp = p-0.6 * 4
+					u.getEntity().setVel(vec3(angl.cos()*power/5*pp,angl.sin()*power/5*pp, power/4))
+				u.addXBurn(caster, 1)
+		end)
 		destroy this
 		
 	
 	ondestroy
 		count--
+		if caster.actor.hasAbility(MAX_EXPLOSIVES_ID)
+			caster.actor..removeAbility(MAX_EXPLOSIVES_ID)..addAbility(EXPLOSIVES_SPELL_ID)
+			
+
 	
 public function init_Xplosives(boolean c)
 	EXPLOSIVES_SPELL_ID = ABIL_ID_GEN.next()
-	
+	MAX_EXPLOSIVES_ID = ABIL_ID_GEN.next()
 	if c
 		let xplosivePreset = new ChannelAbilityPreset(EXPLOSIVES_SPELL_ID, 4)
 		xplosivePreset..removeChannelProperties(true)..setName("Xplosives")
@@ -29,3 +74,8 @@ public function init_Xplosives(boolean c)
 		..setOption(Option.VISIBLE, true)..setTargetType(Targettype.PTARGET)..setOption(Option.TARGETIMAGE, true)
 		..setAreaOfEffect(128)
 		..setCastRange(1, 180)
+		
+		let xdum = new AbilityDefinitionBashcreep(MAX_EXPLOSIVES_ID)
+		xdum..setChancetoBash(1, 0)..setChancetoMiss(1, 0)..setButtonPosNormal(0, 2)
+		..setIcon("PASExplosiveBarrel")..setName("Maximum Amount")
+	

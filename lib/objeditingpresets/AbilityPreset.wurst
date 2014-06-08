@@ -15,21 +15,11 @@ public class AbilityPreset extends AbilityDefinition
 		setLevels(lvls)
 		this.lvl = lvls
 		
-	function setIcon(string name)
-		string s = "ReplaceableTextures\\CommandButtons\\" + name
-		if not name.endsWith(".blp")
-			s += ".blp"
-
-		setIconResearch(s)
-		setIconNormal(s)
-		
 	function setAreaOfEffect(real range)
 		for i = 1 to lvl
 			setAreaofEffect(i, range)
 			
-	function setButtonPosNormal(int x, int y)
-		setButtonPositionNormalX(x)
-		setButtonPositionNormalY(y)
+
 		
 		
 	

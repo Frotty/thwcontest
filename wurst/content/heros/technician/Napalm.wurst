@@ -48,7 +48,7 @@ public class NapalmDroplet
 				if u.hasXBurn()
 					u.refreshXBurn()
 				else
-					u.addXBurn(caster, 1, lvl)
+					u.addXBurn(caster, 1)
 			end)
 			for n in freshNapalms
 				if pos.distToVecSquared(n.pos) < IGNITE_DISTANCE_SQ

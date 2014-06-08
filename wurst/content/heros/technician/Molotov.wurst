@@ -51,7 +51,7 @@ public class Molotov extends Projectile
 		fx.flash("Models\\FlameBomb.mdx")
 		forUnitsInRange(pos.toVec2(), 128, (unit u) -> begin
 			if u.getOwner().isEnemyOf(this.owner)
-				u.addXBurn(caster, 1, lvl)
+				u.addXBurn(caster, 1)
 		end)
 		for n in freshNapalms
 			if pos.distToVec2dSquared(n.pos) < IGNITE_DISTANCE_SQ
