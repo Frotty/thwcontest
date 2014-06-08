@@ -28,7 +28,7 @@ public class Crusader extends Hero
 	real sg_remaining // Counts back from 6 seconds
 	real sg_damage // saves incoming damage for healback
 	Hero sg_target
-	real sg_damagewindow
+	texttag sg_tt
 	trigger summontrigger
 	boolean ph_active = false
 	vec2 ph_pos
@@ -123,18 +123,22 @@ public class Crusader extends Hero
 				let maxDistance = 500
 				let lng = addLightning("SPLK", true, pos+zoffset, targetEntity.pos+zoffset)
 				let eff = AddSpecialEffectTarget("Models\\MagicShieldBlue.mdx",targetEntity.actor,"origin")
+				sg_tt = createTTEx(target.getPos().withZ(120), "", 11, colorA(122,200,255,255))
 
 				OnDamage ond = (unit damaged, unit source, real amount) -> begin
-					let dmg = getDamage() * 0.75
-					modifyDamage(getDamage() * 0.25)
+					let dmg = getDamage() //* 0.75
+					modifyDamage(0)//(getDamage() * 0.25)
+					sg_damage += dmg
 					source.damageTarget(actor, dmg)
 					var col = lng.getColor()
-					col.green = 2
-					col.blue = 2
+					col.green = max(2, col.green-100)
+					col.blue = max(2, col.blue-100)
+					sg_tt.setText(sg_damage.toInt().toString(),11)
 					lng.setColor(col)
 					AddSpecialEffectTarget("Abilities\\Spells\\Human\\Feedback\\SpellBreakerAttack.mdl",targetEntity.actor,"origin").destr()
 					AddSpecialEffectTarget("Abilities\\Spells\\Human\\Feedback\\SpellBreakerAttack.mdl",actor,"origin").destr()
 				end
+				
 				onDamage(target, ond)
 				doPeriodicallyTimed(ANIMATION_PERIOD, 5, (CallbackCounted cb) -> begin
 					var col = lng.getColor()
@@ -148,6 +152,9 @@ public class Crusader extends Hero
 					if cb.isLast()
 						lng.destr()
 						eff.destr()
+						actor.setHP(actor.getHP() + sg_damage * 0.75)
+						AddSpecialEffectTarget("Abilities\\Spells\\Human\\Heal\\HealTarget.mdl",actor,"origin").destr()
+						sg_tt.destr()
 						destroy ond
 				end)
 			end)
@@ -218,20 +225,21 @@ public function init_Crusader(boolean compiletime)
 		var spreset = new ChannelAbilityPreset(BACKOFF_SPELL_ID, 4)
 		// Set Attributes
 		spreset..removeChannelProperties(true)..setName("Back Off")..setButtonPositionNormalX(0)..setButtonPositionNormalY(2)
-			..setIcon("BTNWarStomp")..setOption(Option.VISIBLE, true) //Or whatever...
+			..setIcon("BTNCrushUndead")..setOption(Option.VISIBLE, true) //Or whatever...
 			..setOrderStringActivate("warstomp")
 		
 		spreset = new ChannelAbilityPreset(SAFEGUARD_SPELL_ID, 4)
 		// Set Attributes
-		spreset..removeChannelProperties(true)..setName("Safeguard")..setButtonPositionNormalX(1)..setButtonPositionNormalY(2)
-			..setIcon("BTNDefend")..setOption(Option.VISIBLE, true)
+		spreset..removeChannelProperties(true)..setName("Safeguard")..setButtonPositionNormalX(2)..setButtonPositionNormalY(2)
+			..setIcon("BTNSpell_Holy_HolyNova")..setOption(Option.VISIBLE, true)
 			..setCastRange(1,400)..setTargetType(Targettype.UTARGET)
 			..setTargetsAllowed(1,"allied")
 			
 		AbilityDefinitionBladeMasterMirrorImage phalanx = new AbilityDefinitionBladeMasterMirrorImage(PHALANX_SPELL_ID)
 		phalanx..setButtonPositionNormalX(0)..setButtonPositionNormalX(1)..setName("Phalanx")
 			..setNumberofImages(1,2)..setDamageDealt(1,0)..setDamageTaken(1,1.2)
-			..setManaCost(1,0)
+			..setManaCost(1,0)..setIconNormal("ReplaceableTextures\\CommandButtons\\BTN_cr_charge.blp")
+			..setIconResearch("ReplaceableTextures\\CommandButtons\\BTN_cr_charge.blp")
 			..setTooltipLearnExtended("Creates two identical Crusader fighters in a formation. Crusader will gain extra armor based on the number of zombies around, as long as he stays in the formation.")
 		
 		/*let adef = new AbilityDefinitionWarStompcreep(DUMBACKOFF_SPELL_ID)
@@ -239,7 +247,7 @@ public function init_Crusader(boolean compiletime)
 		..setLevels(1)..setAreaofEffect(1, 300) // Done
 		*/
 		let preset = new HeroPreset(CRUSADER_ID, 'Hlgr', "Crusader")
-		preset..addProperName("Matija")
+		preset..addProperName("Eric")
 			..setModelFile("units\\human\\TheCaptain\\TheCaptain.mdl")
 			..addHeroAbility(BACKOFF_SPELL_ID)
 			..addHeroAbility(SAFEGUARD_SPELL_ID)
