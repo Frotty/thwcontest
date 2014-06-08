@@ -1,0 +1,53 @@
+package CrushingHalo
+import ClosureTimers
+import ClosureForGroups
+import Entity
+import Creep
+import Hero
+import Projectile
+
+
+public class CrushingHalo
+	group effected
+	vec3 pos
+	unit dmger
+	int level
+	real range
+	
+	construct(vec3 p, int level, unit dmger)
+		this.dmger = dmger
+		pos = p
+		this.level = level
+		print("Created CH")
+		effected = CreateGroup()
+		start()
+	
+	function start()
+		range = 30
+		let duration = level*0.166+1.
+		let speed = (500/duration)*ANIMATION_PERIOD
+		doAfter(0.5,()->begin
+			for int i = 0 to 4
+				angle a = angle(i*(2*PI/5))
+				Projectile f = new Projectile(pos + vec3(0,0,0),dmger.getOwner(),a, "Abilities\\Spells\\Other\\CrushingWave\\CrushingWaveMissile.mdl")
+				f.fx.recolor(colorA(255,255,30,255))
+				f.setSpeed(speed/ANIMATION_PERIOD)
+				f.setTimed(duration-0.5)
+		end)
+		AddSpecialEffect("Models\\RedAftershock.mdl",pos.x,pos.y).destr()
+		doPeriodicallyTimed(ANIMATION_PERIOD,duration,(CallbackCounted cb)->begin
+			forUnitsInRange(pos.toVec2(),range,(unit u)->begin
+				if u.isAliveTrick() and not IsUnitInGroup(u,effected)
+					if u.getEntity() instanceof Creep
+						dmger.damageTarget(u,level*50.)
+						u.getEntity().addVel(vec3(0,0,30))
+						effected.addUnit(u)
+						print("++")
+					if u.getEntity() instanceof Hero and u != dmger
+						u.setHP(u.getHP() + (u.getMaxHP()- u.getHP())*0.5) //Restores half of the missing hp
+						effected.addUnit(u)
+						AddSpecialEffectTarget("Abilities\\Spells\\Orc\\HealingWave\\HealingWaveTarget.mdl",u,"origin").destr()
+			end)
+			range += speed
+		end)
+		effected.clear()
