@@ -73,7 +73,7 @@ public function init_Napalm(boolean c)
 		let spreset = new ChannelAbilityPreset(NAPALM_SPELL_ID, 4)
 		// Set Attributes
 		spreset..removeChannelProperties(true)..setName("Napalm")..setButtonPositionNormalX(1)..setButtonPositionNormalY(2)
-			..setIcon("BTNevil")..setOption(Option.VISIBLE, true)
+			..setIcon("BTNFieryExplosion")..setOption(Option.VISIBLE, true)
 			
 		
 string array firePaths
