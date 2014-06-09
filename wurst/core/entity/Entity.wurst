@@ -79,7 +79,7 @@ public abstract class Entity
 		this.vel += vel
 		
 	function setTarget( vec2 tpos, real speed )
-		let spd = (speed /* ANIMATION_PERIOD*/)
+		let spd = (speed * ANIMATION_PERIOD)
 		var t = pos.distToVec2d(tpos) / spd
 		let tangle = pos.angleTo2d(tpos)
 		let e = getTerrainZ(tpos)

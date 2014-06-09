@@ -2,7 +2,6 @@ package XBurn
 import BuffHandler
 import Hero
 import HashMap
-import Napalm
 
 public BuffDef XBURN_BUFF_DEF
 public int XBURN_SPELL_ID

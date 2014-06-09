@@ -1,0 +1,137 @@
+package TooltipGenerator
+import ChannelAbilityPreset
+
+public abstract class LevelClosure
+	abstract function run(int lvl) returns string
+	
+constant TITLECOLOR = "|cff3B97D3"
+constant TITLE_AOE = "Area of Effect:"
+constant TITLE_COOLDOWN = "Cooldown:"
+constant TITLE_TTYPE = "Target Type:"
+constant TITLE_EFFECT = "Effect:"
+constant TITLE_RANGE = "Range:"
+constant TITLE_DMG = "Damage:"
+constant DESCRIPTION_COLOR = "|cffC5CEFF"
+
+public class TooltipGenerator
+	private string name = ""
+	
+	private string extra = ""
+	private string hotkey = ""
+	private int maxLevel = 0
+	private string range = ""
+	private string aoe = ""
+	private string cooldown = ""
+	private string description = ""
+	private string damage = ""
+	
+	Targettype targettype = Targettype.NOTARGET
+	
+	construct(string name, string hotkey, int maxLevel, string description)
+		this.name = name
+		this.hotkey = hotkey
+		this.maxLevel = maxLevel
+		this.description = description
+		
+	function setDamage(real damage)
+		this.damage = fixValue(damage.toString())
+		
+	function setDamage(LevelClosure lc)
+		for i = 1 to maxLevel
+			damage += fixValue(lc.run(i)) + "/"
+		damage = damage.substring(0, damage.length()-1)	
+	
+	function setCooldown(int cd)
+		this.cooldown = fixValue(cd.toString())
+		
+	function setCooldown(LevelClosure lc)
+		for i = 1 to maxLevel
+			cooldown += fixValue(lc.run(i)) + "/"
+		cooldown = cooldown.substring(0, cooldown.length()-1)
+	
+	function setRange(real value)
+		range = fixValue(value.toString())
+		
+	function setRange(LevelClosure lc)
+		for i = 1 to maxLevel
+			range += fixValue(lc.run(i)) + "/"
+		range = range.substring(0, range.length()-1)
+		
+	function setAoe(real value)
+		aoe = fixValue(value.toString())
+		
+	function setAoe(LevelClosure lc)
+		for i = 1 to maxLevel
+			aoe += fixValue(lc.run(i)) + "/"
+		aoe = aoe.substring(0, aoe.length()-1)
+		
+	static function fixValue(string value) returns string
+		var s = value
+		if s.endsWith(".")
+			s = s.substring(0, s.length()-1)
+		else if s.endsWith(".0")
+			s = s.substring(0, s.length()-2)
+		return s
+		
+	function setTooltips(AbilityDefinition def)
+		for i = 1 to maxLevel
+			def..setTooltipNormal(i, generateTooltipNormal(i))
+			..setTooltipNormalExtended(i, generateTooltipExtended(i))
+		..setTooltipLearn(generateTooltipLearn())
+		..setTooltipLearnExtended(generateTooltipExtended(-1))
+	
+	function generateTooltipLearn() returns string
+		return "|cffFFCC00Learn|r " + name + " [|cffFFCC00" + hotkey + "|r]"
+		
+	function generateTooltipNormal(int lvl) returns string
+		return name + " - Level " + lvl.toString() + " [|cffFFCC00" + hotkey + "|r]"
+		
+		
+	function generateTooltipExtended(int lvl) returns string
+		var s = ""
+		s += TITLECOLOR + TITLE_TTYPE + " |cffFFCC00" + targettype.toString() + "|r|n"
+		if cooldown.length() > 0
+			s += TITLECOLOR + TITLE_COOLDOWN + "|r " + colorLevelValue(cooldown, lvl, maxLevel) + "|n"
+		if range.length() > 0
+			s += TITLECOLOR + TITLE_RANGE + "|r " + colorLevelValue(range, lvl, maxLevel) + "|n"
+		if aoe.length() > 0
+			s += TITLECOLOR + TITLE_AOE + "|r " + colorLevelValue(aoe, lvl, maxLevel) + "|n"
+		if damage.length() > 0
+			s += TITLECOLOR + TITLE_DMG + "|r " + colorLevelValue(damage, lvl, maxLevel) + "|n"
+		if extra.length() > 0
+			s+= extra
+			s+= "\n\n"
+		else
+			s+= "\n"
+		s+= description
+		return s
+		
+	static function colorLevelValue(string s, int lvl, int maxLevel) returns string
+		var news = ""
+		var count = 0
+		var ccount = 0
+		int array charPos
+		for c in s
+			if c == "/"
+				charPos[ccount] = count
+				ccount++
+			count++
+		if lvl == -1
+			news = s
+		else if ccount <= 0
+			news = "|cffFFCC00" + s 
+		else if maxLevel <= 1
+			news = "|cffFFCC00" + s
+		else if lvl == 1
+			news = "|cffFFCC00" + s.substring(0, charPos[0]) + "|r" +  s.substring(charPos[0], s.length())
+		else if lvl == maxLevel
+			news = s.substring(0, charPos[lvl-2]) + "|cffFFCC00" + s.substring(charPos[lvl-2], s.length()) + "|r"
+		else
+			news = s.substring(0, charPos[lvl-2]) + "|cffFFCC00" + s.substring(charPos[lvl-2], charPos[lvl-1]) + "|r" + s.substring(charPos[lvl-1], s.length())
+		return news
+		
+	
+	function addExtraInformation(string extra)
+		this.extra = extra
+		
+	

@@ -16,7 +16,7 @@ public enum Option
 	UNIQUECAST
 	
 public enum Targettype
-	//instant == standard
+	NOTARGET
 	UTARGET
 	PTARGET
 	PUTARGET
@@ -31,6 +31,8 @@ constant int uniquecastval = 16
 	
 public function Targettype.toString() returns string
 	switch this
+		case NOTARGET
+			return "No Target"
 		case Targettype.PTARGET
 			return "Point Target"
 		case Targettype.UTARGET
@@ -62,6 +64,7 @@ public class ChannelAbilityPreset extends AbilityDefinitionIllidanChannel
 			setArtCaster("")
 			setArtEffect("")
 			setArtSpecial("")
+			setArtTarget("")
 			
 		
 

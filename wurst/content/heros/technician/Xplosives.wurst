@@ -4,9 +4,15 @@ import Hero
 import ClosureForGroups
 import XBurn
 import Creep
+import TooltipGenerator
 
 public int EXPLOSIVES_SPELL_ID
 int MAX_EXPLOSIVES_ID
+
+constant XPLOSIVES_NAME = "Xplosives"
+constant XPLOSIVES_HOTKEY = "Q"
+constant XPLOSIVES_COOLDOWN = 35
+constant XPLOSIVES_MAXLVL = 4
 
 function getMaxXplo(int lvl) returns int
 	return 2 + lvl
@@ -17,6 +23,8 @@ function getXplosionRadius(int lvl) returns real
 function getXplosionPower(int lvl) returns real
 	return 50. + 10 * (lvl*lvl)
 	
+function getXplosionCooldown(int lvl) returns int
+	return 35 - 2*lvl
 
 public function registerHeroXplo(Hero h)
 	let t = CreateTrigger()
@@ -38,6 +46,7 @@ public class Xplosive extends Explosive
 	construct(vec2 target, Hero caster, int lvl)
 		super(target.withZ(0), getXplosionRadius(lvl), getXplosionPower(lvl), caster.owner, angle(GetRandomReal(0, PI2)))
 		setModel("Units\\Other\\TNTBarrel\\TNTBarrel.mdx")
+		this.caster = caster
 		count++
 		
 	override function explode()
@@ -68,14 +77,25 @@ public function init_Xplosives(boolean c)
 	EXPLOSIVES_SPELL_ID = ABIL_ID_GEN.next()
 	MAX_EXPLOSIVES_ID = ABIL_ID_GEN.next()
 	if c
+		
 		let xplosivePreset = new ChannelAbilityPreset(EXPLOSIVES_SPELL_ID, 4)
 		xplosivePreset..removeChannelProperties(true)..setName("Xplosives")
 		..setButtonPosNormal(0,2)..setIcon("BTNExplosiveBarrel")
 		..setOption(Option.VISIBLE, true)..setTargetType(Targettype.PTARGET)..setOption(Option.TARGETIMAGE, true)
-		..setAreaOfEffect(128)
+		..setAreaOfEffect(128)..setHotkey(XPLOSIVES_HOTKEY)
 		..setCastRange(1, 180)
+		new TooltipGenerator(XPLOSIVES_NAME, XPLOSIVES_HOTKEY, XPLOSIVES_MAXLVL, "Bombz")
+		..setRange(128)
+		..setAoe((int lvl) -> getXplosionRadius(lvl).toString())
+		..setCooldown((int lvl) -> getXplosionCooldown(lvl).toString())
+		..setDamage((int lvl) -> getXplosionPower(lvl).toString())
+		..setTooltips(xplosivePreset)
+	
+		
 		
 		let xdum = new AbilityDefinitionBashcreep(MAX_EXPLOSIVES_ID)
 		xdum..setChancetoBash(1, 0)..setChancetoMiss(1, 0)..setButtonPosNormal(0, 2)
 		..setIcon("PASExplosiveBarrel")..setName("Maximum Amount")
+		
+			
 	

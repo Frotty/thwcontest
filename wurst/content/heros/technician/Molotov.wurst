@@ -9,7 +9,10 @@ import XBurn
 import Hero
 import Napalm
 import Explosive
+import SoundHelper
 
+constant THROW_SOUND = new Sound("Sounds\\sfx_throw.mp3", 532, false, true)
+constant EXPLO_SOUND = new Sound("Sounds\\sfx_molotov_explo.mp3", 4021, false, true)
 public int MOLOTOV_SPELL_ID
 
 public class Molotov extends Projectile
@@ -18,12 +21,6 @@ public class Molotov extends Projectile
 	int bounces
 	int lvl
 	Hero caster = null
-	construct(vec3 pos, vec2 target, player owner, int lvl)
-		super(pos, owner, pos.angleTo2d(target), "Models\\Molotov.mdx")
-		flying = true
-		this.lvl = lvl
-		bounces = min(lvl, 3)
-		setTarget(target, 300)
 		
 	construct(vec3 pos, vec2 target, Hero caster, int lvl)
 		super(pos, caster.owner, pos.angleTo2d(target), "Models\\Molotov.mdx")
@@ -31,6 +28,7 @@ public class Molotov extends Projectile
 		bounces = min(lvl, 3)
 		setTarget(target, 300)
 		this.caster = caster
+		THROW_SOUND.playOnUnit(caster.actor)
 		
 	override function update()
 		if bounces < 0
@@ -48,6 +46,7 @@ public class Molotov extends Projectile
 		var v = vel.project(nrml)
 		v *= -1.8
 		vel += v
+		EXPLO_SOUND.playOnUnit(fx.getDummy())
 		fx.flash("Models\\FlameBomb.mdx")
 		forUnitsInRange(pos.toVec2(), 128, (unit u) -> begin
 			if u.getOwner().isEnemyOf(this.owner)
@@ -69,5 +68,5 @@ public function init_Molotov(boolean c)
 		let molotovPreset = new ChannelAbilityPreset(MOLOTOV_SPELL_ID, 4)
 		molotovPreset..setName("Molotov")..removeChannelProperties(true)..setOption(Option.VISIBLE, true)
 		..setIcon("BTNSunFragment")..setTargetType(Targettype.PTARGET)
-		..setCastRange(1, 400)
+		..setCastRange(1, 400)..setButtonPosNormal(2, 2)
 		

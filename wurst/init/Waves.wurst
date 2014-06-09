@@ -23,7 +23,7 @@ public function wave_1() returns WavePool
 	// Set Values..
 	def.hp = 100
 	def.modelPath = "units\\creeps\\Zombie\\Zombie.mdl"
-	def.scale *=0.8
+	def.scale *=0.9
 	def.collisionSize = 8
 	// Add Def to pool with amount and time (when to spawn after wave started)
 	// Add Spawns chronologically, cause the Pool doesn't get sorted

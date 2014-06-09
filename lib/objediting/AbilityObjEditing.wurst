@@ -147,6 +147,12 @@ public class AbilityDefinition
 
 	function setHotkeyLearn(string value)
 		def.setLvlDataString("arhk", 0, 0, value)
+		
+	function setHotkey(string value)
+		setHotkeyNormal(value)
+		setHotkeyLearn(value)
+		setHotkeyTurnOff(value)
+		
 
 	function setHotkeyNormal(string value)
 		def.setLvlDataString("ahky", 0, 0, value)

@@ -4,11 +4,12 @@ import Image
 import ChannelAbilityPreset
 import MapStuff
 import ClosureTimers
-import Interpolation
 import Hero
-import initlater Technician
 import initlater XBurn
 import ClosureForGroups
+
+constant NAPALM_DURATION = 4
+constant NAPALM_BURN_DURATION = 5
 
 public constant IGNITE_DISTANCE_SQ = 75*75
 
@@ -72,8 +73,8 @@ public function init_Napalm(boolean c)
 	if c
 		let spreset = new ChannelAbilityPreset(NAPALM_SPELL_ID, 4)
 		// Set Attributes
-		spreset..removeChannelProperties(true)..setName("Napalm")..setButtonPositionNormalX(1)..setButtonPositionNormalY(2)
-			..setIcon("BTNFieryExplosion")..setOption(Option.VISIBLE, true)
+		spreset..removeChannelProperties(true)..setName("Napalm")..setButtonPosNormal(1,2)
+			..setIcon("BTNFieryExplosion")..setOption(Option.VISIBLE, true)..setHotkey("W")
 			
 		
 string array firePaths

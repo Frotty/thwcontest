@@ -102,4 +102,5 @@ public class CreepDefinition
 			..setScalingValue(scale)..setCollisionSize(collisionSize)
 			..setAttack1Range(attackRange)..setSpeedBase(movementSpeed)
 			..setAttack1DamageBase(damage)..setAttack1DamageNumberofDice(3)..setAttack1DamageSidesperDie(2)
+			
 	
