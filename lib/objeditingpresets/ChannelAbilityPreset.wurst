@@ -94,7 +94,7 @@ public class ChannelAbilityPreset extends AbilityDefinitionIllidanChannel
 					
 	function setTargetType(Targettype ttype)			
 		for i = 1 to lvl
-			def.setLvlDataInt("Ncl2", i, 2, (ttype castTo int)+1)
+			def.setLvlDataInt("Ncl2", i, 2, (ttype castTo int))
 					
 	function setOption(Option opt, boolean flag)
 		switch opt

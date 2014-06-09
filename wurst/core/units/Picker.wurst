@@ -33,8 +33,9 @@ public class Picker extends UnitEntity
 		end)
 		
 	static function onCast()
+		print("asdf")
 		var u = GetTriggerUnit()
-		var target = GetOrderTargetUnit()
+		var target = GetSpellTargetUnit()
 		if target.getEntity() instanceof Hero
 			target.getEntity().owner = u.getOwner()
 			target.getEntity().actor.setOwner(u.getOwner(),true)
@@ -52,9 +53,9 @@ public function init_Picker(boolean compileTime)
 		pick..removeChannelProperties(true)..setName("Safeguard")
 			..setButtonPositionNormalX(2)..setButtonPositionNormalY(2)
 			..setHeroAbility(false)
-			..setIcon("BTNSpell_Holy_HolyNova")..setOption(Option.VISIBLE, true)
+			..setIcon("BTNWarStomp")..setOption(Option.VISIBLE, true)
 			..setCastRange(1,400)..setTargetType(Targettype.UTARGET)
-			..setTargetsAllowed(1,"allied")
+			//..setTargetsAllowed(1,"allied")
 		
 		let picker = new UnitDefinition(PICKER_ID, 'ewsp')
 		picker..setName("Soul")..setHitPointsMaximumBase(121212121)

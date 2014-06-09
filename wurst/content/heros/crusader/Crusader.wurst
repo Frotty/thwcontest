@@ -81,8 +81,8 @@ public class Crusader extends Hero
 		// In this case it creates a closure which means it can capture local variables by value
 		// FOr example see safe Guard
 		// For more information on the topic: https://peq.github.io/WurstScript/manual.html#lambda_expressions_and_closures
-		let eff = AddSpecialEffectTarget("Models\\Retribution.mdl",actor,"origin")
-		doAfter(0.5,()->eff.destr())
+		//let eff = AddSpecialEffectTarget("Models\\Retribution.mdl",actor,"origin")
+		//doAfter(0.5,()->eff.destr())
 		forUnitsInRange(pos.toVec2(), abilityrange, (unit u) -> begin
 			print("loop")
 			if u.getEntity() instanceof Creep and u.isAliveTrick()
@@ -172,6 +172,7 @@ public class Crusader extends Hero
 			c.actor.setFacing(c.ph_facing)
 			c.actor.setPos(c.ph_pos)
 			c.actor.issueImmediateOrderById(851993) //Hold Position
+			
 			c.ph_active = true
 			c.ph_armor = 0
 			doPeriodically(1., (CallbackPeriodic cb)->begin
@@ -235,9 +236,10 @@ public function init_Crusader(boolean compiletime)
 		// Set Attributes
 		safeguard..removeChannelProperties(true)..setName("Safeguard")
 			..setButtonPositionNormalX(2)..setButtonPositionNormalY(2)
+			..setButtonPositionResearchX(2)..setButtonPositionResearchY(0)
 			..setIcon("BTNSpell_Holy_HolyNova")..setOption(Option.VISIBLE, true)
 			..setCastRange(1,400)..setTargetType(Targettype.UTARGET)
-			..setTargetsAllowed(1,"allied")
+			..setTargetsAllowed(1,"friend")
 			
 		var phalanx = new AbilityDefinitionBladeMasterMirrorImage(PHALANX_SPELL_ID)
 		phalanx..setName("Phalanx")
@@ -252,17 +254,17 @@ public function init_Crusader(boolean compiletime)
 		crushinghalo..removeChannelProperties(true)..setName("Crushing Halo")
 			..setButtonPositionNormalX(3)..setButtonPositionNormalY(2)
 			..setButtonPositionResearchX(3)..setButtonPositionResearchY(0)
-			..setIcon("BTNHolyBolt")..setOption(Option.VISIBLE, true)
-			..setOrderStringActivate("holylight")
+			..setIcon("BTNHoly")..setOption(Option.VISIBLE, true)
+			..setOrderStringActivate("holybolt")
 		
 		
 		
 		let preset = new HeroPreset(CRUSADER_ID, 'Hlgr', "Crusader")
 		preset..addProperName("Eric")
-			..setModelFile("units\\human\\TheCaptain\\TheCaptain.mdl")
+			..setModelFile("units\\other\\BloodElfLieutenant\\BloodElfLieutenant.mdl")
 			..addHeroAbility(BACKOFF_SPELL_ID)
-			..addHeroAbility(SAFEGUARD_SPELL_ID)
 			..addHeroAbility(PHALANX_SPELL_ID)
+			..addHeroAbility(SAFEGUARD_SPELL_ID)
 			..addHeroAbility(CRUSHING_HALO_SPELL_ID)
 		// Build at the end
 			..buildHero()
