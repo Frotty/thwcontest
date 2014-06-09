@@ -197,16 +197,20 @@ public class Crusader extends Hero
 			print("setting Illusion")
 			if c.ph_1_set == false
 				c.ph_unit1 = GetSummonedUnit()
-				c.ph_unit1.setFacing(c.ph_facing)
-				c.ph_unit1.setPos(c.ph_pos + vec2(100*f.cos(),100*f.sin()))
-				c.ph_unit1.setPropWindow(0)
+				c.ph_unit1..setFacing(c.ph_facing)
+					..setPathing(false)
+					..setPos(c.ph_pos + vec2(100*f.cos(),100*f.sin()))
+					..setPropWindow(0)
+					..setPathing(true)
 				c.ph_1_set = true
 				print("1st set")
 			else
 				c.ph_unit2 = GetSummonedUnit()
-				c.ph_unit2.setFacing(c.ph_facing)
-				c.ph_unit2.setPos(c.ph_pos + vec2(-100*f.cos(),-100*f.sin()))
-				c.ph_unit2.setPropWindow(0)
+				c.ph_unit2..setFacing(c.ph_facing)
+					..setPathing(false)
+					..setPos(c.ph_pos + vec2(-100*f.cos(),-100*f.sin()))
+					..setPropWindow(0)
+					..setPathing(true)
 				print("2nd set")
 				
 		
@@ -245,7 +249,7 @@ public function init_Crusader(boolean compiletime)
 			..setTooltipLearnExtended("Creates two identical Crusader fighters in a formation. Crusader will gain extra armor based on the number of zombies around, as long as he stays in the formation.")
 		
 		var crushinghalo = new ChannelAbilityPreset(CRUSHING_HALO_SPELL_ID, 1)
-		crushinghalo..removeChannelProperties(true)..setName("Back Off")
+		crushinghalo..removeChannelProperties(true)..setName("Crushing Halo")
 			..setButtonPositionNormalX(3)..setButtonPositionNormalY(2)
 			..setButtonPositionResearchX(3)..setButtonPositionResearchY(0)
 			..setIcon("BTNHolyBolt")..setOption(Option.VISIBLE, true)
