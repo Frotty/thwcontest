@@ -1,5 +1,5 @@
 package GameInit
-import MageHero
+import MapStuff
 import Spawner
 import ClosureTimers
 import Entity
@@ -7,9 +7,11 @@ import WaveManager
 import Waves
 import StunHandler
 import Technician
-import Mammoth
 import Crusader
+import MageHero
+import Mammoth
 import OrderStringFactory
+import Picker
 
 function initResources(boolean compileTime)
 	init_MageHero(compileTime)
@@ -19,15 +21,39 @@ function initResources(boolean compileTime)
 	init_StunHandler(compileTime)
 	init_Technician(compileTime)
 	init_Mammoth(compileTime)
+	init_Picker(compileTime)
+	
+boolean testing = true
 	
 init
 	doAfter(0.01, () -> begin
 		initResources(false)
-		createUnit(Player(0), 'hfoo', vec2(0,0), angle(0))
-		let h = new Technician(vec3(0,100,1200),Player(0) )  // Fortesting
-		SetHeroLevel(h.actor, 4, false)
-		new MageHero(vec3(200,200,1200),Player(1) )  // Fortesting
-		WaveManager.startNextWave()
+		if testing
+			let h = new Crusader(vec3(0,100,1200),Player(0) )  // Fortesting
+			SetHeroLevel(h.actor, 4, false)
+			new MageHero(vec3(200,200,1200),Player(1) )  // Fortesting
+			WaveManager.startNextWave()
+		else
+			//Welcome message
+			print("Welcome to [Enter appealing name here]!")
+			print("Your only hope against the rageing hordes of Zombies is the mighty statue of Clarity.")
+			print("It will protect you from turning into one of those monsters, if you stay nearby.")
+			print("However it can only heal wounds once every minute, and your soul cannot be saved if every human is dead.")
+			print("Chose your champion wisely to endure this greatest challenge in life.")
+			//setting up the Heroes to pick:
+			let c = new Crusader(STATUE_POS.polarOffset(angle(0*2*PI/3),200).toVec3(),Player(9) )
+			c.actor.setFacing(angle(0*2*PI/3))
+			let t = new Technician(STATUE_POS.polarOffset(angle(1*2*PI/3),200).toVec3(),Player(9) )
+			t.actor.setFacing(angle(1*2*PI/3))
+			let m = new MageHero(STATUE_POS.polarOffset(angle(2*2*PI/3),200).toVec3(),Player(9) )
+			m.actor.setFacing(angle(2*2*PI/3))
+			//Todo playernumber
+			let playernumber = 5
+			//Setting up the pickers. Animation in constructor
+			for i = 0 to playernumber-1
+				var p = new Picker(Player(i),angle(i*2*PI/playernumber))
+				
+				
 		startEntityLoop()
 		OrderStringFactory odf = new OrderStringFactory()
 		for i = 0 to 10
