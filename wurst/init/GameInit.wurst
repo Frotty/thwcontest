@@ -23,13 +23,13 @@ function initResources(boolean compileTime)
 	init_Mammoth(compileTime)
 	init_Picker(compileTime)
 	
-boolean testing = false
+boolean testing = true
 	
 init
 	doAfter(0.01, () -> begin
 		initResources(false)
 		if testing
-			let h = new Technician(vec3(0,100,1200),Player(0) )  // Fortesting
+			let h = new Crusader(vec3(0,100,1200),Player(0) )  // Fortesting
 			SetHeroLevel(h.actor, 4, false)
 			new MageHero(vec3(200,200,1200),Player(1) )  // Fortesting
 			WaveManager.startNextWave()
@@ -51,6 +51,7 @@ init
 			CameraSetupApplyForceDuration(gg_cam_Camera_002, true,0.)
 			ResetToGameCamera(5.)
 			let playernumber = 5
+			//SetCameraRotateMode(STATUE_POS.x, STATUE_POS.y, PI/6, 2)
 			//Setting up the pickers. Animation in constructor
 			for i = 0 to playernumber-1
 				var p = Player(i)

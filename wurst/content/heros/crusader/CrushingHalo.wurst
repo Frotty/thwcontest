@@ -5,6 +5,7 @@ import Entity
 import Creep
 import Hero
 import Projectile
+import Fx
 
 
 public class CrushingHalo
@@ -24,17 +25,19 @@ public class CrushingHalo
 	
 	function start()
 		range = 30
-		let duration = level*0.166+1.
-		let speed = (500/duration)*ANIMATION_PERIOD
-		doAfter(0.5,()->begin
+		let duration = 1.
+		let speed = ((level* 100 + 400)/duration)*ANIMATION_PERIOD
+		/*doAfter(0.5,()->begin
 			for int i = 0 to 4
 				angle a = angle(i*(2*PI/5))
 				Projectile f = new Projectile(pos,dmger.getOwner(),a, "Abilities\\Spells\\Other\\CrushingWave\\CrushingWaveMissile.mdl")
 				f.fx.recolor(colorA(255,255,30,255))
 				f.setSpeed(speed/ANIMATION_PERIOD)
 				f.setTimed(duration-0.5)
-		end)
-		AddSpecialEffect("Models\\RedAftershock.mdl",pos.x,pos.y).destr()
+		end)*/
+		var eff = new Fx(pos.x,pos.y,angle(0))
+		eff.setFx("Models\\LightNova.mdl")
+		eff.setScale(0.4 + level*0.1)
 		doPeriodicallyTimed(ANIMATION_PERIOD,duration,(CallbackCounted cb)->begin
 			forUnitsInRange(pos.toVec2(),range,(unit u)->begin
 				if u.isAliveTrick() and not IsUnitInGroup(u,effected)
@@ -49,5 +52,7 @@ public class CrushingHalo
 						AddSpecialEffectTarget("Abilities\\Spells\\Orc\\HealingWave\\HealingWaveTarget.mdl",u,"origin").destr()
 			end)
 			range += speed
+			if cb.isLast()
+				destroy eff
 		end)
 		effected.clear()

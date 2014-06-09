@@ -16,6 +16,7 @@ import DamageMod
 import Damager
 import BonusHandler
 import CrushingHalo
+import Terrain
 
 int CRUSADER_ID
 
@@ -25,10 +26,7 @@ int PHALANX_SPELL_ID
 int CRUSHING_HALO_SPELL_ID
 
 public class Crusader extends Hero
-	timer sg_timer //sg stands for SafeGuard spell
-	real sg_remaining // Counts back from 6 seconds
 	real sg_damage // saves incoming damage for healback
-	Hero sg_target
 	texttag sg_tt
 	trigger summontrigger
 	boolean ph_active = false
@@ -68,9 +66,6 @@ public class Crusader extends Hero
 	override function onPointCast(int spellId, vec2 target, int lvl)
 	
 	function castBackOff() // Q ability of Crusader. Instant cast.
-		//DummyCaster dc = new DummyCaster(DUMBACKOFF_SPELL_ID,"stomp",owner, false) //Create dummy for stun
-		//dc.recycleDelay = .5
-		//dc.castInPoint(pos.toVec2().polarOffset(actor.getFacingAngle(), 100))
 		real abilityrange = 400 //could be dynamic later?
 		// From ClosureForGroups
 		// forUnitsInRange(pos.toVec2(), abilityrange, (unit u) -> begin
@@ -83,6 +78,7 @@ public class Crusader extends Hero
 		// For more information on the topic: https://peq.github.io/WurstScript/manual.html#lambda_expressions_and_closures
 		//let eff = AddSpecialEffectTarget("Models\\Retribution.mdl",actor,"origin")
 		//doAfter(0.5,()->eff.destr())
+		AddSpecialEffect("Models\\RedAftershock.mdl",pos.x,pos.y).destr()
 		forUnitsInRange(pos.toVec2(), abilityrange, (unit u) -> begin
 			print("loop")
 			if u.getEntity() instanceof Creep and u.isAliveTrick()
@@ -95,6 +91,7 @@ public class Crusader extends Hero
 				print("actor = " + actor.getFacingAngle().degrees().toString() + "°")
 				if (angl - actor.getFacingAngle()).degrees().abs() < 60
 					print("is angle")
+					actor.damageTarget(creep.actor, actor.getAbilityLevel(BACKOFF_SPELL_ID)*30.)
 					creep.addVel(vec3(angl.cos() * 10, angl.sin() * 10, 10))
 					creep.actor.applyStun(false, 2, creep.owner)
 		end)
@@ -170,48 +167,58 @@ public class Crusader extends Hero
 		if not IsUnitIllusion(GetSummonedUnit())
 			print("setting Caster")
 			c.actor.setFacing(c.ph_facing)
-			c.actor.setPos(c.ph_pos)
+			//Throwing him from the air, so it ignores unit collosions when falling down (hopefully)
+			c.setPos(c.ph_pos.toVec3() + vec3(0,0,30 + getTerrainZ(c.ph_pos.x,c.ph_pos.y)),getTerrainZ(c.ph_pos.x,c.ph_pos.y))
 			c.actor.issueImmediateOrderById(851993) //Hold Position
-			
+			c.actor.setAnimation("defend")
 			c.ph_active = true
-			c.ph_armor = 0
+			var added_armor = 0
+			//Phalanx checks every second if Crusader moved, and adds the right amount of armor
 			doPeriodically(1., (CallbackPeriodic cb)->begin
 				var nearby = 0
-				forUnitsInRange(c.pos.toVec2(),800,(unit u)->begin
+				//Counting the units Nearby to get how many extra armor we should add.
+				forUnitsInRange(c.pos.toVec2(),600,(unit u)->begin
 					if GetFilterUnit().getEntity() instanceof Creep and GetFilterUnit().isAliveTrick()
 						nearby ++
 				end)
-				var armor = (nearby/* c.actor.getAbilityLevel(PHALANX_SPELL_ID) *0.75*/)
-				addUnitBonus(c.actor,Bonus.ARMOR, armor - c.ph_armor)
-				c.ph_armor = armor
+				var armor = (nearby *c.actor.getAbilityLevel(PHALANX_SPELL_ID) *0.75).toInt()
+				//We only want to add the difference every period. If we used absolute values, other extra Armor effects could be hurt.
+				addUnitBonus(c.actor,Bonus.ARMOR, armor - added_armor)
+				added_armor = armor
 				ENUM_GROUP.clear()
+				//If Crusader is too far away, the ability shall be disabled
 				if (c.pos.toVec2() - c.ph_pos).length() > 50
 					c.ph_unit1.kill()
 					c.ph_unit2.kill()
 					c.ph_active = false
-					addUnitBonus(c.actor,Bonus.ARMOR, - c.ph_armor)
-					c.ph_armor = 0
+					//Removing the bonus armor
+					addUnitBonus(c.actor,Bonus.ARMOR, - added_armor)
+					added_armor = 0
+					//Since this callback doesnt destroy automatically, interrupt is needed this way
 					destroy cb
 			end)
+			c.ph_armor = added_armor
 		else
 			angle f = c.ph_facing + angle(PI/2)
 			print("setting Illusion")
 			if c.ph_1_set == false
 				c.ph_unit1 = GetSummonedUnit()
 				c.ph_unit1..setFacing(c.ph_facing)
-					..setPathing(false)
-					..setPos(c.ph_pos + vec2(100*f.cos(),100*f.sin()))
+					//..setPathing(false)
+					..setPos(c.ph_pos.polarOffset(f,100))
 					..setPropWindow(0)
-					..setPathing(true)
+					..setAnimation("defend")
+					//..setPathing(true)
 				c.ph_1_set = true
 				print("1st set")
 			else
 				c.ph_unit2 = GetSummonedUnit()
 				c.ph_unit2..setFacing(c.ph_facing)
-					..setPathing(false)
-					..setPos(c.ph_pos + vec2(-100*f.cos(),-100*f.sin()))
+					//..setPathing(false)
+					..setPos(c.ph_pos.polarOffset(f,-100))
 					..setPropWindow(0)
-					..setPathing(true)
+					..setAnimation("defend")
+					//..setPathing(true)
 				print("2nd set")
 				
 		
