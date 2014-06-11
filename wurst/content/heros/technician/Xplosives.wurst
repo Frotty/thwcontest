@@ -14,6 +14,8 @@ constant XPLOSIVES_HOTKEY = "Q"
 constant XPLOSIVES_COOLDOWN = 35
 constant XPLOSIVES_MAXLVL = 4
 
+constant MAX_XPLOSIVES_NAME = "Maximum Reached"
+
 function getMaxXplo(int lvl) returns int
 	return 2 + lvl
 	
@@ -84,18 +86,19 @@ public function init_Xplosives(boolean c)
 		..setOption(Option.VISIBLE, true)..setTargetType(Targettype.PTARGET)..setOption(Option.TARGETIMAGE, true)
 		..setAreaOfEffect(128)..setHotkey(XPLOSIVES_HOTKEY)
 		..setCastRange(1, 180)
-		new TooltipGenerator(XPLOSIVES_NAME, XPLOSIVES_HOTKEY, XPLOSIVES_MAXLVL, "Bombz")
-		..setRange(128)
-		..setAoe((int lvl) -> getXplosionRadius(lvl).toString())
-		..setCooldown((int lvl) -> getXplosionCooldown(lvl).toString())
-		..setDamage((int lvl) -> getXplosionPower(lvl).toString())
-		..setTooltips(xplosivePreset)
+		new TooltipGenerator(XPLOSIVES_NAME, XPLOSIVES_HOTKEY, Targettype.PTARGET, XPLOSIVES_MAXLVL, "Bombz")
+		..addProperty("Cast Range:", (180.).toString())
+		..addProperty("Area of Effect:", (int lvl) -> getXplosionRadius(lvl).toString())
+		..addProperty("Cooldown:", (int lvl) -> getXplosionCooldown(lvl).toString())
+		..addProperty("Xplosion Power:", (int lvl) -> getXplosionPower(lvl).toString())
+		..applyToDef(xplosivePreset)
 	
-		
 		
 		let xdum = new AbilityDefinitionBashcreep(MAX_EXPLOSIVES_ID)
 		xdum..setChancetoBash(1, 0)..setChancetoMiss(1, 0)..setButtonPosNormal(0, 2)
 		..setIcon("PASExplosiveBarrel")..setName("Maximum Amount")
-		
+		new TooltipGenerator(MAX_XPLOSIVES_NAME, "", Targettype.PASSIVE, 4, "You reached the maximum Explosives for this level.")
+		..addProperty("Amount:", (int lvl) -> getMaxXplo(lvl).toString())
+		..applyToDef(xdum)
 			
 	

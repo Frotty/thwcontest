@@ -29,7 +29,7 @@ init
 	doAfter(0.01, () -> begin
 		initResources(false)
 		if testing
-			let h = new Crusader(vec3(0,100,1200),Player(0) )  // Fortesting
+			let h = new Technician(vec3(0,100,1200),Player(0) )  // Fortesting
 			SetHeroLevel(h.actor, 4, false)
 			new MageHero(vec3(200,200,1200),Player(1) )  // Fortesting
 			WaveManager.startNextWave()

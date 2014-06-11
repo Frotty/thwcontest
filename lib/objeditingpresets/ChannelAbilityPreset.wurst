@@ -20,6 +20,7 @@ public enum Targettype
 	UTARGET
 	PTARGET
 	PUTARGET
+	PASSIVE
 	
 constant int visibleval = 1
 constant int targetimageval = 2
@@ -39,6 +40,8 @@ public function Targettype.toString() returns string
 			return "Unit Target"
 		case Targettype.PUTARGET
 			return "Point & Unit Target"
+		case PASSIVE
+			return "Passive"
 	return ""
 
 public class ChannelAbilityPreset extends AbilityDefinitionIllidanChannel

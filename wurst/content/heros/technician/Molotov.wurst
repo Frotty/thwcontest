@@ -9,8 +9,17 @@ import XBurn
 import Hero
 import Napalm
 import Explosive
+import TooltipGenerator
+
 import SoundHelper
 
+constant MOLOTOV_NAME = "Throw Molotov"
+constant MOLOTOV_HOTKEY = "E"
+constant MOLOTOV_MAXLVL = 4
+
+function getMolotovBounces(int lvl) returns int
+	return min(lvl, 3)
+	
 constant THROW_SOUND = new Sound("Sounds\\sfx_throw.mp3", 532, false, true)
 constant EXPLO_SOUND = new Sound("Sounds\\sfx_molotov_explo.mp3", 4021, false, true)
 public int MOLOTOV_SPELL_ID
@@ -25,7 +34,7 @@ public class Molotov extends Projectile
 	construct(vec3 pos, vec2 target, Hero caster, int lvl)
 		super(pos, caster.owner, pos.angleTo2d(target), "Models\\Molotov.mdx")
 		flying = true
-		bounces = min(lvl, 3)
+		bounces = getMolotovBounces(lvl)
 		setTarget(target, 300)
 		this.caster = caster
 		THROW_SOUND.playOnUnit(caster.actor)
@@ -65,8 +74,12 @@ public function init_Molotov(boolean c)
 	MOLOTOV_SPELL_ID = ABIL_ID_GEN.next()
 	
 	if c
-		let molotovPreset = new ChannelAbilityPreset(MOLOTOV_SPELL_ID, 4)
+		let molotovPreset = new ChannelAbilityPreset(MOLOTOV_SPELL_ID, MOLOTOV_MAXLVL)
 		molotovPreset..setName("Molotov")..removeChannelProperties(true)..setOption(Option.VISIBLE, true)
 		..setIcon("BTNSunFragment")..setTargetType(Targettype.PTARGET)
-		..setCastRange(1, 400)..setButtonPosNormal(2, 2)
+		..setCastRange(1, 400)..setButtonPosNormal(2, 2)..setHotkey(MOLOTOV_HOTKEY)
+		new TooltipGenerator(MOLOTOV_NAME, MOLOTOV_HOTKEY, Targettype.PTARGET, MOLOTOV_MAXLVL, "Throws a burning Molotov into the target area.\nThe Molotov bounces.\n" +
+		"When the Molotov hits the ground it ignites all Napalm and Xplosives near and burns enemies.")
+		..addProperty("Bounces", (int lvl) -> getMolotovBounces(lvl).toString())
+		..applyToDef(molotovPreset)
 		
