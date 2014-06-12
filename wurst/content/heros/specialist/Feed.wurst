@@ -1,0 +1,39 @@
+package Feed
+
+import Projectile
+import Creep
+
+string foodProjectile_fx = "Models\\CorpseBomb.mdx"
+real foodProjectile_radius = 90.
+
+public class FoodProjectile extends Projectile
+	
+	construct( vec3 pos, player owner, angle xyAngle )
+		super( pos, foodProjectile_radius, owner, xyAngle, foodProjectile_fx )
+		print("Created Food Projectile. Is it Flying?")
+		setSpeed(10)
+	
+	override function update()
+		super.update()
+		setSpeed(getSpeed()*0.98)
+		if getSpeed() < 1
+			new Food(pos, owner, Food_Type.GROUND)
+			destroy this
+		
+enum Food_Type
+	GROUND
+	ATTACHED
+		
+public class Food extends Entity
+	Food_Type ftype
+	Creep target
+	unit dummy
+	
+	construct(vec3 pos, player owner,Food_Type t)
+		super( pos, owner )
+		print("Created Food..")
+		ftype = t
+		
+	override function update()
+
+

@@ -1,0 +1,77 @@
+package Specialist
+
+import MapStuff
+import ChannelAbilityPreset
+import AbilityObjEditing
+import Hero
+import Feed
+
+int SPECIALIST_ID
+
+int FEED_SPELL_ID
+int TROJAN_SPELL_ID
+int SAUSAGE_SPEAR_SPELL_ID
+int CAGE_SPELL_ID
+
+public class Specialist extends Hero
+
+	construct(vec3 pos, player owner )
+		super(pos, owner, SPECIALIST_ID)
+		
+	override function onCast(int spellId, int lvl)
+	
+	override function onUnitCast(int spellId, unit target, int lvl)
+
+	override function onPointCast(int spellId, vec2 target, int lvl)
+		if spellId == FEED_SPELL_ID or spellId == TROJAN_SPELL_ID
+			new FoodProjectile( pos, owner,pos.toVec2().angleTo(target))
+
+public function init_Specialist(boolean compileTime)
+	SPECIALIST_ID = HERO_ID_GEN.next()
+	// generate valid id
+	FEED_SPELL_ID = ABIL_ID_GEN.next()
+	TROJAN_SPELL_ID = ABIL_ID_GEN.next()
+	//SAUSAGE_SPEAR_SPELL_ID = ABIL_ID_GEN.next()
+	CAGE_SPELL_ID = ABIL_ID_GEN.next()
+	
+	if compileTime
+		// Generate def if compieltime
+		var feed = new ChannelAbilityPreset(FEED_SPELL_ID, 4)
+		// Set Attributes
+		feed..removeChannelProperties(true)..setName("Feed")
+			..setButtonPositionNormalX(0)..setButtonPositionNormalY(2)
+			..setButtonPositionResearchX(0)..setButtonPositionResearchY(0)
+			..setIcon("BTNWindWalk")..setOption(Option.VISIBLE, true)
+			..setTargetType(Targettype.PUTARGET)
+			..setCastRange(1,400)
+			..setOrderStringActivate("warstomp")
+		
+		var trojan = new ChannelAbilityPreset(TROJAN_SPELL_ID, 4)
+		// Set Attributes
+		trojan..removeChannelProperties(true)..setName("Trojan")
+			..setButtonPositionNormalX(2)..setButtonPositionNormalY(2)
+			..setButtonPositionResearchX(2)..setButtonPositionResearchY(0)
+			..setIcon("BTNWispSplode")..setOption(Option.VISIBLE, true)
+			..setCastRange(1,400)
+			..setTargetType(Targettype.PUTARGET)
+			..setTargetsAllowed(1,"friend")
+			
+		
+		var cage = new ChannelAbilityPreset(CAGE_SPELL_ID, 1)
+		cage..removeChannelProperties(true)..setName("Cage")
+			..setButtonPositionNormalX(3)..setButtonPositionNormalY(2)
+			..setButtonPositionResearchX(3)..setButtonPositionResearchY(0)
+			..setIcon("BTNHolyBolt")..setOption(Option.VISIBLE, true)
+			..setOrderStringActivate("holybolt")
+		
+		
+		
+		let preset = new HeroPreset(SPECIALIST_ID, 'Edem', "Specialist")
+		preset..addProperName("Francis")
+			..setModelFile("units\\creeps\\Medivh\\Medivh.mdl")
+			..addHeroAbility(FEED_SPELL_ID)
+			..addHeroAbility(TROJAN_SPELL_ID)
+			//..addHeroAbility(SAUSAGE_SPEAR_SPELL_ID)
+			..addHeroAbility(CAGE_SPELL_ID)
+		// Build at the end
+			..buildHero()

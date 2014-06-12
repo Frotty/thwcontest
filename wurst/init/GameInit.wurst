@@ -9,6 +9,7 @@ import StunHandler
 import Technician
 import Crusader
 import Mage
+import Specialist
 import Mammoth
 import OrderStringFactory
 import Picker
@@ -22,6 +23,7 @@ function initResources(boolean compileTime)
 	init_Technician(compileTime)
 	init_Mammoth(compileTime)
 	init_Picker(compileTime)
+	init_Specialist(compileTime)
 	
 boolean testing = true
 	
@@ -29,9 +31,9 @@ init
 	doAfter(0.01, () -> begin
 		initResources(false)
 		if testing
-			let h = new Mage(vec3(0,100,1200),Player(0) )  
-			let s = new Technician(vec3(0,100,1200),Player(0) ) // Fortesting
-			SetHeroLevel(h.actor, 4, false)
+			let h = new Technician(vec3(0,300,1200),Player(1) )  
+			let s = new Specialist(vec3(0,100,1200),Player(0) ) // Fortesting
+			SetHeroLevel(s.actor, 4, false)
 			WaveManager.startNextWave()
 		else
 			//Welcome message
