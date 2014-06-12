@@ -14,6 +14,7 @@ public abstract class LevelClosure
 public class TooltipGenerator
 	private string name 		= ""
 	private string hotkey 		= ""
+	private string hotkeylearn	= ""
 	private string description 	= ""
 	
 	private int maxLevel = 1
@@ -41,6 +42,9 @@ public class TooltipGenerator
 		this.name = name
 		this.description = description
 		this.targettype = ttype
+		
+	function setExtraLearnHotkey(string hotkey)
+		hotkeylearn = hotkey
 		
 	function addProperty(string title, string value)
 		if titleCount >= MAX_TITLES
@@ -81,6 +85,7 @@ public class TooltipGenerator
 		var newString = old
 		newString = newString.replace("$name$", name)
 		newString = newString.replace("$hotkey$", hotkey.toUpperCase())
+		newString = newString.replace("$hotkeylearn$", hotkeylearn.toUpperCase())
 		newString = newString.replace("$lvl$", lvl.toString())
 		return newString
 		
@@ -88,6 +93,7 @@ public class TooltipGenerator
 		var newString = old
 		newString = newString.replace("$name$", name)
 		newString = newString.replace("$hotkey$", hotkey.toUpperCase())
+		newString = newString.replace("$hotkeylearn$", hotkeylearn.toUpperCase())
 		return newString
 		
 	private function generateTooltipExtended(int lvl, boolean learn) returns string
@@ -122,7 +128,7 @@ public class TooltipGenerator
 		int array charPos
 		for char in oldString
 			if char == "/"
-				charPos[charPosCount] = charPosCount
+				charPos[charPosCount] = charCount
 				charPosCount++
 			charCount++
 		if lvl == -1

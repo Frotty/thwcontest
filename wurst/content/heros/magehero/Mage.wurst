@@ -1,0 +1,32 @@
+package Mage
+import Hero
+import ObjectIdGenerator
+import ChannelAbilityPreset
+import RapidShoot
+
+int MAGE_ID
+
+public class Mage extends Hero
+
+	construct(vec3 pos, player owner)
+		super(pos, owner, MAGE_ID)
+		
+	override function onCast(int spellId, int lvl)
+		
+	override function onUnitCast(int spellId, unit target, int lvl)
+		switch spellId
+			case RAPID_SHOOT_ID
+				this.startRapidShoot(4, 0.25, 10)
+		
+	override function onPointCast(int spellId, vec2 target, int lvl)
+	
+	
+
+public function init_MageHero(boolean compiletime)
+	init_RapidShoot(compiletime)
+	MAGE_ID = HERO_ID_GEN.next()
+	if compiletime
+		new HeroPreset(MAGE_ID, 'Hjai', "Mage")
+		..addProperName("Daffa")
+		..addHeroAbility(RAPID_SHOOT_ID)
+		..buildHero()

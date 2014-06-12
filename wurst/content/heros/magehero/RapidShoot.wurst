@@ -1,0 +1,40 @@
+package RapidShoot
+import Projectile
+import Hero
+import ClosureTimers
+import MapStuff
+import TooltipGenerator
+import ChannelAbilityPreset
+
+public int RAPID_SHOOT_ID
+constant RAPID_SHOOT_MAXLVL = 4
+constant RAPID_SHOOT_NAME = "Rapid Shoot"
+
+function getRapidShootDuration(int lvl) returns int
+	return min(4, 2 + lvl)
+
+public function Hero.startRapidShoot(real dur, real interval, real dmg)
+	this.actor.setPropWindow(0)
+	this.actor.setTurnSpeed(0.1)
+	doPeriodicallyTimed(interval, dur, (CallbackCounted cb) -> begin
+		let p = new Projectile(this.pos + vec3(0,0,45), this.owner, this.actor.getFacingAngle(), "Models\\BeamMissile.mdx")
+		..setTimed(2)..setSpeed(500)
+		p.fx..setScale(0.5)..recolor(colorA(255, 255, 125, 125))
+		this.actor.setAnimation("Spell")
+		
+		if cb.isLast()
+			this.actor.setPropWindow(80)
+			this.actor.setTurnSpeed(0.6)
+			
+	end)
+	
+public function init_RapidShoot(boolean c)
+	RAPID_SHOOT_ID = ABIL_ID_GEN.next()
+	if c
+		let def = new ChannelAbilityPreset(RAPID_SHOOT_ID, RAPID_SHOOT_MAXLVL)
+		def..removeChannelProperties(true)..setOption(Option.VISIBLE, true)..setButtonPosNormal(1, 2)
+		..setIcon("BTNPlasmaBeam")
+		let tgen = new TooltipGenerator(RAPID_SHOOT_NAME, "W", Targettype.NOTARGET, RAPID_SHOOT_MAXLVL, "rapidz")
+		tgen..addProperty("Duration:", (int lvl) -> getRapidShootDuration(lvl).toString())
+		..applyToDef(def)
+	

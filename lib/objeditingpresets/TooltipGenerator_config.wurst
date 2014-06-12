@@ -12,6 +12,7 @@ package TooltipGenerator_config
 	Available references:
 	name = Name of the Ability
 	hotkey = Hotkey of the Ability
+	hotkeylearn = Different hotkey for learning if specified
 	------------------------------
 	For normal only
 	lvl = The level of the Ability

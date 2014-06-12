@@ -17,6 +17,7 @@ public class Technician extends Hero
 		INSTANCE = this
 		ModifyHeroSkillPoints(actor, bj_MODIFYMETHOD_SET, 1)
 		SelectHeroSkill(actor, XBURN_SPELL_ID)
+		ModifyHeroSkillPoints(actor, bj_MODIFYMETHOD_SET, 1)
 
 	override function onCast(int spellId, int lvl)
 	
