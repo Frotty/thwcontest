@@ -2,6 +2,7 @@ package MapStuff
 import public ObjectIdGenerator
 import public AbilityObjEditing
 import public LinkedList
+import public Players
 
 public constant CREEP_PLAYER = Player(11)
 

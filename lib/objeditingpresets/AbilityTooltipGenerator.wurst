@@ -1,4 +1,4 @@
-package TooltipGenerator
+package AbilityTooltipGenerator
 import public ChannelAbilityPreset
 
 @configurable constant TITLE_COLOR = "|cff3B97D3"
@@ -11,7 +11,7 @@ import public ChannelAbilityPreset
 public abstract class LevelClosure
 	abstract function run(int lvl) returns string
 
-public class TooltipGenerator
+public class AbilityTooltipGenerator
 	private string name 		= ""
 	private string hotkey 		= ""
 	private string hotkeylearn	= ""

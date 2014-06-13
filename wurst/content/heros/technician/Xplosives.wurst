@@ -4,7 +4,7 @@ import Hero
 import ClosureForGroups
 import XBurn
 import Creep
-import TooltipGenerator
+import AbilityTooltipGenerator
 
 public int EXPLOSIVES_SPELL_ID
 int MAX_EXPLOSIVES_ID
@@ -86,7 +86,7 @@ public function init_Xplosives(boolean c)
 		..setOption(Option.VISIBLE, true)..setTargetType(Targettype.PTARGET)..setOption(Option.TARGETIMAGE, true)
 		..setAreaOfEffect(128)..setHotkey(XPLOSIVES_HOTKEY)
 		..setCastRange(1, 180)
-		new TooltipGenerator(XPLOSIVES_NAME, XPLOSIVES_HOTKEY, Targettype.PTARGET, XPLOSIVES_MAXLVL, "Bombz")
+		new AbilityTooltipGenerator(XPLOSIVES_NAME, XPLOSIVES_HOTKEY, Targettype.PTARGET, XPLOSIVES_MAXLVL, "Bombz")
 		..addProperty("Cast Range:", (180.).toString())
 		..addProperty("Area of Effect:", (int lvl) -> getXplosionRadius(lvl).toString())
 		..addProperty("Cooldown:", (int lvl) -> getXplosionCooldown(lvl).toString())
@@ -97,7 +97,7 @@ public function init_Xplosives(boolean c)
 		let xdum = new AbilityDefinitionBashcreep(MAX_EXPLOSIVES_ID)
 		xdum..setChancetoBash(1, 0)..setChancetoMiss(1, 0)..setButtonPosNormal(0, 2)
 		..setIcon("PASExplosiveBarrel")..setName("Maximum Amount")
-		new TooltipGenerator(MAX_XPLOSIVES_NAME, "", Targettype.PASSIVE, 4, "You reached the maximum Explosives for this level.")
+		new AbilityTooltipGenerator(MAX_XPLOSIVES_NAME, "", Targettype.PASSIVE, 4, "You reached the maximum Explosives for this level.")
 		..addProperty("Amount:", (int lvl) -> getMaxXplo(lvl).toString())
 		..applyToDef(xdum)
 			

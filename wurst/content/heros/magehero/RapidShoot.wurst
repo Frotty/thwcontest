@@ -3,7 +3,7 @@ import Projectile
 import Hero
 import ClosureTimers
 import MapStuff
-import TooltipGenerator
+import AbilityTooltipGenerator
 import ChannelAbilityPreset
 
 public int RAPID_SHOOT_ID
@@ -34,7 +34,7 @@ public function init_RapidShoot(boolean c)
 		let def = new ChannelAbilityPreset(RAPID_SHOOT_ID, RAPID_SHOOT_MAXLVL)
 		def..removeChannelProperties(true)..setOption(Option.VISIBLE, true)..setButtonPosNormal(1, 2)
 		..setIcon("BTNPlasmaBeam")
-		let tgen = new TooltipGenerator(RAPID_SHOOT_NAME, "W", Targettype.NOTARGET, RAPID_SHOOT_MAXLVL, "rapidz")
+		let tgen = new AbilityTooltipGenerator(RAPID_SHOOT_NAME, "W", Targettype.NOTARGET, RAPID_SHOOT_MAXLVL, "rapidz")
 		tgen..addProperty("Duration:", (int lvl) -> getRapidShootDuration(lvl).toString())
 		..applyToDef(def)
 	

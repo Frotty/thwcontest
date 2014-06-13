@@ -20,7 +20,6 @@ public class Mage extends Hero
 		
 	override function onPointCast(int spellId, vec2 target, int lvl)
 	
-	
 
 public function init_MageHero(boolean compiletime)
 	init_RapidShoot(compiletime)

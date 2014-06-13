@@ -1,0 +1,17 @@
+package Players
+import LinkedList
+
+public LinkedList<PData> allPlayers = new LinkedList<PData>()
+
+public class PData
+	player p
+	int id
+
+	construct(player p)
+		this.p = p
+		this.id = p.getId()
+
+public function init_Players()
+	for i = 0 to 4
+		if players[i].getSlotState() == PLAYER_SLOT_STATE_PLAYING
+			allPlayers.add(new PData(players[i]))

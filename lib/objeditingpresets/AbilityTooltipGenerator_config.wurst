@@ -1,4 +1,16 @@
-package TooltipGenerator_config
+package AbilityTooltipGenerator_config
+
+/*
+	Basic Usage:
+	Create a generator
+		let tg = new AbilityTooltipGenerator("My cool Spell", "Q", Targettype.PTARGET, 4, "Cool description")
+	Add Properties
+		tg.addProperty("Damage:", (int lvl) -> (100*lvl).toString())
+	Apply to an AbilitiyDef
+		tg.applyToDef(someAbilDef)
+		
+	Done!
+*/
 
 @config constant TITLE_COLOR = "|cff3B97D3"
 @config constant TITLE_TTYPE = "Targettype:"

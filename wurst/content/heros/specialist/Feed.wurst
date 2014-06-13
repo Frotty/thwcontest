@@ -12,83 +12,57 @@ import ClosureEvents
 public int FEED_SPELL_ID
 int FOOD_DUMMY_ID
 
-string foodProjectile_fx = "Models\\ham.mdl"
+string foodProjectile_fx = "Models\\Ham.mdl"
 real foodProjectile_radius = 90.
 real friction = 0.9
-real right_amount = 0.2
 
 public class FoodProjectile extends Projectile
+	unit dummyUnit = null
+	boolean arrived = false
+	trigger range_trigger
+	texttag tt = null
 	
 	construct( vec3 pos, player owner,real dist, angle xyAngle )
 		super( pos, foodProjectile_radius, owner, xyAngle, foodProjectile_fx )
 		print("Created Food Projectile. Is it Flying?")
 		//Do the same as setTarget
-		setSpeed(dist/right_amount+friction*right_amount/2) //I HAVE NO IDEA WHAT IM DOING
-		setRanged(dist) //dist = v0*t-0.9(t^2)/2
+		setSpeed((1/friction - 1)*dist / ANIMATION_PERIOD)
 	
 	override function update()
 		super.update()
-		setSpeed(getSpeed()*friction)
-		if getSpeed() < 1
-			destroy this
-		
-		
-	ondestroy
-		new Food(pos, owner, Food_Type.GROUND)
-		
-		
-enum Food_Type
-	GROUND
-	ATTACHED
-		
-public class Food extends UnitEntity
-	Food_Type ftype
-	Creep target
-	real damage = 0
-	real max_damage = 500
-	trigger range_trigger
-	texttag tt
-	OnDamage ond//gogo you
-	
-	construct(vec3 pos, player owner,Food_Type t)
-		super( pos, createUnit(owner,FOOD_DUMMY_ID,pos,angle(0)))
-		print("Created Food..")
-		ftype = t
-		range_trigger = CreateTrigger()
-		range_trigger.registerUnitInRangeSource(actor,400, null)
-		range_trigger.addAction(function onFoodRange)
-		tt = createTTEx(pos + vec3(0,0,100), "Ham", 10, colorA(250,80,80,210))
-		/*
-		ond = (unit damaged, unit source, real amount) -> begin 
-					let dmg = getDamage()
-					damage += dmg
-					source.damageTarget(actor, dmg)
-					tt.setText((max_damage-damage).toInt().toString(),10) // print remaining "hp"
-					if damage > max_damage
-						destroy this
+		if getSpeed() < 20
+			if not arrived 
+				setSpeed(0) 
+				arrived = true
+				dummyUnit = createUnit(CREEP_PLAYER,FOOD_DUMMY_ID,pos,angle(0))
+				dummyUnit..addAbility('Agho')..setUserData(this castTo int)
 						
-		end
-				
-		onDamage(actor, ond)
-		*/
-	ondestroy
-		actor.kill()
-		destroy ond
-
+					
+				range_trigger = CreateTrigger()
+				range_trigger.registerUnitInRangeSource(dummyUnit,400, null)
+				range_trigger.addAction(function onFoodRange)
+				tt = createTTEx(pos + vec3(0,0,100), "Ham", 10, colorA(250,80,80,210))
+		else
+			setSpeed(getSpeed()*friction)
+			
 	function onInRange(unit target)
 		Entity e = target.getEntity()
 		if e instanceof Creep
 			var c = e castTo Creep
-			c.actor.issueTargetOrder("attack",actor)
+			c.actor.issueTargetOrder("attack",dummyUnit)
 			print("Yarr! Seems delicious")
 		
 	static function onFoodRange()
 		unit source = GetTriggeringTrigger().getSource()
 		unit u = GetTriggerUnit()
-		Food f = source.getEntity() castTo Food
+		FoodProjectile f = source.getUserData() castTo FoodProjectile
 		f.onInRange(u)
 		
-	override function update()
+	ondestroy
+		dummyUnit.remove()
+		range_trigger.destr()
+		tt.destr()
+	
 
 public function init_Feed(boolean compileTime)
 
@@ -109,5 +83,5 @@ public function init_Feed(boolean compileTime)
 	if compileTime
 		var def = new UnitDefinition(FOOD_DUMMY_ID,'otot')
 			..setHitPointsMaximumBase(9000)
-			..setModelFile("Models\\ham.mdl") // Laptop keyboard sux!!! (keeping this for future)
+			..setModelFile("Models\\Ham.mdl") // Laptop keyboard sux!!! (keeping this for future)
 			..setCollisionSize(0) //Add invisibility for players laterper trigger
