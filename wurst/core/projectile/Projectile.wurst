@@ -42,7 +42,7 @@ public class Projectile extends FxEntity
 		active = true
 		
 	function getSpeed() returns real
-		return speed
+		return speed / ANIMATION_PERIOD
 		
 	function setXYAngle(angle xyA)
 		this.xyAngle = xyA

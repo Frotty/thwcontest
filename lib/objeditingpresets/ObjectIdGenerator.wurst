@@ -1,5 +1,6 @@
 package ObjectIdGenerator
 import ObjectIds
+import ObjEditingNatives
 
 public constant UNIT_ID_GEN = new IdGenerator('s000')
 public constant HERO_ID_GEN = new IdGenerator('H000')
@@ -45,7 +46,6 @@ public class IdGenerator
 		else
 			error("No vaild id left")
 			return 0
-		print("next id is: " + idInteger2IdString(( i1 + (i2 * 256) + (i3 * 65536) + (i4 * 16777216))))
 		return i1 + (i2 * 256) + (i3 * 65536) + (i4 * 16777216)
 		
 		
