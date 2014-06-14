@@ -17,7 +17,11 @@ public module PhysicsModule
 	real terrainZ = 0
 		
 		
-	function physicsUpdate(Entity e)
+	function physicsUpdate(Entity e, boolean checkForSleep)
+		if checkForSleep
+			if e.vel.lengthSquared() < 1 and not flying
+				e.needPhysicsUpdate = false
+				return
 		terrainZ = getTerrainZ(e.pos.x, e.pos.y)
 		if e.pos.z <= terrainZ + 2
 			onGround(e)

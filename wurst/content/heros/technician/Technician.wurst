@@ -9,12 +9,10 @@ import XBurn
 int TECHNICIAN_ID
 
 public class Technician extends Hero
-	static Technician INSTANCE
 	private vec2 napalm_Last = vec2(0,0)
 	
 	construct(vec3 pos, player owner )
 		super(pos, owner, TECHNICIAN_ID)
-		INSTANCE = this
 		ModifyHeroSkillPoints(actor, bj_MODIFYMETHOD_SET, 1)
 		SelectHeroSkill(actor, XBURN_SPELL_ID)
 		ModifyHeroSkillPoints(actor, bj_MODIFYMETHOD_SET, 1)

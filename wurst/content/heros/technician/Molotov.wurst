@@ -43,7 +43,7 @@ public class Molotov extends Projectile
 		if bounces < 0
 			destroy this
 		else
-			physicsUpdate(this)
+			physicsUpdate(this, false)
 			super.update()
 		
 

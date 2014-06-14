@@ -12,10 +12,12 @@ public abstract class Hero extends UnitEntity
 	construct(vec3 pos, player owner, int id)
 		super(pos, createUnit(owner, id, pos, angle(0)))
 		castTrigger.registerUnitEvent(actor, EVENT_UNIT_SPELL_EFFECT)
+		needPhysicsUpdate = true
 		
 	override function update()
 		super.update()
-		physicsUpdate(this)
+		if needPhysicsUpdate
+			physicsUpdate(this, true)
 		
 	override function onGround()
 		pos += vel

@@ -39,8 +39,7 @@ public abstract class Entity
 	boolean isStatic 	= false
 	/** sleeping or active? */
 	boolean active 		= true
-	/** for removing */
-	boolean done 		= false
+	boolean needPhysicsUpdate = false
 
 
 	construct( vec3 pos, player owner )
@@ -65,20 +64,26 @@ public abstract class Entity
 		this.owner = owner
 		this.radius = radius
 		
-	function setPos( vec3 pos )
+	function setPos( vec3 pos, boolean wakeUp )
 		this.pos = pos
+		if wakeUp
+			active = true
 		
-	function addPos( vec3 pos )
+	function addPos( vec3 pos, boolean wakeUp )
 		this.pos += pos
+		if wakeUp
+			needPhysicsUpdate = true
 		
 	function setVel( vec3 vel )
 		this.vel = vel
-		active = true
+		needPhysicsUpdate = true
 	
 	function addVel( vec3 vel )
 		this.vel += vel
+		needPhysicsUpdate = true
 		
 	function setTarget( vec2 tpos, real speed )
+		active = true
 		let spd = (speed * ANIMATION_PERIOD)
 		var t = pos.distToVec2d(tpos) / spd
 		let tangle = pos.angleTo2d(tpos)
@@ -129,11 +134,13 @@ abstract public class UnitEntity extends Entity
 		actor.setUserData(this castTo int)
 		
 	function setPos(vec3 tpos, real tZ)
+		needPhysicsUpdate = true
 		pos = tpos
 		actor.setPos(tpos.x,tpos.y)
 		actor.setFlyHeight(tpos.z - tZ, 0)
 		
 	function setXYZ(vec3 tpos, real tZ)
+		needPhysicsUpdate = true
 		pos = tpos
 		actor.setXY(tpos.x,tpos.y)
 		actor.setFlyHeight(tpos.z - tZ, 0)
@@ -164,14 +171,11 @@ abstract public class FxEntity extends Entity
 	function setFx(string sfxpath)
 		fx.setFx(sfxpath)
 		
-	function setPos()
-		fx.setPos(pos)
-		
 	function getDummy() returns unit
 		return fx.getDummy()
 		
-	override function setPos(vec3 tpos)
-		pos = tpos
+	override function setPos(vec3 tpos, boolean wakeUp)
+		super.setPos(tpos, wakeUp)
 		fx.setPos(tpos.x,tpos.y)
 		
 	ondestroy
