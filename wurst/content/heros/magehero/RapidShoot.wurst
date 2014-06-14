@@ -17,7 +17,7 @@ public function Hero.startRapidShoot(real dur, real interval, real dmg)
 	this.actor.setPropWindow(0)
 	this.actor.setTurnSpeed(0.1)
 	doPeriodicallyTimed(interval, dur, (CallbackCounted cb) -> begin
-		let p = new Projectile(this.pos + vec3(0,0,45), this.owner, this.actor.getFacingAngle(), "Models\\BeamMissile.mdx")
+		let p = new Projectile(this.getPosZ() + vec3(0,0,45), this.owner, this.actor.getFacingAngle(), "Models\\BeamMissile.mdx")
 		..setTimed(2)..setSpeed(500)
 		p.fx..setScale(0.5)..recolor(colorA(255, 255, 125, 125))
 		this.actor.setAnimation("Spell")

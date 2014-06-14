@@ -22,6 +22,8 @@ public class Picker extends UnitEntity
 		oncast.addAction(function onCast)
 		animation()
 		
+	override function update()
+		
 	function animation()
 		actor.setFlyHeight(400,0)
 		doPeriodicallyTimed(ANIMATION_PERIOD,6.,(CallbackCounted cb)->begin

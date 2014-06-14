@@ -18,15 +18,18 @@ public module PhysicsModule
 		
 		
 	function physicsUpdate(Entity e, boolean checkForSleep)
+		let pos = e.getPos()
+		let vel = e.getVel()
+
 		if checkForSleep
-			if e.vel.lengthSquared() < 1 and not flying
+			if vel.lengthSquared() < 1 and not flying
 				e.needPhysicsUpdate = false
 				return
-		terrainZ = getTerrainZ(e.pos.x, e.pos.y)
-		if e.pos.z <= terrainZ + 2
+		terrainZ = getTerrainZ(pos.x, pos.y)
+		if pos.z <= terrainZ + 2
 			onGround(e)
 		else
-			if e.vel.lengthSquared() < 1 and not flying
+			if vel.lengthSquared() < 1 and not flying
 				onGround(e)
 			else
 				inAir(e)
@@ -44,8 +47,8 @@ public module PhysicsModule
 		if flying
 			flying = false
 			onGroundHit()
-		e.pos.z = terrainZ
-		e.vel *= friction
+		e.setZ(terrainZ)
+		e.scaleVel(friction)
 		onGround()
 		
 	function inAir(Entity e)
@@ -53,5 +56,5 @@ public module PhysicsModule
 			flying = true
 			onEscapeGround()
 		if affectedByGravity
-			e.vel += gravity
+			e.addVel(gravity)
 		inAir()

@@ -4,6 +4,7 @@ import Terrain
 import public Fx
 import Angle
 import GameConstants
+import GameTimer
 import public LinkedList
 
 public function item.getEntity() returns Entity
@@ -23,9 +24,11 @@ public abstract class Entity
 	use LinkedListModule
 	
 	/** 3d vector position */
-	vec3 pos
+	protected vec3 pos
 	/** 3d vector velocity */
-	vec3 vel
+	protected vec3 vel
+	
+	real lastPosChange = 0.
 	
 	/** radius */
 	real radius = 0.
@@ -64,18 +67,36 @@ public abstract class Entity
 		this.owner = owner
 		this.radius = radius
 		
+	function getPos() returns vec3
+		return pos
+		
+	function getVel() returns vec3
+		return vel
+		
+	function scaleVel(real factor)
+		vel *= factor
+		
+	function getPos2d() returns vec2
+		return vec2(pos.x, pos.y)
+		
 	function setPos( vec3 pos, boolean wakeUp )
 		this.pos = pos
+		lastPosChange = currentTime
 		if wakeUp
 			active = true
 		
 	function addPos( vec3 pos, boolean wakeUp )
 		this.pos += pos
+		lastPosChange = currentTime
 		if wakeUp
 			needPhysicsUpdate = true
 		
 	function setVel( vec3 vel )
 		this.vel = vel
+		needPhysicsUpdate = true
+		
+	function setZ( real z )
+		this.pos.z = z
 		needPhysicsUpdate = true
 	
 	function addVel( vec3 vel )
@@ -122,16 +143,36 @@ abstract public class UnitEntity extends Entity
 	static function getForUnit(unit u) returns UnitEntity
 		return u.getUserData() castTo UnitEntity
 		
-	override function update()
-		updatePos()
-		
-	function updatePos()
-		pos = vec3(actor.getX(), actor.getY(), pos.z)
-		
 	function setNewActor(unit u)
 		actor.remove()
 		actor = u
 		actor.setUserData(this castTo int)
+		
+	override function addPos( vec3 pos, boolean wakeUp )
+		this.pos = getPosZ()
+		this.pos += pos
+		lastPosChange = currentTime
+		if wakeUp
+			needPhysicsUpdate = true
+		
+	override function getPos() returns vec3
+		if lastPosChange < currentTime
+			lastPosChange = currentTime
+			pos = vec3(actor.getX(), actor.getY(), pos.z)
+		return pos
+		
+	override function getPos2d() returns vec2
+		if lastPosChange < currentTime
+			lastPosChange = currentTime
+			pos = vec3(actor.getX(), actor.getY(), pos.z)
+		return vec2(pos.x, pos.y)
+			
+	function getPosZ() returns vec3
+		if lastPosChange < currentTime
+			lastPosChange = currentTime
+			pos = vec3(actor.getX(), actor.getY(), 0)
+			pos.z = getTerrainZ(pos.x, pos.y) + actor.getFlyHeight()
+		return pos
 		
 	function setPos(vec3 tpos, real tZ)
 		needPhysicsUpdate = true
@@ -144,6 +185,22 @@ abstract public class UnitEntity extends Entity
 		pos = tpos
 		actor.setXY(tpos.x,tpos.y)
 		actor.setFlyHeight(tpos.z - tZ, 0)
+		
+	override function setVel( vec3 vel )
+		if lastPosChange < currentTime
+			lastPosChange = currentTime
+			pos = vec3(actor.getX(), actor.getY(), 0)
+			pos.z = getTerrainZ(pos.x, pos.y) + actor.getFlyHeight()
+		this.vel = vel
+		needPhysicsUpdate = true
+	
+	override function addVel( vec3 vel )
+		if lastPosChange < currentTime
+			lastPosChange = currentTime
+			pos = vec3(actor.getX(), actor.getY(), 0)
+			pos.z = getTerrainZ(pos.x, pos.y) + actor.getFlyHeight()
+		this.vel += vel
+		needPhysicsUpdate = true
 		
 
 abstract public class FxEntity extends Entity

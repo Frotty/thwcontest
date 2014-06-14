@@ -20,6 +20,8 @@ public class CageNode extends UnitEntity
 	construct( vec3 pos, player owner)
 		super(pos, createUnit(owner , 'hpea' /*CAGE_NODE_ID*/ ,pos , angle(0) ) )
 		
+	override function update()
+		
 		
 
 public class Cage

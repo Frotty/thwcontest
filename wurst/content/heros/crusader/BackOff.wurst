@@ -34,7 +34,7 @@ public function castBackOff(vec2 pos, unit actor, int lvl) // Q ability of Crusa
 		if u.getEntity() instanceof Creep and u.isAliveTrick()
 			//print("is creep")
 			let creep = u.getEntity() castTo Creep
-			var angl = pos.angleTo(creep.pos.toVec2())
+			var angl = pos.angleTo(creep.getPos2d())
 			if angl.radians < 0
 				angl = angle(PI2 + angl.radians)
 			//print("angl = " + angl.degrees().toString() + "°")

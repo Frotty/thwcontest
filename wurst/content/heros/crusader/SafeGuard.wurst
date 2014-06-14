@@ -45,14 +45,14 @@ public class SafeGuardCast
 			// Create local vars to be captured by closure (ignore warning)
 			let speed = 600.
 			let zoffset = vec3(0,0,50) // Lightning height offset
-			caster.setTarget(targetEntity.pos.toVec2(),speed)
-			var jump_duration = caster.pos.distToVec2d(targetEntity.pos) / speed //Using the same formula as the setTarget() function here.
+			caster.setTarget(targetEntity.getPos2d(),speed)
+			var jump_duration = caster.getPos().distToVec2d(targetEntity.getPos()) / speed //Using the same formula as the setTarget() function here.
 			if jump_duration < 1.
 				jump_duration = 1./speed
 			jump_duration *= ANIMATION_PERIOD
 			doAfter(jump_duration, () -> begin //We only add the effects of the ability when the jump is done.
 				let maxDistance = 300
-				let lng = addLightning("SPLK", true, caster.pos+zoffset, targetEntity.pos+zoffset)
+				let lng = addLightning("SPLK", true, caster.getPos()+zoffset, targetEntity.getPos()+zoffset)
 				let eff = AddSpecialEffectTarget("Models\\DivineBarrier1.mdx",targetEntity.actor,"origin")
 				sg_tt = createTTEx(target.getPos().withZ(150), "", 11, colorA(122,200,255,255))
 
@@ -74,14 +74,14 @@ public class SafeGuardCast
 				onDamage(target, ond)
 				doPeriodicallyTimed(ANIMATION_PERIOD, getSafeGuardDuration(lvl), (CallbackCounted cb) -> begin
 					var col = lng.getColor()
-					col.alpha = ((maxDistance - (caster.pos.distToVec(targetEntity.pos) / maxDistance)) * 255).toInt()
+					col.alpha = ((maxDistance - (caster.getPos().distToVec(targetEntity.getPos()) / maxDistance)) * 255).toInt()
 					if col.blue < 255
 						col.blue = (col.blue*1.3).toInt()
 					if col.green < 255
 						col.green = (1.3*col.green).toInt()
-					lng..move(true, caster.pos+zoffset, targetEntity.pos+zoffset)
+					lng..move(true, caster.getPos()+zoffset, targetEntity.getPos()+zoffset)
 					..setColor(col)
-					if cb.isLast() or caster.pos.distToVec(targetEntity.pos) > maxDistance
+					if cb.isLast() or caster.getPos().distToVec(targetEntity.getPos()) > maxDistance
 						lng.destr()
 						eff.destr()
 						caster.actor.setHP(caster.actor.getHP() + sg_damage * getSafeGuardHealPercent(lvl))
