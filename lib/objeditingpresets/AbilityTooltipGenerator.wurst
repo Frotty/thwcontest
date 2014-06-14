@@ -134,9 +134,9 @@ public class AbilityTooltipGenerator
 		if lvl == -1
 			newString = oldString
 		else if charPosCount <= 0
-			newString = "|cffFFCC00" + oldString 
+			newString = "|cffFFCC00" + oldString + "|r"
 		else if maxLevel <= 1
-			newString = "|cffFFCC00" + oldString
+			newString = "|cffFFCC00" + oldString + "|r"
 		else if lvl == 1
 			newString = "|cffFFCC00" + oldString.substring(0, charPos[0]) + "|r" +  oldString.substring(charPos[0], oldString.length())
 		else if lvl == maxLevel

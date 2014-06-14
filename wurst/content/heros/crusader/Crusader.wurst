@@ -11,23 +11,21 @@ import ClosureEvents
 import StunHandler
 import ClosureForGroups
 import ClosureTimers
-import Lightning
-import DamageMod
-import Damager
 import BonusHandler
 import CrushingHalo
+import BackOff
+import SafeGuard
 import Terrain
+import AbilityTooltipGenerator
 
 int CRUSADER_ID
 
-int BACKOFF_SPELL_ID
-int SAFEGUARD_SPELL_ID
 int PHALANX_SPELL_ID
-int CRUSHING_HALO_SPELL_ID
+
+function getPhalanxArmor(int lvl) returns real
+	return 0.5 + 0.5 * lvl
 
 public class Crusader extends Hero
-	real sg_damage // saves incoming damage for healback
-	texttag sg_tt
 	trigger summontrigger
 	boolean ph_active = false
 	vec2 ph_pos
@@ -56,110 +54,15 @@ public class Crusader extends Hero
 	override function onUnitCast(int spellId, unit target, int lvl)
 		print("Crusader - onUnitCast function called")
 		switch spellId
-			case SAFEGUARD_SPELL_ID
-				castSafeGuard(target) 
 			case BACKOFF_SPELL_ID
-				castBackOff() 
+				castBackOff(pos.toVec2(),actor,lvl)
+			case SAFEGUARD_SPELL_ID
+				new SafeGuardCast(this, target,lvl) 
 			case CRUSHING_HALO_SPELL_ID
-				new CrushingHalo(pos,actor.getAbilityLevel(CRUSHING_HALO_SPELL_ID),actor)
+				new CrushingHalo(pos, lvl ,actor)
 		
 	override function onPointCast(int spellId, vec2 target, int lvl)
 	
-	function castBackOff() // Q ability of Crusader. Instant cast.
-		real abilityrange = 400 //could be dynamic later?
-		// From ClosureForGroups
-		// forUnitsInRange(pos.toVec2(), abilityrange, (unit u) -> begin
-		//       ^										  ^			  ^
-		//       |										  |			  |
-		//   (Function from package)	(parameter of the lambda expr)(starts a block if the expressions is more than 1 line)
-		// This is an anonymous function (as you might know it from c++)
-		// In this case it creates a closure which means it can capture local variables by value
-		// FOr example see safe Guard
-		// For more information on the topic: https://peq.github.io/WurstScript/manual.html#lambda_expressions_and_closures
-		//let eff = AddSpecialEffectTarget("Models\\Retribution.mdl",actor,"origin")
-		//doAfter(0.5,()->eff.destr())
-		AddSpecialEffect("Models\\RedAftershock.mdl",pos.x,pos.y).destr()
-		forUnitsInRange(pos.toVec2(), abilityrange, (unit u) -> begin
-			print("loop")
-			if u.getEntity() instanceof Creep and u.isAliveTrick()
-				print("is creep")
-				let creep = u.getEntity() castTo Creep
-				var angl = pos.angleTo2d(creep.pos)
-				if angl.radians < 0
-					angl = angle(PI2 + angl.radians)
-				print("angl = " + angl.degrees().toString() + "°")
-				print("actor = " + actor.getFacingAngle().degrees().toString() + "°")
-				if (angl - actor.getFacingAngle()).degrees().abs() < 60
-					print("is angle")
-					actor.damageTarget(creep.actor, actor.getAbilityLevel(BACKOFF_SPELL_ID)*30.)
-					creep.addVel(vec3(angl.cos() * 10, angl.sin() * 10, 10))
-					creep.actor.applyStun(false, 2, creep.owner)
-		end)
-
-				//dc.castOnTarget(c.actor)
-				//ENUM_GROUP.removeUnit(u) // Will this fuck the for cylce up?
-		//dc.castOnGroup(ENUM_GROUP) //Using dummycaster's corresponding function.
-		//destroy dc
-		
-	OnDamage onDamageClosure
-		
-	function castSafeGuard(unit target) // E ability of Crusader. Allied hero cast.
-		// Should probably work on summouns (of there every happen any) too
-		let targetEntity = target.getEntity()
-		if target == actor //Different effect if casted on self.
-			print("yuo cheating!")
-		else
-			print("created")
-			// Create local vars to be captured by closure (ignore warning)
-			let speed = 600.
-			let zoffset = vec3(0,0,50) // Lightning height offset
-			setTarget(targetEntity.pos.toVec2(),speed)
-			var jump_duration = pos.distToVec2d(targetEntity.pos) / speed //Using the same formula as the setTarget() function here.
-			if jump_duration < 1.
-				jump_duration = 1./speed
-			jump_duration *= ANIMATION_PERIOD
-			doAfter(jump_duration, () -> begin //We only add the effects of the ability when the jump is done.
-				let channel_duration = 5.
-				let maxDistance = 500
-				let lng = addLightning("SPLK", true, pos+zoffset, targetEntity.pos+zoffset)
-				let eff = AddSpecialEffectTarget("Models\\DivineBarrier1.mdx",targetEntity.actor,"origin")
-				sg_tt = createTTEx(target.getPos().withZ(150), "", 11, colorA(122,200,255,255))
-
-				OnDamage ond = (unit damaged, unit source, real amount) -> begin
-					let dmg = getDamage() //* 0.75
-					modifyDamage(0)//(getDamage() * 0.25)
-					sg_damage += dmg
-					source.damageTarget(actor, dmg)
-					var col = lng.getColor()
-					if col.green > 150
-						col.green = 2
-						col.blue = 2
-					sg_tt.setText(sg_damage.toInt().toString(),11)
-					lng.setColor(col)
-					AddSpecialEffectTarget("Abilities\\Spells\\Human\\Feedback\\SpellBreakerAttack.mdl",targetEntity.actor,"origin").destr()
-					AddSpecialEffectTarget("Abilities\\Spells\\Human\\Feedback\\SpellBreakerAttack.mdl",actor,"origin").destr()
-				end
-				
-				onDamage(target, ond)
-				doPeriodicallyTimed(ANIMATION_PERIOD, 5, (CallbackCounted cb) -> begin
-					var col = lng.getColor()
-					col.alpha = ((maxDistance - (pos.distToVec(targetEntity.pos) / maxDistance)) * 255).toInt()
-					if col.blue < 255
-						col.blue = (col.blue*1.3).toInt()
-					if col.green < 255
-						col.green = (1.3*col.green).toInt()
-					lng..move(true, pos+zoffset, targetEntity.pos+zoffset)
-					..setColor(col)
-					if cb.isLast() or pos.distToVec(targetEntity.pos) > maxDistance
-						lng.destr()
-						eff.destr()
-						actor.setHP(actor.getHP() + sg_damage * 0.75)
-						sg_damage = 0
-						AddSpecialEffectTarget("Abilities\\Spells\\Human\\Heal\\HealTarget.mdl",actor,"origin").destr()
-						sg_tt.destr()
-						destroy ond
-				end)
-			end)
 		
 	static function addPhalanx()
 		unit source = GetSummoningUnit()
@@ -181,7 +84,7 @@ public class Crusader extends Hero
 					if GetFilterUnit().getEntity() instanceof Creep and GetFilterUnit().isAliveTrick()
 						nearby ++
 				end)
-				var armor = (nearby *c.actor.getAbilityLevel(PHALANX_SPELL_ID) *0.75).toInt()
+				var armor = (nearby * getPhalanxArmor(c.actor.getAbilityLevel(PHALANX_SPELL_ID))).toInt()
 				//We only want to add the difference every period. If we used absolute values, other extra Armor effects could be hurt.
 				addUnitBonus(c.actor,Bonus.ARMOR, armor - added_armor)
 				added_armor = armor
@@ -225,47 +128,27 @@ public class Crusader extends Hero
 public function init_Crusader(boolean compiletime)
 	CRUSADER_ID = HERO_ID_GEN.next()
 	// generate valid id
-	BACKOFF_SPELL_ID = ABIL_ID_GEN.next()
-	SAFEGUARD_SPELL_ID = ABIL_ID_GEN.next()
+	init_BackOff(compiletime)
+	init_SafeGuard(compiletime)
 	PHALANX_SPELL_ID = ABIL_ID_GEN.next()
-	CRUSHING_HALO_SPELL_ID = ABIL_ID_GEN.next()
+	init_CrushingHalo(compiletime)
 	
 	if compiletime
 		// Generate def if compieltime
-		var backoff = new ChannelAbilityPreset(BACKOFF_SPELL_ID, 4)
-		// Set Attributes
-		backoff..removeChannelProperties(true)..setName("Back Off")
-			..setButtonPositionNormalX(0)..setButtonPositionNormalY(2)
-			..setIcon("BTNCrushUndead")..setOption(Option.VISIBLE, true)
-			..setOrderStringActivate("warstomp")
 		
-		var safeguard = new ChannelAbilityPreset(SAFEGUARD_SPELL_ID, 4)
-		// Set Attributes
-		safeguard..removeChannelProperties(true)..setName("Safeguard")
-			..setButtonPositionNormalX(2)..setButtonPositionNormalY(2)
-			..setButtonPositionResearchX(2)..setButtonPositionResearchY(0)
-			..setIcon("BTNSpell_Holy_HolyNova")..setOption(Option.VISIBLE, true)
-			..setCastRange(1,400)..setTargetType(Targettype.UTARGET)
-			..setTargetsAllowed(1,"friend")
-			
 		var phalanx = new AbilityDefinitionBladeMasterMirrorImage(PHALANX_SPELL_ID)
-		phalanx..setName("Phalanx")
+		phalanx..setName("Phalanx")..setLevels(4)
 			..setButtonPositionNormalX(1)..setButtonPositionNormalY(2)
 			..setButtonPositionResearchX(1)..setButtonPositionResearchY(0)
 			..setNumberofImages(1,2)..setDamageDealt(1,0)..setDamageTaken(1,1.2)
 			..setManaCost(1,0)..setIconNormal("ReplaceableTextures\\CommandButtons\\BTN_cr_charge.blp")
 			..setIconResearch("ReplaceableTextures\\CommandButtons\\BTN_cr_charge.blp")
-			..setTooltipLearnExtended("Creates two identical Crusader fighters in a formation. Crusader will gain extra armor based on the number of zombies around, as long as he stays in the formation.")
-		
-		var crushinghalo = new ChannelAbilityPreset(CRUSHING_HALO_SPELL_ID, 1)
-		crushinghalo..removeChannelProperties(true)..setName("Crushing Halo")
-			..setButtonPositionNormalX(3)..setButtonPositionNormalY(2)
-			..setButtonPositionResearchX(3)..setButtonPositionResearchY(0)
-			..setIcon("BTNHoly")..setOption(Option.VISIBLE, true)
-			..setOrderStringActivate("holybolt")
-		
-		
-		
+			//..setTooltipLearnExtended("Creates two identical Crusader fighters in a formation. Crusader will gain extra armor based on the number of zombies around, as long as he stays in the formation.")
+		// Doesnt work with mirrorImage preset:
+		new AbilityTooltipGenerator("Phalanx","W",Targettype.NOTARGET,4, "Creates two phalanx buddies")
+			..addProperty("Extra Armor/enemy:", (int lvl) -> getPhalanxArmor(lvl).toString())
+			..addProperty("Cooldown:", (10.).toString())
+			..applyToDef(phalanx)
 		let preset = new HeroPreset(CRUSADER_ID, 'Hlgr', "Crusader")
 		preset..addProperName("Eric")
 			..setModelFile("units\\other\\BloodElfLieutenant\\BloodElfLieutenant.mdl")

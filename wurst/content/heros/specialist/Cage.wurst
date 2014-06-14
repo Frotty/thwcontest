@@ -1,0 +1,77 @@
+package Cage
+
+import Hero
+import Entity
+import Lightning
+import ClosureTimers
+import AbilityTooltipGenerator
+
+public int CAGE_SPELL_ID
+public int CAGE_SECONDARY_SPELL_ID
+int CAGE_NODE_ID
+
+constant zoffset = vec3(0,0,60)
+
+function getCageDuration(int lvl) returns real
+	return 7. + lvl
+
+public class CageNode extends UnitEntity
+	
+	construct( vec3 pos, player owner)
+		super(pos, createUnit(owner , 'hpea' /*CAGE_NODE_ID*/ ,pos , angle(0) ) )
+		
+		
+
+public class Cage
+	LinkedList<CageNode> nodes
+	LinkedList<lightning> lngs
+	Hero caster
+	int lvl
+	
+	construct(vec3 pos, Hero caster,int level)
+		nodes = new LinkedList<CageNode> ()
+		nodes.add(new CageNode(pos,caster.owner))
+		lvl = level
+		this.caster = caster
+		lngs = new LinkedList<lightning> ()
+		lngs.add(addLightning("FORK", true, pos+zoffset, caster.pos+zoffset))
+		lngs.get(0).setColor(colorA(255,255,255,128))
+		doPeriodicallyTimed(ANIMATION_PERIOD,getCageDuration(lvl), (CallbackCounted cb)-> begin 
+			update()
+			if cb.isLast()
+				destroy this
+		end)
+		
+	function addNode(vec3 pos)
+		if nodes.getSize() < 4
+			nodes.add(new CageNode(pos,caster.owner))
+			lngs.add(addLightning("FORK", true, pos+zoffset, caster.pos+zoffset))
+			lngs.get(lngs.getSize()-2).setColor(colorA(255,255,255,255))
+			lngs.get(lngs.getSize()-1).setColor(colorA(255,255,255,128))
+		else if nodes.getSize() == 4
+			lngs.get(lngs.getSize()-1).setColor(colorA(255,255,255,255))
+	
+	function update()
+		if nodes.getSize() < 4
+			lngs.get(lngs.getSize()-1).move(true, nodes.get(nodes.getSize()-1).pos+zoffset, caster.pos+zoffset)
+	
+	ondestroy
+		for n in nodes
+			destroy n
+		for l in lngs
+			l.destr()
+
+public function init_Cage(boolean compileTime)
+	
+	CAGE_SPELL_ID = ABIL_ID_GEN.next()
+	CAGE_SECONDARY_SPELL_ID = ABIL_ID_GEN.next()
+	
+	if compileTime
+		var cage = new ChannelAbilityPreset(CAGE_SPELL_ID, 1)
+		cage..removeChannelProperties(true)..setName("Cage")
+			..setButtonPositionNormalX(3)..setButtonPositionNormalY(2)
+			..setButtonPositionResearchX(3)..setButtonPositionResearchY(0)
+			..setIcon("BTNHolyBolt")..setOption(Option.VISIBLE, true)
+			..setOrderStringActivate("holybolt")
+		
+		

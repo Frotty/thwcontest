@@ -33,7 +33,7 @@ constant int uniquecastval = 16
 public function Targettype.toString() returns string
 	switch this
 		case NOTARGET
-			return "No Target"
+			return "Instant Cast"
 		case Targettype.PTARGET
 			return "Point Target"
 		case Targettype.UTARGET

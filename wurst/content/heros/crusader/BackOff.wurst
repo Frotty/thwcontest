@@ -1,0 +1,69 @@
+package BackOff
+
+import MapStuff
+import ClosureForGroups
+import AbilityTooltipGenerator
+import StunHandler
+import Creep
+
+public int BACKOFF_SPELL_ID
+
+constant BACKOFF_NAME = "Back Off!"
+constant BACKOFF_HOTKEY = "Q"
+constant BACKOFF_COOLDOWN = 22
+constant BACKOFF_MAXLVL = 4
+
+function getBackOffRadius(int lvl) returns real
+	return 300. + 64 * lvl
+	
+function getBackOffPower(int lvl) returns real
+	return 7.5 + 2.5 * lvl
+	
+function getBackOffDamage(int lvl) returns real
+	return 20. + 15 * (lvl*lvl)
+	
+function getBackOffCooldown(int lvl) returns int
+	return BACKOFF_COOLDOWN - 2*lvl
+
+public function castBackOff(vec2 pos, unit actor, int lvl) // Q ability of Crusader. Instant cast.
+	real abilityrange = 400 //could be dynamic later?
+	var facing = actor.getFacingAngle()
+	AddSpecialEffect("Models\\RedAftershock.mdl",pos.x,pos.y).destr()
+	forUnitsInRange(pos, getBackOffRadius(lvl), (unit u) -> begin
+		//print("loop")
+		if u.getEntity() instanceof Creep and u.isAliveTrick()
+			//print("is creep")
+			let creep = u.getEntity() castTo Creep
+			var angl = pos.angleTo(creep.pos.toVec2())
+			if angl.radians < 0
+				angl = angle(PI2 + angl.radians)
+			//print("angl = " + angl.degrees().toString() + "°")
+			//print("actor = " + facing.degrees().toString() + "°")
+			if (angl - facing).degrees().abs() < 60
+				//print("is angle")
+				actor.damageTarget(creep.actor, getBackOffDamage(lvl))
+				var power = getBackOffPower(lvl)
+				creep.addVel(vec3(angl.cos() * power, angl.sin() * power, power))
+				creep.actor.applyStun(false, 2, creep.owner)
+	end)
+		
+	
+public function init_BackOff(boolean compileTime)
+	
+	BACKOFF_SPELL_ID = ABIL_ID_GEN.next()
+	
+	if compileTime
+		var backoff = new ChannelAbilityPreset(BACKOFF_SPELL_ID, BACKOFF_MAXLVL)
+		// Set Attributes
+		backoff..removeChannelProperties(true)..setName("Back Off")
+			..setButtonPositionNormalX(0)..setButtonPositionNormalY(2)
+			..setIcon("BTNCrushUndead")..setOption(Option.VISIBLE, true)
+			..setOrderStringActivate("warstomp")
+			//new AbilityTooltipGenerator
+		new AbilityTooltipGenerator(BACKOFF_NAME, BACKOFF_HOTKEY, Targettype.NOTARGET, BACKOFF_MAXLVL, "Knocks back enemies in front of crusader, applying stun.")
+		..addProperty("Area of Effect:", (int lvl) -> getBackOffRadius(lvl).toString())
+		..addProperty("Cooldown:", (int lvl) -> getBackOffCooldown(lvl).toString())
+		..addProperty("Knockback Power:", (int lvl) -> getBackOffPower(lvl).toString())
+		..addProperty("Damage:", (int lvl) -> getBackOffPower(lvl).toString())
+		..addProperty("Stun Duration:", (2.).toString())
+		..applyToDef(backoff)

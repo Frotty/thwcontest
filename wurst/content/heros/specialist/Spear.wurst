@@ -1,0 +1,29 @@
+package Spear
+
+import MapStuff
+import ChannelAbilityPreset
+
+public int SPEAR_SPELL_ID
+
+//public class Spear extends Projectile
+
+
+
+
+
+
+
+
+public function init_Spear(boolean compileTime)
+	SPEAR_SPELL_ID = ABIL_ID_GEN.next()
+	
+	if compileTime
+		var def = new ChannelAbilityPreset(SPEAR_SPELL_ID, 4)
+		// Set Attributes
+		def..removeChannelProperties(true)..setName("Sausage Spear")
+			..setButtonPositionNormalX(0)..setButtonPositionNormalY(2)
+			..setButtonPositionResearchX(0)..setButtonPositionResearchY(0)
+			..setIcon("BTNHolyBolt")..setOption(Option.VISIBLE, true)
+			..setTargetType(Targettype.PUTARGET)
+			..setCastRange(1,600)
+			..setOrderStringActivate("starfall")

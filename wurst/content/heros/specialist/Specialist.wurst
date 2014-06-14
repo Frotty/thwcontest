@@ -5,14 +5,16 @@ import ChannelAbilityPreset
 import AbilityObjEditing
 import Hero
 import Feed
+import Spear
+import Cage
 
 int SPECIALIST_ID
 
 int TROJAN_SPELL_ID
-int SAUSAGE_SPEAR_SPELL_ID
-int CAGE_SPELL_ID
 
 public class Specialist extends Hero
+	Cage cage
+	boolean isAct = false
 
 	construct(vec3 pos, player owner )
 		super(pos, owner, SPECIALIST_ID)
@@ -20,6 +22,12 @@ public class Specialist extends Hero
 	override function onCast(int spellId, int lvl)
 	
 	override function onUnitCast(int spellId, unit target, int lvl)
+		if spellId == CAGE_SPELL_ID
+			if isAct
+				cage.addNode(pos)
+			else
+				cage = new Cage(pos, this, lvl)
+				isAct = true
 
 	override function onPointCast(int spellId, vec2 target, int lvl)
 		if spellId == FEED_SPELL_ID
@@ -29,9 +37,10 @@ public function init_Specialist(boolean compileTime)
 	SPECIALIST_ID = HERO_ID_GEN.next()
 	// generate valid id
 	init_Feed(compileTime)
+	init_Spear(compileTime)
 	TROJAN_SPELL_ID = ABIL_ID_GEN.next()
 	//SAUSAGE_SPEAR_SPELL_ID = ABIL_ID_GEN.next()
-	CAGE_SPELL_ID = ABIL_ID_GEN.next()
+	init_Cage(compileTime)
 	
 	if compileTime
 		// Generate def if compieltime
@@ -46,15 +55,6 @@ public function init_Specialist(boolean compileTime)
 			..setTargetType(Targettype.PUTARGET)
 			..setTargetsAllowed(1,"friend")
 			
-		
-		var cage = new ChannelAbilityPreset(CAGE_SPELL_ID, 1)
-		cage..removeChannelProperties(true)..setName("Cage")
-			..setButtonPositionNormalX(3)..setButtonPositionNormalY(2)
-			..setButtonPositionResearchX(3)..setButtonPositionResearchY(0)
-			..setIcon("BTNHolyBolt")..setOption(Option.VISIBLE, true)
-			..setOrderStringActivate("holybolt")
-		
-		
 		
 		let preset = new HeroPreset(SPECIALIST_ID, 'Edem', "Specialist")
 		preset..addProperName("Francis")
