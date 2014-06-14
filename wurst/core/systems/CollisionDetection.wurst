@@ -1,0 +1,66 @@
+package CollisionDetection
+import MapStuff
+import AbilityObjEditing
+import MapBounds
+import HashMap
+
+int MAX_COLLISION_SIZE
+int MIN_COLLISION_SIZE
+int array ids
+HashMap<unit, collisionCallback> callbackMap = new HashMap<unit, collisionCallback>()
+
+public abstract class collisionCallback
+	abstract function run(unit hit, unit hitter)
+	
+public function unit.registerOnHitCallback(collisionCallback cc)
+	callbackMap.put(this, cc)
+	
+public function unit.registerOnHitCallback(int radius, collisionCallback cc)
+	if radius < MIN_COLLISION_SIZE or radius > MAX_COLLISION_SIZE
+		error("Radius out of Bounds")
+	callbackMap.put(this, cc)
+	this.addAbility(ids[radius])
+	
+public function unit.removeOnHitCallback()
+	callbackMap.put(this, null)
+
+
+trigger enterRect = CreateTrigger()
+trigger damageTrig = CreateTrigger()
+
+function unit.registerDamage()
+	damageTrig.registerUnitEvent(this, EVENT_UNIT_DAMAGED)
+
+public function init_CollisionDetection(boolean c, int minCollisionSize, int maxCollisionSize)
+	MAX_COLLISION_SIZE = maxCollisionSize
+	MIN_COLLISION_SIZE = minCollisionSize
+	for i = MIN_COLLISION_SIZE to MAX_COLLISION_SIZE
+		ids[i] = ABIL_ID_GEN.next()
+		ids[i+1] = ids[i]
+		ids[i+2] = ids[i]
+		ids[i+3] = ids[i]
+		if c
+			var def = new AbilityDefinitionPhoenixFire(ids[i])
+			..setMissileArt("")..setMissileSpeed(0)..setEditorSuffix("(Collision Detection)")
+			for j = 1 to 4
+				def..setAreaofEffect(j, i+j * 1.)
+				..setInitialDamage(j, 0)..setDamagePerSecond(j, 0)..setCooldown(j, 0.03)..setTargetsAllowed(j, "air,ground,notself")
+		i += 3
+			
+	if not c
+		damageTrig.addAction(() -> begin
+			let u = GetTriggerUnit()
+			if u.hasAbility('Bpxf')
+				u.removeAbility('Bpxf')
+				var cc = callbackMap.get(u)
+				let u2 = GetEventDamageSource()
+				print(u2.getName())
+				if cc != null
+					cc.run(u, u2)
+				cc = callbackMap.get(u2)
+				if cc != null
+					cc.run(u, u2)
+					
+		end)
+		enterRect.registerEnterRegion(mapRegion, Filter(() -> GetFilterUnit().registerDamage()))
+		
