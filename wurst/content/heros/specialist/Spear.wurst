@@ -8,6 +8,7 @@ import Creep
 import CollisionDetection
 import ClosureTimers
 import Terrain
+import StunHandler
 
 public int SPEAR_SPELL_ID
 
@@ -45,6 +46,8 @@ public class Spear extends Projectile
 				else if cb.getCount() == lastCount.get(i)
 					targets.get(i).addVel(vec2(0,0).polarOffset(xyAngle,getSpearSpeed(lvl)).toVec3())
 					targets.removeAt(i)
+			if cb.isLast()
+				destroy this
 		end
 		let period = ANIMATION_PERIOD
 		doPeriodicallyTimed(period, getSpearRange(lvl)/getSpearSpeed(lvl), cb)
@@ -57,6 +60,7 @@ public class Spear extends Projectile
 					// Todo MASS handling
 					if targets.getSize() < getSpearTargetCount(lvl)
 						targets.add(c)
+						hit..applyStun(false, 2, c.owner)
 						let w = c.weightFactor
 						lastCount.add(cb.getCount()-((getSpearRange(lvl)/getSpearSpeed(lvl)*w*w*w)/period).toInt())
 		end)
