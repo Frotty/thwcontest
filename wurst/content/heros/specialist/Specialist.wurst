@@ -7,6 +7,7 @@ import Hero
 import Feed
 import Spear
 import Cage
+import Terrain
 
 int SPECIALIST_ID
 
@@ -24,14 +25,16 @@ public class Specialist extends Hero
 	override function onUnitCast(int spellId, unit target, int lvl)
 		if spellId == CAGE_SPELL_ID
 			if isAct
-				cage.addNode(pos)
+				cage.addNode(getPos())
 			else
-				cage = new Cage(pos, this, lvl)
+				cage = new Cage(getPos(), this, lvl)
 				isAct = true
 
 	override function onPointCast(int spellId, vec2 target, int lvl)
 		if spellId == FEED_SPELL_ID
-			new FoodProjectile( pos, owner, pos.distToVec2d(target),pos.toVec2().angleTo(target))
+			new FoodProjectile( getPos(), owner, getPos().distToVec2d(target),getPos().toVec2().angleTo(target))
+		if spellId == SPEAR_SPELL_ID
+			new Spear(getPos()-vec3(0,0,getTerrainZ(getPos().toVec2())), owner,  getPos().angleTo2d(target) ,lvl)
 
 public function init_Specialist(boolean compileTime)
 	SPECIALIST_ID = HERO_ID_GEN.next()
@@ -60,8 +63,8 @@ public function init_Specialist(boolean compileTime)
 		preset..addProperName("Francis")
 			..setModelFile("units\\creeps\\Medivh\\Medivh.mdl")
 			..addHeroAbility(FEED_SPELL_ID)
+			..addHeroAbility(SPEAR_SPELL_ID)
 			..addHeroAbility(TROJAN_SPELL_ID)
-			//..addHeroAbility(SAUSAGE_SPEAR_SPELL_ID)
 			..addHeroAbility(CAGE_SPELL_ID)
 		// Build at the end
 			..buildHero()

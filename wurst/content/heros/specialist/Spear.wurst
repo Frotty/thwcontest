@@ -2,15 +2,72 @@ package Spear
 
 import MapStuff
 import ChannelAbilityPreset
+import Projectile
+import LinkedList
+import Creep
+import CollisionDetection
+import ClosureTimers
+import Terrain
 
 public int SPEAR_SPELL_ID
 
-//public class Spear extends Projectile
+constant SPEAR_FX = "abilities\\weapons\\WyvernSpear\\WyvernSpearMissile.mdl"
 
+function getSpearDamage(int lvl) returns real
+	return 10. + 20 * lvl*lvl
+	
+function getSpearTargetCount(int lvl) returns int
+	return 1 + 2 * lvl*lvl
 
+function getSpearSpeed(int lvl) returns real
+	return (1000. + lvl)/ANIMATION_PERIOD
+	
+function getSpearRange(int lvl) returns real
+	return 600. + 200 * lvl
+	
+public class Spear extends Projectile
+	LinkedList<Creep> targets
+	LinkedList<int> lastCount
+	
+	construct( vec3 pos, player owner, angle xyAngle, int lvl )
+		super(pos, owner, xyAngle, SPEAR_FX )
+		targets = new LinkedList<Creep> ()
+		lastCount = new LinkedList<int> ()
+		
+		setRanged(getSpearRange(lvl))
+		setSpeed(getSpearSpeed(lvl))
+		
+		CallbackCounted cb = (CallbackCounted cb) -> begin
+			for i=0 to targets.getSize()-1
+				if cb.getCount() > lastCount.get(i)
+					var p = fx.getPos2().polarOffset(xyAngle,i*10.)
+					targets.get(i).setPos(p.toVec3(), getTerrainZ(p))
+				else if cb.getCount() == lastCount.get(i)
+					targets.get(i).addVel(vec2(0,0).polarOffset(xyAngle,getSpearSpeed(lvl)).toVec3())
+					targets.removeAt(i)
+		end
+		let period = ANIMATION_PERIOD
+		doPeriodicallyTimed(period, getSpearRange(lvl)/getSpearSpeed(lvl), cb)
+		
+		fx.getDummy().registerOnHitCallback(32, false, (unit hit, unit hitter) -> begin
+			if fx.getDummy() == hitter
+				if hit.getEntity() instanceof Creep and hit.isAliveTrick()
+					var c = hit.getEntity() castTo Creep
+					fx.getDummy().damageTarget(hit, getSpearDamage(lvl))
+					// Todo MASS handling
+					if targets.getSize() < getSpearTargetCount(lvl)
+						targets.add(c)
+						let w = c.weightFactor
+						lastCount.add(cb.getCount()-((getSpearRange(lvl)/getSpearSpeed(lvl)*w*w*w)/period).toInt())
+		end)
+		
+		
+		
+		
+	override function update()
 
-
-
+	ondestroy
+		fx.getDummy().removeOnHitCallback()
 
 
 
@@ -21,9 +78,9 @@ public function init_Spear(boolean compileTime)
 		var def = new ChannelAbilityPreset(SPEAR_SPELL_ID, 4)
 		// Set Attributes
 		def..removeChannelProperties(true)..setName("Sausage Spear")
-			..setButtonPositionNormalX(0)..setButtonPositionNormalY(2)
-			..setButtonPositionResearchX(0)..setButtonPositionResearchY(0)
-			..setIcon("BTNHolyBolt")..setOption(Option.VISIBLE, true)
+			..setButtonPositionNormalX(1)..setButtonPositionNormalY(2)
+			..setButtonPositionResearchX(1)..setButtonPositionResearchY(0)
+			..setIcon("BTNThoriumRanged")..setOption(Option.VISIBLE, true)
 			..setTargetType(Targettype.PUTARGET)
-			..setCastRange(1,600)
+			..setCastRange(1,1000)
 			..setOrderStringActivate("starfall")
