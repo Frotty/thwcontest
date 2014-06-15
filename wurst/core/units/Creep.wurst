@@ -20,6 +20,10 @@ public function copyCreepDef(string name) returns CreepDefinition
 			return creepDefs.get(i).copy()
 	error("No CreepDefinition saved for name: \"" + name + "\"")
 	return null
+	
+trigger creepDeath = CreateTrigger()
+init
+	creepDeath.addAction(() -> destroy GetTriggerUnit().getEntity())
 
 public class Creep extends UnitEntity
 	use PhysicsModule
@@ -27,6 +31,7 @@ public class Creep extends UnitEntity
 	construct(vec3 pos, int id, angle a, vec2 target)
 		super(pos, createUnit(CREEP_PLAYER, id, pos, a))
 		actor.issuePointOrder("attack", target)
+		creepDeath.registerUnitEvent(actor, EVENT_UNIT_DEATH)
 		
 	override function update()
 		super.update()
