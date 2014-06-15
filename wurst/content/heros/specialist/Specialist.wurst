@@ -32,9 +32,10 @@ public class Specialist extends Hero
 
 	override function onPointCast(int spellId, vec2 target, int lvl)
 		if spellId == FEED_SPELL_ID
-			new FoodProjectile( getPos(), owner, getPos().distToVec2d(target),getPos().toVec2().angleTo(target))
+			new FoodProjectile( getPos(), owner, pos.distToVec2d(target),pos.toVec2().angleTo(target), lvl)
 		if spellId == SPEAR_SPELL_ID
 			new Spear(getPos()-vec3(0,0,getTerrainZ(getPos().toVec2())), owner,  getPos().angleTo2d(target) ,lvl)
+
 
 public function init_Specialist(boolean compileTime)
 	SPECIALIST_ID = HERO_ID_GEN.next()

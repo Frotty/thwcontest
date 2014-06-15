@@ -12,6 +12,9 @@ import ClosureEvents
 public int FEED_SPELL_ID
 int FOOD_DUMMY_ID
 
+function getFeedMeatHP(int lvl) returns int
+	return 100 * lvl
+
 string foodProjectile_fx = "Models\\Ham.mdl"
 real foodProjectile_radius = 90.
 real friction = 0.9
@@ -21,12 +24,16 @@ public class FoodProjectile extends Projectile
 	boolean arrived = false
 	trigger range_trigger
 	texttag tt = null
+	real damage = 0.
+	OnDamage ond
 	
-	construct( vec3 pos, player owner,real dist, angle xyAngle )
+	construct( vec3 pos, player owner,real dist, angle xyAngle, int lvl )
 		super( pos, foodProjectile_radius, owner, xyAngle, foodProjectile_fx )
 		print("Created Food Projectile. Is it Flying?")
 		//Do the same as setTarget
 		setSpeed((1/friction - 1)*dist / ANIMATION_PERIOD)
+		damage = getFeedMeatHP(lvl) * 1.
+		getDummy()..setUserData(this castTo int)
 	
 	override function update()
 		super.update()
@@ -36,12 +43,18 @@ public class FoodProjectile extends Projectile
 				arrived = true
 				dummyUnit = createUnit(CREEP_PLAYER,FOOD_DUMMY_ID,pos,angle(0))
 				dummyUnit..addAbility('Agho')..setUserData(this castTo int)
-						
-					
+				ond = onDamage(dummyUnit, (unit damaged, unit source, real amount) -> begin
+					print("ok")
+					let fp = damaged.getUserData() castTo FoodProjectile
+					fp.damage -= amount
+					tt.setText(damage.toString(), 10)
+					if fp.damage <= 0
+						destroy fp
+				end)					
 				range_trigger = CreateTrigger()
 				range_trigger.registerUnitInRangeSource(dummyUnit,400, null)
 				range_trigger.addAction(function onFoodRange)
-				tt = createTTEx(pos + vec3(0,0,100), "Ham", 10, colorA(250,80,80,210))
+				tt = createTTEx(pos + vec3(0,0,100), damage.toString(), 10, colorA(250,80,80,210))
 		else
 			setSpeed(getSpeed()*friction)
 			
@@ -62,6 +75,7 @@ public class FoodProjectile extends Projectile
 		dummyUnit.remove()
 		range_trigger.destr()
 		tt.destr()
+		destroy ond
 	
 
 public function init_Feed(boolean compileTime)
