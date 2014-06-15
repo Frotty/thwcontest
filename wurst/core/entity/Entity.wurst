@@ -43,6 +43,8 @@ public abstract class Entity
 	/** sleeping or active? */
 	boolean active 		= true
 	boolean needPhysicsUpdate = false
+	
+	real weightFactor = 1.
 
 
 	construct( vec3 pos, player owner )
@@ -92,7 +94,7 @@ public abstract class Entity
 			needPhysicsUpdate = true
 		
 	function setVel( vec3 vel )
-		this.vel = vel
+		this.vel = vel * weightFactor
 		needPhysicsUpdate = true
 		
 	function setZ( real z )
@@ -100,7 +102,7 @@ public abstract class Entity
 		needPhysicsUpdate = true
 	
 	function addVel( vec3 vel )
-		this.vel += vel
+		this.vel += vel * weightFactor
 		needPhysicsUpdate = true
 		
 	function setTarget( vec2 tpos, real speed )
@@ -162,6 +164,7 @@ abstract public class UnitEntity extends Entity
 		return pos
 		
 	override function getPos2d() returns vec2
+		print("pos update " + lastPosChange.toString() + " curr:" + currentTime.toString())
 		if lastPosChange < currentTime
 			lastPosChange = currentTime
 			pos = vec3(actor.getX(), actor.getY(), pos.z)

@@ -10,10 +10,18 @@ import ClosureForGroups
 
 constant NAPALM_DURATION = 4
 constant NAPALM_BURN_DURATION = 5
+constant NAPALM_NAME = "Drop Napalm"
+constant NAPALM_HOTKEY = "W"
 
 public constant IGNITE_DISTANCE_SQ = 75*75
 
 public int NAPALM_SPELL_ID
+
+public function getNapalmDropDuration(int lvl) returns int
+	return min(5, 2 + lvl)
+	
+function getNapalmLifespan(int lvl) returns int
+	return 5 + lvl
 
 public LinkedList<NapalmDroplet> freshNapalms = new LinkedList<NapalmDroplet>()
 public LinkedList<NapalmDroplet> burningNapalms = new LinkedList<NapalmDroplet>()
@@ -42,7 +50,7 @@ public class NapalmDroplet
 		burningNapalms.add(this)
 		freshNapalms.remove(this)
 		
-		doPeriodicallyTimed(0.25, 10, (CallbackCounted cb) -> begin
+		doPeriodicallyTimed(0.25, getNapalmLifespan(lvl) * 1., (CallbackCounted cb) -> begin
 			col.alpha = (255 * (cb.getCount()/40)).toInt()
 			img.setColor(col)
 			forUnitsInRange(pos, 64, (unit u) -> begin
@@ -75,6 +83,12 @@ public function init_Napalm(boolean c)
 		// Set Attributes
 		spreset..removeChannelProperties(true)..setName("Napalm")..setButtonPosNormal(1,2)
 			..setIcon("BTNFieryExplosion")..setOption(Option.VISIBLE, true)..setHotkey("W")
+		new AbilityTooltipGenerator(NAPALM_NAME, NAPALM_HOTKEY, Targettype.NOTARGET, 4, "Starts dropping Napalm for a given duration.\nThe napalm sticks to the ground and lasts until it gets ignited.\n" 
+																						+ "You can ignite Napalm with any fire source. Napalm ignites all objects around it.\n"
+																						+ "Enemies that run into Napalm cannot lose XBurn.")
+		..addProperty("Dropping Duration:", (int lvl) -> getNapalmDropDuration(lvl).toString())
+		..addProperty("Lifespan:", (int lvl) -> getNapalmLifespan(lvl).toString())
+		..applyToDef(spreset)
 			
 		
 string array firePaths

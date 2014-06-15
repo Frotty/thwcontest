@@ -30,5 +30,5 @@ package AbilityTooltipGenerator_config
 	lvl = The level of the Ability
 */
 @config constant LEARN_PATTERN = "|cffFFCC00Learn|r $name$ [|cffFFCC00$hotkey$|r]"
-@config constant NORMAL_ACTIVE_PATTERN = "$name$ - $lvl$ [|cffFFCC00$hotkey$|r]"
-@config constant NORMAL_PASSIVE_PATTERN = "$name$ - $lvl$"
+@config constant NORMAL_ACTIVE_PATTERN = "$name$ - Level $lvl$ [|cffFFCC00$hotkey$|r]"
+@config constant NORMAL_PASSIVE_PATTERN = "$name$ - Level $lvl$"

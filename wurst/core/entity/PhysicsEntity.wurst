@@ -2,7 +2,7 @@ package PhysicsEntity
 import Entity
 import Terrain
 import GameConstants
-
+import MapBounds
 //Module for Physical Simulation
 public module PhysicsModule
 	/** Affected by gravity */
@@ -20,7 +20,8 @@ public module PhysicsModule
 	function physicsUpdate(Entity e, boolean checkForSleep)
 		let pos = e.getPos()
 		let vel = e.getVel()
-
+		if not pos.toVec2().inBounds()
+			e.scaleVel(-1.5)
 		if checkForSleep
 			if vel.lengthSquared() < 1 and not flying
 				e.needPhysicsUpdate = false

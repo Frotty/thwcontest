@@ -22,10 +22,10 @@ public class Technician extends Hero
 	override function onUnitCast(int spellId, unit target, int lvl)
 		switch spellId
 			case NAPALM_SPELL_ID
-				napalm_Last = pos.toVec2()
+				napalm_Last = getPos2d()
 				new NapalmDroplet(napalm_Last, this, lvl)
-				doPeriodicallyTimed(ANIMATION_PERIOD, 3. + lvl, (CallbackCounted cb) -> begin
-					if pos.distToVec2dSquared(napalm_Last) > 40*40
+				doPeriodicallyTimed(ANIMATION_PERIOD, getNapalmDropDuration(lvl) * 1., (CallbackCounted cb) -> begin
+					if getPos().distToVec2dSquared(napalm_Last) > 40*40
 						napalm_Last = getPos2d()
 						new NapalmDroplet(napalm_Last, this, lvl)
 				end)		

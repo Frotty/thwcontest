@@ -57,7 +57,7 @@ public class BuffDef
 		
 	function generate()
 		let bid = new BuffDefinition(buff_id, 'Basl')
-		bid..setName(1, name)..setTooltipNormal(1, tooltip)
+		bid..setName(1, name)..setTooltipNormal(1, name)..setTooltipNormalExtended(1, tooltip)
 		..setIcon(iconPath)..setTarget(1, buffArt)
 		..setEditorSuffix(1, "(BuffHandler)")
 		let tid = new AbilityDefinitionAuraSlow(tornado_id)
