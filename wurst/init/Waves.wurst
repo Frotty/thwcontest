@@ -29,7 +29,7 @@ public function wave_1() returns WavePool
 	// Add Def to pool with amount and time (when to spawn after wave started)
 	// Add Spawns chronologically, cause the Pool doesn't get sorted
 	// You can implement a sort if you want kari :D
-	pool.setDuration(6)
+	pool.setDuration(30)
 
 	pool.addSpawn(def,5,0,SpawnerGroup.WEST)
 	pool.addSpawn(def,5,10,SpawnerGroup.NORTH)
@@ -56,7 +56,7 @@ public function wave_2() returns WavePool
 	pool.addSpawn(copyCreepDef("Lesser Zombie"), 3, 20, SpawnerGroup.ALL)
 	pool.addSpawn(mam,1,21,SpawnerGroup.NORTH)
 	pool.addSpawn(copyCreepDef("Lesser Zombie"), 3, 22, SpawnerGroup.ALL)
-	pool.setDuration(5)
+	pool.setDuration(50)
 	return pool
 
 public function wave_3() returns WavePool
@@ -79,7 +79,7 @@ public function wave_3() returns WavePool
 	pool.addSpawn(zom, 10,0, SpawnerGroup.ALL)
 	
 	
-	pool.setDuration(4)
+	pool.setDuration(40)
 	return pool
 	
 public function wave_4() returns WavePool
@@ -97,7 +97,7 @@ public function wave_4() returns WavePool
 	pool.addSpawn(copyCreepDef("Zombie"), 4,0, SpawnerGroup.ALL)
 	
 	
-	pool.setDuration(40)
+	pool.setDuration(400)
 	return pool
 	
 	
