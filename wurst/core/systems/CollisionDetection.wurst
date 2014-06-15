@@ -9,15 +9,15 @@ int MIN_COLLISION_SIZE
 int array fastIds
 int array slowIds
 
-HashMap<unit, collisionCallback> callbackMap = new HashMap<unit, collisionCallback>()
+HashMap<unit, CollisionCallback> callbackMap = new HashMap<unit, CollisionCallback>()
 
-public abstract class collisionCallback
+public abstract class CollisionCallback
 	abstract function run(unit hit, unit hitter)
 	
-public function unit.registerOnHitCallback(collisionCallback cc)
+public function unit.registerOnHitCallback(CollisionCallback cc)
 	callbackMap.put(this, cc)
 	
-public function unit.registerOnHitCallback(int radius, boolean fast, collisionCallback cc )
+public function unit.registerOnHitCallback(int radius, boolean fast, CollisionCallback cc )
 	if radius < MIN_COLLISION_SIZE or radius > MAX_COLLISION_SIZE
 		error("Radius out of Bounds")
 	callbackMap.put(this, cc)
@@ -27,6 +27,7 @@ public function unit.registerOnHitCallback(int radius, boolean fast, collisionCa
 		this.addAbility(slowIds[radius])
 	
 public function unit.removeOnHitCallback()
+	destroy callbackMap.get(this)
 	callbackMap.put(this, null)
 
 

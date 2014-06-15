@@ -1,7 +1,7 @@
 package Projectile
 import public Entity
 import Angle
-
+import CollisionDetection
 
 public class Projectile extends FxEntity
 	// Angles
@@ -17,6 +17,7 @@ public class Projectile extends FxEntity
 	private real maxDist
 	private real time = 0.
 	private real maxTime
+	
 	
 	construct( vec3 pos, real radius, player owner, angle xyAngle, string fxpath )
 		super(pos, radius, owner, xyAngle, fxpath)

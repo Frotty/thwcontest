@@ -30,8 +30,7 @@ public class NapalmDroplet
 	Hero caster
 	vec2 pos
 	effect fireSfx = null
-	image img
-	unit dummy
+	image img = null
 	int lvl
 	colorA col = colorA(255,255,255,0)
 	
