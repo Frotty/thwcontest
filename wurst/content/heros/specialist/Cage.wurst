@@ -36,7 +36,7 @@ public class Cage
 		lvl = level
 		this.caster = caster
 		lngs = new LinkedList<lightning> ()
-		lngs.add(addLightning("FORK", true, pos+zoffset, caster.pos+zoffset))
+		lngs.add(addLightning("FORK", true, pos+zoffset+vec3(100,100,0), caster.pos+zoffset))
 		lngs.get(0).setColor(colorA(255,255,255,128))
 		doPeriodicallyTimed(ANIMATION_PERIOD,getCageDuration(lvl), (CallbackCounted cb)-> begin 
 			update()

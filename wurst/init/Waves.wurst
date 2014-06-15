@@ -9,6 +9,7 @@ public function allWaves() returns Queue<WavePool>
 	queue.enqueue(wave_1())
 	queue.enqueue(wave_2())
 	queue.enqueue(wave_3())
+	queue.enqueue(wave_4())
 	// Return all waves
 	return queue
 
@@ -28,7 +29,7 @@ public function wave_1() returns WavePool
 	// Add Def to pool with amount and time (when to spawn after wave started)
 	// Add Spawns chronologically, cause the Pool doesn't get sorted
 	// You can implement a sort if you want kari :D
-	pool.setDuration(60)
+	pool.setDuration(6)
 
 	pool.addSpawn(def,5,0,SpawnerGroup.WEST)
 	pool.addSpawn(def,5,10,SpawnerGroup.NORTH)
@@ -55,7 +56,7 @@ public function wave_2() returns WavePool
 	pool.addSpawn(copyCreepDef("Lesser Zombie"), 3, 20, SpawnerGroup.ALL)
 	pool.addSpawn(mam,1,21,SpawnerGroup.NORTH)
 	pool.addSpawn(copyCreepDef("Lesser Zombie"), 3, 22, SpawnerGroup.ALL)
-	pool.setDuration(50)
+	pool.setDuration(5)
 	return pool
 
 public function wave_3() returns WavePool
@@ -78,9 +79,28 @@ public function wave_3() returns WavePool
 	pool.addSpawn(zom, 10,0, SpawnerGroup.ALL)
 	
 	
+	pool.setDuration(4)
+	return pool
+	
+public function wave_4() returns WavePool
+	let pool = new WavePool()
+	
+	var def2 = new CreepDefinition("Big Zombie")
+	def2.hp = 500
+	def2.modelPath = "units\\creeps\\Zombie\\Zombie.mdl"
+	def2.scale *= 0.7
+	def2.collisionSize = 4
+	def2.movementSpeed = 300
+	
+	
+	pool.addSpawn(def2,1,2.5,SpawnerGroup.ALL)
+	pool.addSpawn(copyCreepDef("Zombie"), 4,0, SpawnerGroup.ALL)
+	
+	
 	pool.setDuration(40)
 	return pool
-
+	
+	
 public function init_Waves(boolean c)
 	let waves = allWaves()
 	// This Creates the Definitions as well but doesn#t generate the Objects (obviously we can't do this ingame)
