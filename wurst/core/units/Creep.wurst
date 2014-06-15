@@ -35,7 +35,8 @@ public class Creep extends UnitEntity
 		
 	override function update()
 		super.update()
-		physicsUpdate(this, true)
+		if needPhysicsUpdate
+			physicsUpdate(this, true)
 		
 	override function onGround()
 		addPos(getVel(), true)
