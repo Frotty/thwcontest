@@ -30,6 +30,7 @@ public class Cage
 	LinkedList<lightning> lngs
 	Hero caster
 	int lvl
+	int i = 0
 	
 	construct(vec3 pos, Hero caster,int level)
 		//Creating the lists
@@ -40,7 +41,7 @@ public class Cage
 		this.caster = caster
 		lngs = new LinkedList<lightning> ()
 		//Add a new lighting, which is likely bugs while adding to list
-		var lng = addLightning("FORK", true, pos+zoffset+vec3(100,100,0), caster.pos+zoffset)
+		var lng = addLightning("FORK", true, pos+zoffset+vec3(100,100,0), caster.getPos()+zoffset)
 		lng.setColor(colorA(255,0,255,128))
 		lngs.add(lng)
 		doPeriodicallyTimed(ANIMATION_PERIOD,getCageDuration(lvl), (CallbackCounted cb)-> begin 
@@ -53,7 +54,7 @@ public class Cage
 		if nodes.getSize() < 4
 			//Adding new nodes to the "fence"
 			nodes.add(new CageNode(pos,caster.owner))
-			var lng = addLightning("FORK", true, pos+zoffset, caster.pos+zoffset)
+			var lng = addLightning("FORK", true, pos+zoffset+vec3(100,100,0), caster.getPos()+zoffset)
 			lng.setColor(colorA(255,0,255,64))
 			//lightnings not act as intended, for example the lighting created above is not visible in game
 			lngs.add(lng)
@@ -62,13 +63,14 @@ public class Cage
 				//If there are more then 2 lightnings, the latter shall be "fixed" to the two nodes before. 
 				//Since position is right because update, there is no need to move, only color
 				lngs.get(lngs.getSize()-2).setColor(colorA(255,255,255,255))
+				lngs.get(lngs.getSize()-1).move(true, nodes.get(nodes.getSize()-1).getPos()+zoffset, nodes.get(nodes.getSize()-2).getPos()+zoffset)
 		else if nodes.getSize() == 4
 			lngs.get(lngs.getSize()-1).setColor(colorA(255,255,255,255))
 	
 	function update()
 		//This move is definitely doesn't work :(
-		if nodes.getSize() < 4
-			lngs.get(lngs.getSize()-1).move(true, nodes.get(nodes.getSize()-1).getPos()+zoffset, caster.getPos()+zoffset)
+		//if nodes.getSize() < 4
+			//lngs.get(lngs.getSize()-1).move(true, nodes.get(nodes.getSize()-1).getPos()+zoffset, caster.getPos()+zoffset)
 	
 	ondestroy
 		for n in nodes
