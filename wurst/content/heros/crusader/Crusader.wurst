@@ -55,11 +55,11 @@ public class Crusader extends Hero
 		print("Crusader - onUnitCast function called")
 		switch spellId
 			case BACKOFF_SPELL_ID
-				castBackOff(getPos().toVec2(),actor,lvl)
+				castBackOff(getPos2(),actor,lvl)
 			case SAFEGUARD_SPELL_ID
 				new SafeGuardCast(this, target,lvl) 
 			case CRUSHING_HALO_SPELL_ID
-				new CrushingHalo(getPos(), lvl ,actor)
+				new CrushingHalo(getPos3(), lvl ,actor)
 		
 	override function onPointCast(int spellId, vec2 target, int lvl)
 	
@@ -71,7 +71,7 @@ public class Crusader extends Hero
 			print("setting Caster")
 			c.actor.setFacing(c.ph_facing)
 			//Throwing him from the air, so it ignores unit collosions when falling down (hopefully)
-			c.setPos(c.ph_pos.toVec3() + vec3(0,0,30 + getTerrainZ(c.ph_pos.x,c.ph_pos.y)),getTerrainZ(c.ph_pos.x,c.ph_pos.y))
+			c.setPos3(c.ph_pos.toVec3() + vec3(0,0,30 + getTerrainZ(c.ph_pos.x,c.ph_pos.y)), true)
 			c.actor.issueImmediateOrderById(851993) //Hold Position
 			c.actor.setAnimation("defend")
 			c.ph_active = true
@@ -80,7 +80,7 @@ public class Crusader extends Hero
 			doPeriodically(1., (CallbackPeriodic cb)->begin
 				var nearby = 0
 				//Counting the units Nearby to get how many extra armor we should add.
-				forUnitsInRange(c.getPos().toVec2(),600,(unit u)->begin
+				forUnitsInRange(c.getPos2(),600,(unit u)->begin
 					if GetFilterUnit().getEntity() instanceof Creep and GetFilterUnit().isAliveTrick()
 						nearby ++
 				end)
@@ -90,7 +90,7 @@ public class Crusader extends Hero
 				added_armor = armor
 				ENUM_GROUP.clear()
 				//If Crusader is too far away, the ability shall be disabled
-				if (c.getPos().toVec2() - c.ph_pos).length() > 50
+				if (c.getPos2() - c.ph_pos).length() > 50
 					c.ph_unit1.kill()
 					c.ph_unit2.kill()
 					c.ph_active = false

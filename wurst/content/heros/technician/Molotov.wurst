@@ -1,6 +1,5 @@
 package Molotov
 import Projectile
-import PhysicsEntity
 import Terrain
 import MapStuff
 import ChannelAbilityPreset
@@ -25,8 +24,6 @@ constant EXPLO_SOUND = new Sound("Sounds\\sfx_molotov_explo.mp3", 4021, false)
 public int MOLOTOV_SPELL_ID
 
 public class Molotov extends Projectile
-	use PhysicsModule
-	
 	int bounces
 	int lvl
 	Hero caster = null
@@ -38,34 +35,34 @@ public class Molotov extends Projectile
 		setTarget(target, 300)
 		this.caster = caster
 		THROW_SOUND.playSimulatePoint(pos.toVec2())
+		active = true
 		
 	override function update()
+		super.update()
 		if bounces < 0
 			destroy this
-		else
-			physicsUpdate(this, false)
-			super.update()
 		
 
 	override function onGroundHit()
+		let pos = getPos2()
 		let nrml = getTerrainNormal(pos.x, pos.y, 4).norm()
-		if vel.dot(nrml) > 0
+		if getVel().dot(nrml) > 0
 			return
 			
-		var v = vel.project(nrml)
+		var v = getVel().project(nrml)
 		v *= -1.8
-		vel += v
-		EXPLO_SOUND.playSimulatePoint(fx.getPos2())
+		applyVel(v)
+		EXPLO_SOUND.playSimulatePoint(pos)
 		fx.flash("Models\\FlameBomb.mdx")
-		forUnitsInRange(pos.toVec2(), 128, (unit u) -> begin
+		forUnitsInRange(pos, 128, (unit u) -> begin
 			if u.getOwner().isEnemyOf(this.owner)
 				u.addXBurn(caster, 1)
 		end)
 		for n in freshNapalms
-			if pos.distToVec2dSquared(n.pos) < IGNITE_DISTANCE_SQ
+			if getPos2().distToVecSquared(n.pos) < IGNITE_DISTANCE_SQ
 				n.ignite()
 		for e in explosiveEntities
-			if pos.distToVec2dSquared(e.pos.toVec2()) < IGNITE_DISTANCE_SQ
+			if getPos2().distToVecSquared(e.getPos2()) < IGNITE_DISTANCE_SQ
 				e.explode()
 		bounces--
 

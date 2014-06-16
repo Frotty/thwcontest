@@ -16,9 +16,9 @@ int FOOD_DUMMY_ID
 function getFeedMeatHP(int lvl) returns int
 	return 100 * lvl
 
-string foodProjectile_fx = "Models\\Ham.mdl"
-real foodProjectile_radius = 90.
-real friction = 0.9
+constant foodProjectile_fx = "Models\\Ham.mdl"
+constant foodProjectile_radius = 90.
+constant friction = 0.9
 
 public class FoodProjectile extends Projectile
 	unit dummyUnit = null
@@ -28,13 +28,12 @@ public class FoodProjectile extends Projectile
 	real damage = 0.
 	OnDamage ond
 	
-	construct( vec3 pos, player owner,real dist, angle xyAngle, int lvl )
-		super( pos, foodProjectile_radius, owner, xyAngle, foodProjectile_fx )
-		print("Created Food Projectile. Is it Flying?")
+	construct( vec3 pos, player owner, real dist, angle xyAngle, int lvl )
+		super( pos, owner, xyAngle, foodProjectile_fx )
 		//Do the same as setTarget
 		setSpeed((1/friction - 1)*dist / ANIMATION_PERIOD)
 		damage = getFeedMeatHP(lvl) * 1.
-		getDummy()..setUserData(this castTo int)
+		setFixedFlyHeight(10.)
 	
 	override function update()
 		super.update()
@@ -42,7 +41,7 @@ public class FoodProjectile extends Projectile
 			if not arrived 
 				setSpeed(0) 
 				arrived = true
-				dummyUnit = createUnit(CREEP_PLAYER,FOOD_DUMMY_ID,pos,angle(0))
+				dummyUnit = createUnit(CREEP_PLAYER,FOOD_DUMMY_ID,getPos2(),angle(0))
 				dummyUnit..addAbility('Agho')..setUserData(this castTo int)
 				ond = onDamage(dummyUnit, (unit damaged, unit source, real amount) -> begin
 					print("ok")
@@ -55,10 +54,9 @@ public class FoodProjectile extends Projectile
 				range_trigger = CreateTrigger()
 				range_trigger.registerUnitInRangeSource(dummyUnit,400, null)
 				range_trigger.addAction(function onFoodRange)
-				tt = createTTEx(pos + vec3(0,0,100), damage.toString(), 10, colorA(250,80,80,210))
+				tt = createTTEx(getPos3() + vec3(0,0,100), damage.toString(), 10, colorA(250,80,80,210))
 		else
 			setSpeed(getSpeed()*friction)
-			getDummy().setFlyHeight(0,0)
 			
 	function onInRange(unit target)
 		Entity e = target.getEntity()

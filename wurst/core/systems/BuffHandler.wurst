@@ -2,6 +2,7 @@ package BuffHandler
 import BuffObjEditing
 import AbilityObjEditing
 import LinkedListModule
+import LinkedList
 import HashMap
 import ObjectIds
 import Hero

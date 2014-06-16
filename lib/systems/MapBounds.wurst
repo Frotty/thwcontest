@@ -13,6 +13,9 @@ public vec2 mapCenter
  
 public function vec2.inBounds() returns boolean
 	return this.x > mapMinX and this.x < mapMaxX and this.y > mapMinY and  this.y < mapMaxY
+	
+public function vec3.inBounds() returns boolean
+	return this.x > mapMinX and this.x < mapMaxX and this.y > mapMinY and  this.y < mapMaxY
  
 public function randomPointOnMap() returns vec2
 	return vec2(GetRandomReal(mapMinX,mapMaxX), GetRandomReal(mapMinY, mapMaxY))

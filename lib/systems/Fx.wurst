@@ -152,6 +152,10 @@ public class Fx
 	/** Get the xy position as vector tuple */			
 	function getPos3d() returns vec3
 		return vec3(getX(), getY(), getZ())
+		
+	/** Get the xy position as vector tuple */			
+	function getPos3(real tZ) returns vec3
+		return vec3(getX(), getY(), getZ() + tZ)
 	
 	/** Set the x coordinate */
 	function setX(real x)
@@ -173,11 +177,11 @@ public class Fx
 		
 	/** Set the position to the given xy vector tuple */
 	function setPos(vec2 pos)
-		dummy.setPos(pos.x, pos.y)
+		dummy.setXY(pos)
 	
 	/** Set the position to the given xyz vector tuple */
 	function setPos(vec3 pos)
-		dummy.setPos(pos.x, pos.y)
+		dummy.setXY(pos.x, pos.y)
 		setZ(pos.z-getTerrainZ(pos.x, pos.y))
 		
 	/** Set the z coordinate (flyHeight) */

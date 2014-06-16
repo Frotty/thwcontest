@@ -4,39 +4,15 @@ import public HeroPreset
 import public ObjectIds
 import public ObjectIdGenerator
 import public ChannelAbilityPreset
-import PhysicsEntity
 
-public abstract class Hero extends UnitEntity
-	use PhysicsModule
+public abstract class Hero extends Entity
 	
 	construct(vec3 pos, player owner, int id)
 		super(pos, createUnit(owner, id, pos, angle(0)))
 		castTrigger.registerUnitEvent(actor, EVENT_UNIT_SPELL_EFFECT)
-		needPhysicsUpdate = true
-		
-	override function update()
-		super.update()
-		if needPhysicsUpdate
-			physicsUpdate(this, true)
-		
-	override function onGround()
-		pos += vel
-		actor.setXY(pos)
-		
-		
-	override function inAir()
-		pos += vel
-		actor.setXY(pos)
-		actor.setFlyHeight(pos.z-terrainZ,0)
-		
-	override function onEscapeGround()
-		actor.setPropWindow(0)
-		
-	override function onGroundHit()
-		actor.setPropWindow(60)
-		pos.z = terrainZ 
-		vel.z = 0
-		
+		active = true
+		sleeping = false
+			
 	abstract function onCast(int spellId, int lvl)
 		
 	abstract function onUnitCast(int spellId, unit target, int lvl)

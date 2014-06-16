@@ -64,9 +64,7 @@ public class Spear extends Projectile
 						// Todo MASS handling
 						if targets.getSize() < getSpearTargetCount(lvl)
 							//If everything fine, then add.
-							print("proj pos: " + pos.toString())
-							print("crep pos: " + c.pos.toString())
-							targets.add(new SpearCreep(c, c.getPos2d()-this.pos.toVec2()))
+							targets.add(new SpearCreep(c, c.getPos2()-getPos2()))
 							c.active = false
 							c.actor..setTurnSpeed(0)..setPropWindow(0)
 		end)
@@ -83,7 +81,7 @@ public class Spear extends Projectile
 					destroy screep
 					screep.creep.actor..setTurnSpeed(0.6)..setPropWindow(80)
 				else
-					screep.creep.setXYZ(getPos() + vec3((64*screep.durPercent - 32) * xyAngle.cos(),(128*screep.durPercent - 64) * xyAngle.sin(),0) + screep.offset, pos.z)
+					screep.creep.setPos3(getPos3() + vec3((64*screep.durPercent - 32) * xyAngle.cos(),(128*screep.durPercent - 64) * xyAngle.sin(),0) + screep.offset, true)
 					screep.creep.actor.setFlyHeight(0,0)
 			else
 				targets.remove(screep)

@@ -10,7 +10,7 @@ import ChannelAbilityPreset
 int PICKER_ID
 int PICK_SPELL_ID
 
-public class Picker extends UnitEntity
+public class Picker extends Entity
 	angle anim_angle
 	trigger oncast
 	
@@ -21,8 +21,6 @@ public class Picker extends UnitEntity
 		oncast.registerUnitEvent(actor,EVENT_UNIT_SPELL_EFFECT)
 		oncast.addAction(function onCast)
 		animation()
-		
-	override function update()
 		
 	function animation()
 		actor.setFlyHeight(400,0)

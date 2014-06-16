@@ -25,18 +25,18 @@ public class Specialist extends Hero
 	override function onUnitCast(int spellId, unit target, int lvl)
 		if spellId == CAGE_SPELL_ID
 			if isAct
-				cage.addNode(getPos())
+				cage.addNode(getPos3())
 			else
-				cage = new Cage(getPos(), this, lvl)
+				cage = new Cage(getPos3(), this, lvl)
 				isAct = true
 		if spellId == SPEAR_SPELL_ID
-			new Spear(getPos(), owner,  pos.angleTo2d(target.getPos()) ,lvl)
+			new Spear(getPos3(), owner,  getPos2().angleTo(target.getPos()) ,lvl)
 
 	override function onPointCast(int spellId, vec2 target, int lvl)
 		if spellId == FEED_SPELL_ID
-			new FoodProjectile( getPos(), owner, pos.distToVec2d(target),pos.toVec2().angleTo(target), lvl)
+			new FoodProjectile( getPos3(), owner, getPos2().distToVec(target), getPos2().angleTo(target), lvl)
 		if spellId == SPEAR_SPELL_ID
-			new Spear(getPos()-vec3(0,0,getTerrainZ(pos.toVec2())), owner,  pos.angleTo2d(target) ,lvl)
+			new Spear(getPos3()-vec3(0,0,getTZ()), owner,  getPos2().angleTo(target) ,lvl)
 
 
 public function init_Specialist(boolean compileTime)

@@ -52,40 +52,40 @@ public class Xplosive extends Explosive
 	real tz
 	
 	construct(vec2 target, Hero caster, int lvl)
-		super(target.withTerrainZ() + vec3(0,0,75), getXplosionRadius(lvl), getXplosionPower(lvl), caster.owner, angle(GetRandomReal(0, PI2)))
-		setModel("Units\\Other\\TNTBarrel\\TNTBarrel.mdx")
+		super(target.withTerrainZ() + vec3(0,0,75), getXplosionRadius(lvl), getXplosionPower(lvl), caster.owner, angle(GetRandomReal(0, PI2)), "Units\\Other\\TNTBarrel\\TNTBarrel.mdx")
 		this.caster = caster
 		count++
 		PLACE_SOUND.playSimulatePoint(target)
-		tz = getTerrainZ(pos.x,pos.y)
+		tz = getTZ()
+		active = true
 		
 		
 		
 	override function explode()
 		if not active
-			addEffect("Models\\SapperExplo.mdx", pos).destr()
-			forUnitsInRange(pos.toVec2(), radius, (unit u) -> begin
+			let tmppos = getPosUnsafe2()
+			addEffect("Models\\SapperExplo.mdx", tmppos).destr()
+			forUnitsInRange(tmppos, explosionRadius, (unit u) -> begin
 				if u.isAliveTrick() and u.getEntity() instanceof Creep
 					let up = u.getPos()
-					let distSQ = pos.distToVec2dSquared(up)
-					let angl = up.angleTo(pos.toVec2())
-					let p = 1 - distSQ / (radius*radius)
+					let distSQ = tmppos.distToVecSquared(up)
+					let angl = up.angleTo(tmppos)
+					let p = 1 - distSQ / (explosionRadius.squared())
 					caster.actor.damageTarget(u, power*p) 
 					if p > 0.6
 						let pp = p-0.6 * 4
-						u.getEntity().setVel(vec3(angl.cos()*power/5*pp,angl.sin()*power/5*pp, power/2))
+						u.getEntity().setVel(vec3(angl.cos()*power/5*pp,angl.sin()*power/5*pp, 40))
+						print(u.getEntity().getVel().toString())
 					u.addXBurn(caster, 1)
 			end)
 			destroy this
 	
 	override function update()
-		
-		if pos.z > tz
-			pos.z = bezier_3(tz + 75, tz+1, tz-5, (1- (pos.z-tz) / 75) + 0.01)
-			setPos(pos, false)
+		if getZ() > tz
+			setPosZ(bezier_3(tz + 75, tz+1, tz-5, (1- (getZ()-tz) / 75) + 0.01), false)
 		else if active
 			active = false
-			addEffect("Objects\\Spawnmodels\\Other\\ToonBoom\\ToonBoom.mdl", pos).destr()
+			addEffect("Objects\\Spawnmodels\\Other\\ToonBoom\\ToonBoom.mdl", getPosUnsafe2()).destr()
 			
 		
 	

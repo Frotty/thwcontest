@@ -65,7 +65,7 @@ public class NapalmDroplet
 				if pos.distToVecSquared(n.pos) < IGNITE_DISTANCE_SQ
 					n.ignite()					
 			for e in explosiveEntities
-				if pos.distToVecSquared(e.getPos2d()) < IGNITE_DISTANCE_SQ
+				if pos.distToVecSquared(e.getPos2()) < IGNITE_DISTANCE_SQ
 					e.explode()
 					
 			if cb.isLast()

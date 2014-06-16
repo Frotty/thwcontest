@@ -52,7 +52,7 @@ public class CrushingHalo
 				if u.isAliveTrick() and not IsUnitInGroup(u,effected)
 					if u.getEntity() instanceof Creep
 						dmger.damageTarget(u,getCrushingHaloDamage(level))
-						u.getEntity().addVel(vec3(0,0,30))
+						u.getEntity().applyVel(vec3(0,0,30))
 						effected.addUnit(u)
 						//print("++")
 					if u.getEntity() instanceof Hero and u != dmger

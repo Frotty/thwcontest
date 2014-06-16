@@ -3,7 +3,7 @@ import public Entity
 import Angle
 import CollisionDetection
 
-public class Projectile extends FxEntity
+public class Projectile extends Entity
 	// Angles
 	protected angle xyAngle
 	protected angle zAngle
@@ -18,16 +18,15 @@ public class Projectile extends FxEntity
 	private real time = 0.
 	private real maxTime
 	
+	boolean fixedFlyHeight = false
 	
-	construct( vec3 pos, real radius, player owner, angle xyAngle, string fxpath )
-		super(pos, radius, owner, xyAngle, fxpath)
-		setXYAngle(xyAngle)
-		active = false
-		
 	construct( vec3 pos, player owner, angle xyAngle, string fxpath )
-		super(pos, radius, owner, xyAngle, fxpath)
+		super(pos, new Fx(pos, xyAngle, fxpath))
 		setXYAngle(xyAngle)
-		active = false
+		
+	function setFixedFlyHeight(real z)
+		fixedFlyHeight = true
+		fx.setZ(z)
 				
 	function setRanged(real maxDistance)
 		this.maxDist = maxDistance
@@ -39,7 +38,7 @@ public class Projectile extends FxEntity
 	
 	function setSpeed(real speed)
 		this.speed = speed * ANIMATION_PERIOD
-		vel = vec3(xyAngle.cos()*this.speed, xyAngle.sin()*this.speed, 0.)
+		setVel(vec3(xyAngle.cos()*this.speed, xyAngle.sin()*this.speed, 0.))
 		active = true
 		
 	function getSpeed() returns real
@@ -55,7 +54,14 @@ public class Projectile extends FxEntity
 		
 		
 	override function update()
-		super.update()
+		addVelToPos()
+		if fixedFlyHeight
+			setToPos2()
+		else
+			if sleeping
+				setToPos3()
+			else
+				super.update()
 		if timed
 			time += ANIMATION_PERIOD
 			if time >= maxTime
@@ -64,7 +70,4 @@ public class Projectile extends FxEntity
 			dist += speed
 			if dist > maxDist
 				destroy this
-				
-	ondestroy
-		print("ondestroy Projectile")
 

@@ -6,6 +6,9 @@ import Terrain
 
 native UnitAlive(unit id) returns boolean
 
+public function vec2.withRealZ(unit u) returns vec3
+	return vec3(this.x, this.y, getTerrainZ(this.x, this.y)+u.getFlyHeight())
+
 public function unit.isAlive() returns boolean
 	return UnitAlive(this)
 	
@@ -47,6 +50,11 @@ public function unit.setXYZ(vec3 pos)
 	SetUnitY(this, pos.y)
 	SetUnitFlyHeight(this, pos.z, 0)
 	
+public function unit.setXYZReal(vec3 pos)
+	SetUnitX(this, pos.x)
+	SetUnitY(this, pos.y)
+	SetUnitFlyHeight(this, pos.z-getTerrainZ(pos.x, pos.y), 0)
+	
 public function unit.setPos(real x, real y)
 	SetUnitPosition(this, x, y)
 	
@@ -55,6 +63,12 @@ public function unit.setPos(vec2 pos)
 	
 public function unit.getPos() returns vec2
 	return vec2(this.getX(), this.getY())
+	
+public function unit.getPos3() returns vec3
+	return vec2(this.getX(), this.getY()).withRealZ(this)
+	
+public function unit.getPos3(real tZ) returns vec3
+	return vec3(this.getX(), this.getY(), this.getFlyHeight() + tZ)
 	
 public function unit.getPos3fake() returns vec3
 	return vec3(this.getX(), this.getY(), 0.)

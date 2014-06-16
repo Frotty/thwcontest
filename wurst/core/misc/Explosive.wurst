@@ -4,23 +4,20 @@ import LinkedList
 
 public LinkedList<Explosive> explosiveEntities = new LinkedList<Explosive>()
 
-public abstract class Explosive extends FxEntity
+public abstract class Explosive extends Entity
 	real power
-	
-	boolean activated = false
+	real explosionRadius
 	boolean timed = false
 	real timeout = 0.
 	
-	construct( vec3 pos, real radius, real power, player owner, angle a)
-		super( pos, radius, owner, a )
+	construct( vec3 pos, real radius, real power, player owner, angle a, string fxpath)
+		super( pos, new Fx(pos, a, fxpath) )
 		this.power = power
+		this.explosionRadius = radius
 		explosiveEntities.add(this)
-		
-	function setModel(string path)
-		setFx(path)
 
 	override function update()
-		if timed and activated
+		if timed
 			timeout -= ANIMATION_PERIOD
 			if timeout <= 0.
 				explode()
