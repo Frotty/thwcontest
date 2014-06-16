@@ -68,7 +68,7 @@ public class Cage
 	function update()
 		//This move is definitely doesn't work :(
 		if nodes.getSize() < 4
-			lngs.get(lngs.getSize()-1).move(true, nodes.get(nodes.getSize()-1).pos+zoffset, caster.pos+zoffset)
+			lngs.get(lngs.getSize()-1).move(true, nodes.get(nodes.getSize()-1).getPos()+zoffset, caster.getPos()+zoffset)
 	
 	ondestroy
 		for n in nodes
