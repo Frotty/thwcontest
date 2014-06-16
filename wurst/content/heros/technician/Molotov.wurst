@@ -11,6 +11,7 @@ import Explosive
 import AbilityTooltipGenerator
 import Simulate3dSound
 import SoundHelper
+import ClosureEvents
 
 constant MOLOTOV_NAME = "Throw Molotov"
 constant MOLOTOV_HOTKEY = "E"
@@ -27,7 +28,7 @@ public class Molotov extends Projectile
 	int bounces
 	int lvl
 	Hero caster = null
-		
+	
 	construct(vec3 pos, vec2 target, Hero caster, int lvl)
 		super(pos, caster.owner, pos.angleTo2d(target), "Models\\Molotov.mdx")
 		flying = true
@@ -36,6 +37,7 @@ public class Molotov extends Projectile
 		this.caster = caster
 		THROW_SOUND.playSimulatePoint(pos.toVec2())
 		active = true
+		
 		
 	override function update()
 		super.update()

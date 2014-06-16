@@ -72,7 +72,7 @@ public class Xplosive extends Explosive
 					let angl = up.angleTo(tmppos)
 					let p = 1 - distSQ / (explosionRadius.squared())
 					caster.actor.damageTarget(u, power*p) 
-					if p > 0.6
+					if u.isAliveTrick() and p > 0.6
 						let pp = p-0.6 * 4
 						u.getEntity().setVel(vec3(angl.cos()*power/5*pp,angl.sin()*power/5*pp, 40))
 						print(u.getEntity().getVel().toString())
@@ -81,10 +81,15 @@ public class Xplosive extends Explosive
 			destroy this
 	
 	override function update()
+		print("1")
 		if getZ() > tz
+			print("2")
 			setPosZ(bezier_3(tz + 75, tz+1, tz-5, (1- (getZ()-tz) / 75) + 0.01), false)
+			print("2.1")
 		else if active
+			print("3")
 			active = false
+			print("4")
 			addEffect("Objects\\Spawnmodels\\Other\\ToonBoom\\ToonBoom.mdl", getPosUnsafe2()).destr()
 			
 		

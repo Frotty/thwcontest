@@ -98,7 +98,11 @@ public abstract class Entity
 			
 	function setPosZ( real z, boolean wakeUp )
 		this.pos.z = z
-		actor.setFlyHeight(z-getTZ(), 0)
+		print((z-getTZ()).toString())
+		if actor != null
+			actor.setFlyHeight(z-getTZ(), 0)
+		if fx != null
+			fx.setZ(z-getTZ())
 		if wakeUp
 			sleeping = false
 		
