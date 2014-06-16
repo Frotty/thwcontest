@@ -15,13 +15,13 @@ public int SPEAR_SPELL_ID
 constant SPEAR_FX = "abilities\\weapons\\WyvernSpear\\WyvernSpearMissile.mdl"
 
 function getSpearDamage(int lvl) returns real
-	return 10. + 20 * lvl*lvl
+	return 10. + 10 * lvl*lvl
 	
 function getSpearTargetCount(int lvl) returns int
 	return 1 + 2 * lvl*lvl
 
 function getSpearSpeed(int lvl) returns real
-	return (1000. + lvl)/ANIMATION_PERIOD
+	return (200. + 50 * lvl)
 	
 function getSpearRange(int lvl) returns real
 	return 600. + 200 * lvl
@@ -32,6 +32,7 @@ public class Spear extends Projectile
 	
 	construct( vec3 pos, player owner, angle xyAngle, int lvl )
 		super(pos, owner, xyAngle, SPEAR_FX )
+		//Creation
 		targets = new LinkedList<Creep> ()
 		lastCount = new LinkedList<int> ()
 		
@@ -39,11 +40,13 @@ public class Spear extends Projectile
 		setSpeed(getSpearSpeed(lvl))
 		
 		CallbackCounted cb = (CallbackCounted cb) -> begin
+			//Loop trough the targets here, add the targets later in the onHitCallback
+			//Using integer, so we can loop trough both linkedlists at the same time
 			for i=0 to targets.getSize()-1
 				if cb.getCount() > lastCount.get(i)
-					var p = fx.getPos2().polarOffset(xyAngle,i*10.)
+					var p = fx.getPos2().polarOffset(xyAngle,i * 10.)
 					targets.get(i).setPos(p.toVec3(), getTerrainZ(p))
-				else if cb.getCount() == lastCount.get(i)
+				else if cb.getCount() == lastCount.get(i) or targets.get(i).actor.isAliveTrick()
 					targets.get(i).addVel(vec2(0,0).polarOffset(xyAngle,getSpearSpeed(lvl)).toVec3())
 					targets.removeAt(i)
 			if cb.isLast()
@@ -52,26 +55,32 @@ public class Spear extends Projectile
 		let period = ANIMATION_PERIOD
 		doPeriodicallyTimed(period, getSpearRange(lvl)/getSpearSpeed(lvl), cb)
 		
-		fx.getDummy().registerOnHitCallback(32, false, (unit hit, unit hitter) -> begin
+		fx.getDummy().registerOnHitCallback(32, true, (unit hit, unit hitter) -> begin
 			if fx.getDummy() == hitter
 				if hit.getEntity() instanceof Creep and hit.isAliveTrick()
+					var noteffected = true
+					//Checking if not targeted here
+					for t in targets
+						if t.actor == hit
+							noteffected = false
+					if noteffected
 					var c = hit.getEntity() castTo Creep
 					fx.getDummy().damageTarget(hit, getSpearDamage(lvl))
 					// Todo MASS handling
 					if targets.getSize() < getSpearTargetCount(lvl)
-						targets.add(c)
-						hit..applyStun(false, 2, c.owner)
 						let w = c.weightFactor
-						lastCount.add(cb.getCount()-((getSpearRange(lvl)/getSpearSpeed(lvl)*w*w*w)/period).toInt())
+						let travelduration = (getSpearRange(lvl)/getSpearSpeed(lvl)*w*w*w)
+						//If everything fine, then add.
+						targets.add(c)
+						hit..applyStun(false, travelduration, c.owner)
+						lastCount.add(cb.getCount()-(travelduration/period).toInt())
 		end)
 		
 		
-		
-		
-	override function update()
-
 	ondestroy
 		fx.getDummy().removeOnHitCallback()
+		destroy targets
+		destroy lastCount
 
 
 

@@ -29,12 +29,14 @@ public class Specialist extends Hero
 			else
 				cage = new Cage(getPos(), this, lvl)
 				isAct = true
+		if spellId == SPEAR_SPELL_ID
+			new Spear(getPos()-vec3(0,0,getTerrainZ(pos.toVec2())), owner,  pos.angleTo2d(target.getPos()) ,lvl)
 
 	override function onPointCast(int spellId, vec2 target, int lvl)
 		if spellId == FEED_SPELL_ID
 			new FoodProjectile( getPos(), owner, pos.distToVec2d(target),pos.toVec2().angleTo(target), lvl)
 		if spellId == SPEAR_SPELL_ID
-			new Spear(getPos()-vec3(0,0,getTerrainZ(getPos().toVec2())), owner,  getPos().angleTo2d(target) ,lvl)
+			new Spear(getPos()-vec3(0,0,getTerrainZ(pos.toVec2())), owner,  pos.angleTo2d(target) ,lvl)
 
 
 public function init_Specialist(boolean compileTime)
