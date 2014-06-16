@@ -68,7 +68,8 @@ public class AbilityTooltipGenerator
 		for i = 1 to maxLevel
 			def..setTooltipNormal(i, generateTooltipNormal(i))
 			..setTooltipNormalExtended(i, generateTooltipExtended(i, false))
-		..setTooltipLearn(generateTooltipLearn())
+			
+		def..setTooltipLearn(generateTooltipLearn())
 		..setTooltipLearnExtended(generateTooltipExtended(-1, true))
 		..setHotkey(hotkey)..setLevels(maxLevel)..setName(name)
 	

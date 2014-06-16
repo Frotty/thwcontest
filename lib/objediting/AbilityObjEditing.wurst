@@ -138,9 +138,9 @@ public class AbilityDefinition
 
 	function setTooltipTurnOffExtended(int level, string value)
 		def.setLvlDataString("auu1", level, 0, value)
-
-		def.setLvlDataString("aret", 0, 0, value)
+		
 	function setTooltipLearn(string value)
+		def.setLvlDataString("aret", 0, 0, value)
 
 	function setTooltipLearnExtended(string value)
 		def.setLvlDataString("arut", 0, 0, value)
