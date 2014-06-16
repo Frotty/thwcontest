@@ -44,7 +44,7 @@ public abstract class Entity
 	boolean active 		= true
 	boolean needPhysicsUpdate = false
 	
-	real weightFactor = 1.
+	real weightFactor = 0.92
 
 
 	construct( vec3 pos, player owner )

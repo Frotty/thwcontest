@@ -1,5 +1,5 @@
 package Spear
-
+import HashMap
 import MapStuff
 import ChannelAbilityPreset
 import Projectile
@@ -9,6 +9,7 @@ import CollisionDetection
 import ClosureTimers
 import Terrain
 import StunHandler
+import Interpolation
 
 public int SPEAR_SPELL_ID
 
@@ -25,62 +26,75 @@ function getSpearSpeed(int lvl) returns real
 	
 function getSpearRange(int lvl) returns real
 	return 600. + 200 * lvl
+
+class SpearCreep
+	Creep creep
+	real durPercent = 1.
+	vec2 offset
+	
+	construct(Creep c, vec2 offset)
+		creep = c
+		this.offset = offset
 	
 public class Spear extends Projectile
-	LinkedList<Creep> targets
-	LinkedList<int> lastCount
+	LinkedList<SpearCreep> targets = new LinkedList<SpearCreep>()
 	
 	construct( vec3 pos, player owner, angle xyAngle, int lvl )
 		super(pos, owner, xyAngle, SPEAR_FX )
-		//Creation
-		targets = new LinkedList<Creep> ()
-		lastCount = new LinkedList<int> ()
 		
 		setRanged(getSpearRange(lvl))
 		setSpeed(getSpearSpeed(lvl))
 		
-		CallbackCounted cb = (CallbackCounted cb) -> begin
-			//Loop trough the targets here, add the targets later in the onHitCallback
-			//Using integer, so we can loop trough both linkedlists at the same time
-			for i=0 to targets.getSize()-1
-				if cb.getCount() > lastCount.get(i)
-					var p = fx.getPos2().polarOffset(xyAngle,i * 10.)
-					targets.get(i).setPos(p.toVec3(), getTerrainZ(p))
-				else if cb.getCount() == lastCount.get(i) or targets.get(i).actor.isAliveTrick()
-					targets.get(i).addVel(vec2(0,0).polarOffset(xyAngle,getSpearSpeed(lvl)).toVec3())
-					targets.removeAt(i)
-			if cb.isLast()
-				destroy this
-		end
-		let period = ANIMATION_PERIOD
-		doPeriodicallyTimed(period, getSpearRange(lvl)/getSpearSpeed(lvl), cb)
-		
 		fx.getDummy().registerOnHitCallback(32, true, (unit hit, unit hitter) -> begin
 			if fx.getDummy() == hitter
-				if hit.getEntity() instanceof Creep and hit.isAliveTrick()
-					var noteffected = true
+				if hit.isAliveTrick() and hit.getEntity() instanceof Creep  
+					var affected = false
+					print("check")
 					//Checking if not targeted here
 					for t in targets
-						if t.actor == hit
-							noteffected = false
-					if noteffected
-					var c = hit.getEntity() castTo Creep
-					fx.getDummy().damageTarget(hit, getSpearDamage(lvl))
-					// Todo MASS handling
-					if targets.getSize() < getSpearTargetCount(lvl)
-						let w = c.weightFactor
-						let travelduration = (getSpearRange(lvl)/getSpearSpeed(lvl)*w*w*w)
-						//If everything fine, then add.
-						targets.add(c)
-						hit..applyStun(false, travelduration, c.owner)
-						lastCount.add(cb.getCount()-(travelduration/period).toInt())
+						if t.creep.actor == hit
+							affected = true
+							print("already existing")
+							break
+					if not affected
+						print("not affected")
+						var c = hit.getEntity() castTo Creep
+						fx.getDummy().damageTarget(hit, getSpearDamage(lvl))
+						print("damage")
+						// Todo MASS handling
+						if targets.getSize() < getSpearTargetCount(lvl)
+							//If everything fine, then add.
+							print("proj pos: " + pos.toString())
+							print("crep pos: " + c.pos.toString())
+							targets.add(new SpearCreep(c, c.getPos2d()-this.pos.toVec2()))
+							c.active = false
+							c.actor..setTurnSpeed(0)..setPropWindow(0)
 		end)
+		
+		
+	override function update()
+		for screep in targets
+			if screep.creep.actor.isAliveTrick()
+				screep.durPercent *= screep.creep.weightFactor
+				print("dur: " + screep.durPercent.toString())
+				if screep.durPercent < 0.05
+					targets.remove(screep)
+					screep.creep.active = true
+					destroy screep
+					screep.creep.actor..setTurnSpeed(0.6)..setPropWindow(80)
+				else
+					screep.creep.setXYZ(getPos() + vec3((64*screep.durPercent - 32) * xyAngle.cos(),(128*screep.durPercent - 64) * xyAngle.sin(),0) + screep.offset, pos.z)
+					screep.creep.actor.setFlyHeight(0,0)
+			else
+				targets.remove(screep)
+				destroy screep
+				screep.creep.active = true
+		super.update()
 		
 		
 	ondestroy
 		fx.getDummy().removeOnHitCallback()
 		destroy targets
-		destroy lastCount
 
 
 
