@@ -166,9 +166,12 @@ public abstract class Entity
 	// Defines the bounciness
 	real restitution = 0.5
 	real terrainZ = 0
-			
+	effect slx = null
 	function physicsUpdate()
+		if slx != null
+			slx.destr()
 		if vel.lengthSquared() < 1 and not flying
+			slx = actor.addEffect("Abilities\\Spells\\Undead\\Sleep\\SleepTarget.mdl", "overhead")
 			sleeping = true
 			return
 		terrainZ = getTerrainZ(pos.x, pos.y)

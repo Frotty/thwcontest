@@ -30,7 +30,10 @@ public class Specialist extends Hero
 				cage = new Cage(getPos3(), this, lvl)
 				isAct = true
 		if spellId == SPEAR_SPELL_ID
-			new Spear(getPos3(), owner,  getPos2().angleTo(target.getPos()) ,lvl)
+			var xyAngle = getPos3().angleTo2d(target.getPos())
+			if target == actor // Avoiding agnle being 0 when cast on self (near hero)
+				xyAngle = actor.getFacingAngle()
+			new Spear(getPos3(), owner, xyAngle ,lvl)
 
 	override function onPointCast(int spellId, vec2 target, int lvl)
 		if spellId == FEED_SPELL_ID

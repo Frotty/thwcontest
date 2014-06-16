@@ -32,6 +32,8 @@ public class Creep extends Entity
 		this.target = target
 		actor.issuePointOrder("attack", target)
 		creepDeath.registerUnitEvent(actor, EVENT_UNIT_DEATH)
+		sleeping = false
+		active = true
 		
 	function reorderAttack()
 		actor.issuePointOrder("attack", target)

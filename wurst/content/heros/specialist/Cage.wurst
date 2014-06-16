@@ -22,6 +22,7 @@ function getCagePower(int lvl) returns real
 	return 7.5 + 2.5 * lvl
 
 public class CageNode extends Entity
+
 	lightning lng
 	boolean fixed = false
 	
