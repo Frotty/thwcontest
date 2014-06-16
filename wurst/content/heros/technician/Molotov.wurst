@@ -10,7 +10,7 @@ import Hero
 import Napalm
 import Explosive
 import AbilityTooltipGenerator
-
+import Simulate3dSound
 import SoundHelper
 
 constant MOLOTOV_NAME = "Throw Molotov"
@@ -37,7 +37,7 @@ public class Molotov extends Projectile
 		bounces = getMolotovBounces(lvl)
 		setTarget(target, 300)
 		this.caster = caster
-		THROW_SOUND.playOnUnit(caster.actor)
+		THROW_SOUND.playSimulatePoint(pos.toVec2())
 		
 	override function update()
 		if bounces < 0
@@ -55,7 +55,7 @@ public class Molotov extends Projectile
 		var v = vel.project(nrml)
 		v *= -1.8
 		vel += v
-		EXPLO_SOUND.playOnUnit(fx.getDummy())
+		EXPLO_SOUND.playSimulatePoint(fx.getPos2())
 		fx.flash("Models\\FlameBomb.mdx")
 		forUnitsInRange(pos.toVec2(), 128, (unit u) -> begin
 			if u.getOwner().isEnemyOf(this.owner)

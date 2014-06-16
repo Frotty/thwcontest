@@ -7,6 +7,7 @@ import ClosureTimers
 import Hero
 import initlater XBurn
 import ClosureForGroups
+import SoundHelper
 
 constant NAPALM_DURATION = 4
 constant NAPALM_BURN_DURATION = 5
@@ -22,6 +23,8 @@ public function getNapalmDropDuration(int lvl) returns int
 	
 function getNapalmLifespan(int lvl) returns int
 	return 5 + lvl
+	
+public constant DROP_SOUND = new Sound("Sounds\\sfx_napalm_drop.mp3", 4838, false)
 
 public LinkedList<NapalmDroplet> freshNapalms = new LinkedList<NapalmDroplet>()
 public LinkedList<NapalmDroplet> burningNapalms = new LinkedList<NapalmDroplet>()

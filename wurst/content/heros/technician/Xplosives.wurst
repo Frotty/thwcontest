@@ -5,6 +5,10 @@ import ClosureForGroups
 import XBurn
 import Creep
 import AbilityTooltipGenerator
+import SoundHelper
+import ClosureTimers
+import Terrain
+import Interpolation
 
 public int EXPLOSIVES_SPELL_ID
 int MAX_EXPLOSIVES_ID
@@ -13,6 +17,7 @@ constant XPLOSIVES_NAME = "Xplosives"
 constant XPLOSIVES_HOTKEY = "Q"
 constant XPLOSIVES_COOLDOWN = 35
 constant XPLOSIVES_MAXLVL = 4
+constant PLACE_SOUND = new Sound("Sounds\\sfx_bomb_place.mp3", 2812, false)
 
 constant MAX_XPLOSIVES_NAME = "Maximum Reached"
 
@@ -44,28 +49,44 @@ public function createXplosive(vec2 target, Hero caster, int lvl)
 public class Xplosive extends Explosive
 	static int count = 0
 	Hero caster
-
+	real tz
+	
 	construct(vec2 target, Hero caster, int lvl)
-		super(target.withZ(0), getXplosionRadius(lvl), getXplosionPower(lvl), caster.owner, angle(GetRandomReal(0, PI2)))
+		super(target.withTerrainZ() + vec3(0,0,75), getXplosionRadius(lvl), getXplosionPower(lvl), caster.owner, angle(GetRandomReal(0, PI2)))
 		setModel("Units\\Other\\TNTBarrel\\TNTBarrel.mdx")
 		this.caster = caster
 		count++
+		PLACE_SOUND.playSimulatePoint(target)
+		tz = getTerrainZ(pos.x,pos.y)
+		
+		
 		
 	override function explode()
-		addEffect("Models\\SapperExplo.mdx", pos).destr()
-		forUnitsInRange(pos.toVec2(), radius, (unit u) -> begin
-			if u.getEntity() instanceof Creep
-				let up = u.getPos()
-				let distSQ = pos.distToVec2dSquared(up)
-				let angl = up.angleTo(pos.toVec2())
-				let p = 1 - distSQ / (radius*radius)
-				caster.actor.damageTarget(u, power*p) 
-				if p > 0.6
-					let pp = p-0.6 * 4
-					u.getEntity().setVel(vec3(angl.cos()*power/5*pp,angl.sin()*power/5*pp, power/4))
-				u.addXBurn(caster, 1)
-		end)
-		destroy this
+		if not active
+			addEffect("Models\\SapperExplo.mdx", pos).destr()
+			forUnitsInRange(pos.toVec2(), radius, (unit u) -> begin
+				if u.isAliveTrick() and u.getEntity() instanceof Creep
+					let up = u.getPos()
+					let distSQ = pos.distToVec2dSquared(up)
+					let angl = up.angleTo(pos.toVec2())
+					let p = 1 - distSQ / (radius*radius)
+					caster.actor.damageTarget(u, power*p) 
+					if p > 0.6
+						let pp = p-0.6 * 4
+						u.getEntity().setVel(vec3(angl.cos()*power/5*pp,angl.sin()*power/5*pp, power/2))
+					u.addXBurn(caster, 1)
+			end)
+			destroy this
+	
+	override function update()
+		
+		if pos.z > tz
+			pos.z = bezier_3(tz + 75, tz+1, tz-5, (1- (pos.z-tz) / 75) + 0.01)
+			setPos(pos, false)
+		else if active
+			active = false
+			addEffect("Objects\\Spawnmodels\\Other\\ToonBoom\\ToonBoom.mdl", pos).destr()
+			
 		
 	
 	ondestroy

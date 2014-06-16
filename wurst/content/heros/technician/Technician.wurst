@@ -5,6 +5,7 @@ import Molotov
 import Napalm
 import ClosureTimers
 import XBurn
+import SoundHelper
 
 int TECHNICIAN_ID
 
@@ -24,6 +25,7 @@ public class Technician extends Hero
 			case NAPALM_SPELL_ID
 				napalm_Last = getPos2d()
 				new NapalmDroplet(napalm_Last, this, lvl)
+				DROP_SOUND.playSimulateUnit(actor)
 				doPeriodicallyTimed(ANIMATION_PERIOD, getNapalmDropDuration(lvl) * 1., (CallbackCounted cb) -> begin
 					if getPos().distToVec2dSquared(napalm_Last) > 40*40
 						napalm_Last = getPos2d()
