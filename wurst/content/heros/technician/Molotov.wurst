@@ -80,8 +80,7 @@ public function init_Molotov(boolean c)
 		molotovPreset..setName("Molotov")..removeChannelProperties(true)..setOption(Option.VISIBLE, true)
 		..setIcon("BTNSunFragment")..setTargetType(Targettype.PTARGET)
 		..setCastRange(1, 400)..setButtonPosNormal(2, 2)..setHotkey(MOLOTOV_HOTKEY)
-		new AbilityTooltipGenerator(MOLOTOV_NAME, MOLOTOV_HOTKEY, Targettype.PTARGET, MOLOTOV_MAXLVL, "Throws a burning Molotov into the target area.\nThe Molotov bounces.\n" +
-		"When the Molotov hits the ground it ignites all Napalm and Xplosives near and burns enemies.")
+		new AbilityTooltipGenerator(MOLOTOV_NAME, MOLOTOV_HOTKEY, Targettype.PTARGET, MOLOTOV_MAXLVL, "Throws a burning Molotov into the target area.\nThe Molotov bounces.\n" + "When the Molotov hits the ground it ignites all Napalm and Xplosives near and burns enemies." )
 		..addProperty("Bounces", (int lvl) -> getMolotovBounces(lvl).toString())
 		..applyToDef(molotovPreset)
 		
