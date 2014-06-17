@@ -182,7 +182,7 @@ public abstract class Entity
 		updatePos()
 		if not pos.inBounds()
 			scaleVel(-1.5)
-		if pos.z <= terrainZ + 2
+		if pos.z <= terrainZ + 0.5
 			if flying
 				flying = false
 				onGroundHit()
@@ -218,6 +218,8 @@ public abstract class Entity
 	ondestroy
 		if fx != null
 			destroy fx
+		if slx != null
+			slx.destr()
 	
 
 function updateEntities()

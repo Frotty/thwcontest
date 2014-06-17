@@ -1,8 +1,8 @@
 package CollisionDetection
-import MapStuff
 import AbilityObjEditing
 import MapBounds
 import HashMap
+import ObjectIdGenerator
 
 int MAX_COLLISION_SIZE
 int MIN_COLLISION_SIZE
@@ -21,10 +21,13 @@ public function unit.registerOnHitCallback(int radius, boolean fast, CollisionCa
 	if radius < MIN_COLLISION_SIZE or radius > MAX_COLLISION_SIZE
 		error("Radius out of Bounds")
 	callbackMap.put(this, cc)
+	var lvl = radius mod 4
+	if lvl == 0
+		lvl = 4
 	if fast
-		this.addAbility(fastIds[radius])
+		this..addAbility(fastIds[radius])..setAbilityLevel(fastIds[radius], lvl)
 	else
-		this.addAbility(slowIds[radius])
+		this..addAbility(slowIds[radius])..setAbilityLevel(slowIds[radius], lvl)
 	
 public function unit.removeOnHitCallback()
 	destroy callbackMap.get(this)
@@ -40,6 +43,10 @@ function unit.registerDamage()
 public function init_CollisionDetection(boolean c, int minCollisionSize, int maxCollisionSize)
 	MAX_COLLISION_SIZE = maxCollisionSize
 	MIN_COLLISION_SIZE = minCollisionSize
+	if minCollisionSize mod 4 != 0
+		error("minCollisionSize must be congruent to 0 mod 4")
+	if maxCollisionSize mod 4 != 0
+		error("maxCollisionSize must be congruent to 0 mod 4")
 	for i = MIN_COLLISION_SIZE to MAX_COLLISION_SIZE
 		fastIds[i] = ABIL_ID_GEN.next()
 		fastIds[i+1] = fastIds[i]

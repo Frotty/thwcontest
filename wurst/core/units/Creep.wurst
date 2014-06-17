@@ -50,6 +50,8 @@ public class CreepDefinition
 	integer movementSpeed = 270
 	int damage = 10
 	int attackRange = 80
+	real shadowSize = 80
+	vec2 shadowCenter = vec2(30,30)
 	CreepType ctype //Decides what class will be used for the creep.
 	
 	construct(string name) //Creates creep with default behaviour
@@ -89,5 +91,7 @@ public class CreepDefinition
 			..setScalingValue(scale)..setCollisionSize(collisionSize)
 			..setAttack1Range(attackRange)..setSpeedBase(movementSpeed)
 			..setAttack1DamageBase(damage)..setAttack1DamageNumberofDice(3)..setAttack1DamageSidesperDie(2)
+			..setShadowImageHeight(shadowSize)..setShadowImageWidth(shadowSize)
+			..setShadowImageCenterX(shadowCenter.x)..setShadowImageCenterY(shadowCenter.y)
 			
 	

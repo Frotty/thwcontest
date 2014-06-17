@@ -22,7 +22,7 @@ public function getNapalmDropDuration(int lvl) returns int
 	return min(5, 2 + lvl)
 	
 function getNapalmLifespan(int lvl) returns int
-	return 5 + lvl
+	return min(12, 6 + 2 * lvl)
 	
 public constant DROP_SOUND = new Sound("Sounds\\sfx_napalm_drop.mp3", 4838, false)
 

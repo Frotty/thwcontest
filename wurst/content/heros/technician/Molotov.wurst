@@ -12,6 +12,7 @@ import AbilityTooltipGenerator
 import Simulate3dSound
 import SoundHelper
 import ClosureEvents
+import Creep
 
 constant MOLOTOV_NAME = "Throw Molotov"
 constant MOLOTOV_HOTKEY = "E"
@@ -33,7 +34,7 @@ public class Molotov extends Projectile
 		super(pos, caster.owner, pos.angleTo2d(target), "Models\\Molotov.mdx")
 		flying = true
 		bounces = getMolotovBounces(lvl)
-		setTarget(target, 300)
+		setTarget(target, 275)
 		this.caster = caster
 		THROW_SOUND.playSimulatePoint(pos.toVec2())
 		active = true
@@ -47,17 +48,19 @@ public class Molotov extends Projectile
 
 	override function onGroundHit()
 		let pos = getPos2()
-		let nrml = getTerrainNormal(pos.x, pos.y, 4).norm()
+		let nrml = getTerrainNormal(pos.x, pos.y, 12).norm()
 		if getVel().dot(nrml) > 0
 			return
 			
 		var v = getVel().project(nrml)
-		v *= -1.8
+		v *= -2
 		applyVel(v)
 		EXPLO_SOUND.playSimulatePoint(pos)
 		fx.flash("Models\\FlameBomb.mdx")
 		forUnitsInRange(pos, 128, (unit u) -> begin
-			if u.getOwner().isEnemyOf(this.owner)
+			print("YAY")
+			if u.isAlive() and u.getEntity() instanceof Creep
+				print("YAYAY")
 				u.addXBurn(caster, 1)
 		end)
 		for n in freshNapalms

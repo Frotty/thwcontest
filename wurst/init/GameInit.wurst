@@ -25,7 +25,7 @@ function initResources(boolean compileTime)
 	init_Mammoth(compileTime)
 	init_Picker(compileTime)
 	init_Specialist(compileTime)
-	init_CollisionDetection(compileTime, 32, 300)
+	init_CollisionDetection(compileTime, 16, 256)
 	
 boolean testing = true
 	
@@ -33,7 +33,7 @@ init
 	doAfter(0.01, () -> begin
 		initResources(false)
 		if testing
-			let h = new Technician(vec3(0,300,1200),Player(0) )  
+			let h = new Mage(vec3(0,300,1200),Player(0) )  
 			let s = new Specialist(vec3(0,100,1200),Player(0) ) // Fortesting
 			SetHeroLevel(h.actor, 4, false)
 			WaveManager.startNextWave()
@@ -64,9 +64,6 @@ init
 				
 				
 		startEntityLoop()
-		OrderStringFactory odf = new OrderStringFactory()
-		for i = 0 to 10
-			print(odf.getOrderString())
 	end)	
 	
 @compiletime function generateObjects()

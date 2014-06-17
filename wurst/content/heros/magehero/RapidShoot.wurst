@@ -6,6 +6,7 @@ import MapStuff
 import AbilityTooltipGenerator
 import ChannelAbilityPreset
 import CollisionDetection
+import Creep
 
 public int RAPID_SHOOT_ID
 public int DISABLE_ATTACK_ID
@@ -24,11 +25,11 @@ public function Hero.startRapidShoot(real dur, real interval, int lvl)
 	
 	doPeriodicallyTimed(interval, dur, (CallbackCounted cb) -> begin
 		let p = new Projectile(this.getPos3() + vec3(0,0,45), this.owner, this.actor.getFacingAngle(), "Models\\BeamMissile.mdx")
-		..setTimed(2)..setSpeed(500)
+		..setTimed(2)..setSpeed(500)..setFixedFlyHeight(45)
 		p.fx..setScale(0.5)..recolor(colorA(255, 255, 125, 125))
 		this.actor.setAnimation("Spell")
 		p.fx.getDummy().registerOnHitCallback(65, true, (unit hit, unit hitter) -> begin
-			if hitter.getOwner().isEnemyOf(hit.getOwner())
+			if hitter == p.fx.getDummy() and hit.isAliveTrick() and hit.getEntity() instanceof Creep
 				hitter.damageTarget(hit,getRapidShootDamage(lvl))
 				hitter.removeOnHitCallback()
 				destroy p
