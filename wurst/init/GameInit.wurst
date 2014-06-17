@@ -39,7 +39,6 @@ init
 			SetHeroLevel(h.actor, 4, false)
 			SetHeroLevel(s.actor, 4, false)
 			WaveManager.startNextWave()
-			addStatueEffects()
 		else
 			//Welcome message
 			print("Welcome to [Enter appealing name here]!")
@@ -48,23 +47,39 @@ init
 			print("However it can only heal wounds once every minute, and your soul cannot be saved if every human is dead.")
 			print("Chose your champion wisely to endure this greatest challenge in life.")
 			//setting up the Heroes to pick:
-			let c = new Crusader(STATUE_POS.polarOffset(angle(0*2*PI/3),200).toVec3(),Player(9) )
-			c.actor.setFacing(angle(0*2*PI/3))
-			let t = new Technician(STATUE_POS.polarOffset(angle(1*2*PI/3),200).toVec3(),Player(9) )
-			t.actor.setFacing(angle(1*2*PI/3))
-			let m = new Mage(STATUE_POS.polarOffset(angle(2*2*PI/3),200).toVec3(),Player(9) )
-			m.actor.setFacing(angle(2*2*PI/3))
+			let c = new Crusader(STATUE_POS.polarOffset(angle(0*2*PI/heroCount),200),Player(8) )
+			c.actor.setFacing(angle(0*2*PI/heroCount))
+			c.actor.setFlyHeight(1000, 0)
+			let t = new Technician(STATUE_POS.polarOffset(angle(1*2*PI/heroCount),200).toVec3(),Player(8) )
+			t.actor.setFacing(angle(1*2*PI/heroCount))
+			t.setPosZ(1300,false)
+			let m = new Mage(STATUE_POS.polarOffset(angle(2*2*PI/heroCount),200).toVec3(),Player(8) )
+			m.actor.setFacing(angle(2*2*PI/heroCount))
+			m.setPosZ(1000,false)
+			let s = new Specialist(STATUE_POS.polarOffset(angle(3*2*PI/heroCount),200).toVec3(),Player(8) )
+			s.actor.setFacing(angle(3*2*PI/heroCount))
+			s.setPosZ(1000,false)
+			
+		
+			for i = 1 to heroCount
+				var a = angle(i*2*PI/heroCount)
+				var offset = STATUE_POS.polarOffset(a,200)
+				
+				var plate = new Fx(offset.toVec3()+vec3(0,0,1236),a, "buildings\\other\\MagicVault\\MagicVault.mdl")
+				
 			//Todo playernumber
-			CameraSetupApplyForceDuration(gg_cam_Camera_002, true,0.)
-			ResetToGameCamera(5.)
+			camerasetup pick_cam = gg_cam_Pick_Camera
+			CameraSetupSetDestPosition(pick_cam, STATUE_POS.x,STATUE_POS.y,0.)
+			CameraSetupApplyForceDuration(pick_cam, true,0.)
+			//ResetToGameCamera(5.)
 			let playernumber = 5
 			//SetCameraRotateMode(STATUE_POS.x, STATUE_POS.y, PI/6, 2)
 			//Setting up the pickers. Animation in constructor
-			for i = 0 to playernumber-1
+			/*for i = 0 to playernumber-1
 				var p = Player(i)
 				var pi = new Picker(p,angle(i*2*PI/playernumber))
 				p.select(pi.actor)
-				
+				*/
 				
 		startEntityLoop()
 	end)	

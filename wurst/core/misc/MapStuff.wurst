@@ -8,3 +8,4 @@ import public AbilityTooltipGenerator
 public constant CREEP_PLAYER = Player(11)
 
 public constant vec2 STATUE_POS = vec2(-77,0)
+public constant heroCount = 4
