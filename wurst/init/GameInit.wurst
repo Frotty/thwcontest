@@ -16,6 +16,8 @@ import Picker
 import CollisionDetection
 import Shield
 import GameConstants
+import Intermission
+import CustomExp
 
 function initResources(boolean compileTime)
 	init_MageHero(compileTime)
@@ -28,8 +30,10 @@ function initResources(boolean compileTime)
 	init_Picker(compileTime)
 	init_Specialist(compileTime)
 	init_CollisionDetection(compileTime, 16, 256)
+	init_Intermission(compileTime)
 	
-boolean testing = false
+	
+boolean testing = true
 	
 init
 	doAfter(0.01, () -> begin
@@ -48,16 +52,16 @@ init
 			print("However it can only heal wounds once every minute, and your soul cannot be saved if every human is dead.")
 			print("Chose your champion wisely to endure this greatest challenge in life.")
 			//setting up the Heroes to pick:
-			let c = new Crusader(STATUE_POS.polarOffset(angle(0*2*PI/heroCount),200).withZ(2200),Player(8) )
+			let c = new Crusader(STATUE_POS.polarOffset(angle(0*2*PI/heroCount),200).withZ(2200), DUMMY_PLAYER)
 			c.actor.setFacing(angle(0*2*PI/heroCount))
 			c.sleeping = true
-			let t = new Technician(STATUE_POS.polarOffset(angle(1*2*PI/heroCount),200).withZ(2200),Player(8) )
+			let t = new Technician(STATUE_POS.polarOffset(angle(1*2*PI/heroCount),200).withZ(2200), DUMMY_PLAYER)
 			t.actor.setFacing(angle(1*2*PI/heroCount))
 			t.sleeping = true
-			let m = new Mage(STATUE_POS.polarOffset(angle(2*2*PI/heroCount),200).withZ(2200),Player(8) )
+			let m = new Mage(STATUE_POS.polarOffset(angle(2*2*PI/heroCount),200).withZ(2200), DUMMY_PLAYER)
 			m.actor.setFacing(angle(2*2*PI/heroCount))
 			m.sleeping = true
-			let s = new Specialist(STATUE_POS.polarOffset(angle(3*2*PI/heroCount),200).withZ(2200),Player(8) )
+			let s = new Specialist(STATUE_POS.polarOffset(angle(3*2*PI/heroCount),200).withZ(2200), DUMMY_PLAYER)
 			s.actor.setFacing(angle(3*2*PI/heroCount))
 			s.sleeping = true
 			
