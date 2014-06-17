@@ -1,0 +1,9 @@
+package Intermission
+import GameConstants
+import MapStuff
+import Fx
+
+public function startIntermission(real duration)
+	let fx = new Fx(STATUE_POS.withZ(150), angle(0))
+	fx.flash("Abilities\\Spells\\Undead\\ReplenishHealth\\ReplenishHealthCasterOverhead.mdl")
+	destroy fx

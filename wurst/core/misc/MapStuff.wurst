@@ -5,6 +5,3 @@ import public LinkedList
 import public Players
 import public AbilityTooltipGenerator
 
-public constant CREEP_PLAYER = Player(11)
-
-public constant vec2 STATUE_POS = vec2(-77,0)
