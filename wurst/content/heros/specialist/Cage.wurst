@@ -7,10 +7,12 @@ import ClosureTimers
 import AbilityTooltipGenerator
 import ClosureForGroups
 import LinkedList
+import BuffHandler
 
 public int CAGE_SPELL_ID
 public int CAGE_SECONDARY_SPELL_ID
 int CAGE_NODE_ID
+BuffDef CAGE_BUFF_DEF
 
 constant CAGE_NAME = "Electric Cage"
 constant CAGE_HOTKEY = "R"
@@ -148,8 +150,10 @@ public class Cage
 						s += "and Creep"
 						if /*not c.flying and*/ c.getPos3().toVec2().distToSegmentSquared(n1.getPos3().toVec2(), n2.getPos3().toVec2() ) < ACTIVATION_DIST.squared()
 							s+= "and adding velocity"
-							if not IsUnitInGroup(u,effected)
+							if not IsUnitInGroup(u,effected) //and u.hasAbility(CAGE_BUFF_DEF.buff_id)
 								c.applyVel(vec2(0,0).polarOffset(u.getFacingAngle() + angle(PI),getCagePower(lvl)).toVec3())
+								caster.actor.damageTarget(u,getCageDamage(lvl))
+								u.applyBuff(CAGE_BUFF_DEF, 1.)
 								effected.addUnit(u)
 								doAfter(1.,()-> effected.removeUnit(u))
 					print(s)
@@ -180,7 +184,13 @@ public function init_Cage(boolean compileTime)
 	CAGE_SPELL_ID = ABIL_ID_GEN.next()
 	CAGE_SECONDARY_SPELL_ID = ABIL_ID_GEN.next()
 	
+	CAGE_BUFF_DEF = new BuffDef("Shocked", "This unit is shocked, and cant get hit by electric spells meanwhile", "BTNOrbOfLightning")
+	CAGE_BUFF_DEF.stacking = false
+	CAGE_BUFF_DEF.buffArt = "Abilities\\Spells\\Human\\FlameStrike\\FlameStrikeEmbers.mdl"
+	
 	if compileTime
+		CAGE_BUFF_DEF.generate()
+		
 		var cage = buildCageSpell(CAGE_SPELL_ID, CAGE_MAXLVL)
 		..setCooldown(1,30)
 			

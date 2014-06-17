@@ -14,6 +14,7 @@ import Mammoth
 import OrderStringFactory
 import Picker
 import CollisionDetection
+import Shield
 
 function initResources(boolean compileTime)
 	init_MageHero(compileTime)
@@ -38,6 +39,7 @@ init
 			SetHeroLevel(h.actor, 4, false)
 			SetHeroLevel(s.actor, 4, false)
 			WaveManager.startNextWave()
+			addStatueEffects()
 		else
 			//Welcome message
 			print("Welcome to [Enter appealing name here]!")

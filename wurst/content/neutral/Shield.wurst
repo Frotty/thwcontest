@@ -1,3 +1,22 @@
 package Shield
 
+import Fx
+import MapStuff
+import Terrain
+
 //To do: Shield between waves.
+
+public function addStatueEffects()
+	var lefteye = new Fx(STATUE_POS.x + 5 ,STATUE_POS.y - 20,angle(0))
+	lefteye..setZ(325.)
+		..setFx("Abilities\\Weapons\\FarseerMissile\\FarseerMissile.mdl")
+		..setScale(0.3)
+	var righteye = new Fx(STATUE_POS.x - 5 ,STATUE_POS.y - 20,angle(0))
+	righteye..setZ(325.)
+		..setFx("Abilities\\Weapons\\FarseerMissile\\FarseerMissile.mdl")
+		..setScale(0.3)
+	new Fx(STATUE_POS.x,STATUE_POS.y , angle(0))
+	..setFx("Abilities\\Spells\\Items\\TomeOfRetraining\\TomeOfRetrainingCaster.mdl")
+	..setScale(5)
+	..setZAngle(90.)
+	
