@@ -36,6 +36,7 @@ init
 			let h = new Mage(vec3(0,300,1200),Player(0) )  
 			let s = new Specialist(vec3(0,100,1200),Player(0) ) // Fortesting
 			SetHeroLevel(h.actor, 4, false)
+			SetHeroLevel(s.actor, 4, false)
 			WaveManager.startNextWave()
 		else
 			//Welcome message

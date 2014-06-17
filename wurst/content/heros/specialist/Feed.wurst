@@ -6,6 +6,9 @@ import UnitObjEditing
 import Projectile
 import Creep
 import DamageMod
+import ClosureTimers
+import ClosureForGroups
+import CollisionDetection
 //import Damager
 import Terrain
 import ClosureEvents
@@ -13,8 +16,23 @@ import ClosureEvents
 public int FEED_SPELL_ID
 int FOOD_DUMMY_ID
 
+constant FEED_NAME = "Fresh Meat"
+constant FEED_HOTKEY = "W"
+constant FEED_MAXLVL = 4
+
 function getFeedMeatHP(int lvl) returns int
-	return 100 * lvl
+	return 200 + 100 * lvl
+	
+function getFeedCooldown(int lvl) returns int
+	return 20 - lvl
+	
+function getFeedDuration(int lvl) returns real
+	return 10. + 2*lvl
+	
+	
+function getFeedRadius(int lvl) returns real
+	return 300. + 25. * lvl
+	
 
 constant foodProjectile_fx = "Models\\Ham.mdl"
 constant foodProjectile_radius = 90.
@@ -23,17 +41,35 @@ constant friction = 0.9
 public class FoodProjectile extends Projectile
 	unit dummyUnit = null
 	boolean arrived = false
+	boolean attached = false //Shows if food is attached to a creep.
+	Creep victim //The creep it is attached to.
 	trigger range_trigger
 	texttag tt = null
 	real damage = 0.
 	OnDamage ond
+	int lvl
 	
 	construct( vec3 pos, player owner, real dist, angle xyAngle, int lvl )
 		super( pos, owner, xyAngle, foodProjectile_fx )
 		//Do the same as setTarget
 		setSpeed((1/friction - 1)*dist / ANIMATION_PERIOD)
+		fx.setScale(0.7)
+		this.lvl = lvl
 		damage = getFeedMeatHP(lvl) * 1.
 		setFixedFlyHeight(10.)
+		doAfter( getFeedDuration(lvl) , () -> destroy this )
+		fx.getDummy().registerOnHitCallback(32, true, (unit hit, unit hitter) -> begin
+			if hitter == fx.getDummy()
+				if hit.getEntity() instanceof Creep
+					let c = hit.getEntity() castTo Creep
+					if c.weightFactor < 0.1
+						print("attached")
+						setSpeed(0)
+						attached = true
+						victim = c
+			if arrived
+				fx.getDummy().removeOnHitCallback()
+		end)
 	
 	override function update()
 		super.update()
@@ -46,23 +82,36 @@ public class FoodProjectile extends Projectile
 				ond = onDamage(dummyUnit, (unit damaged, unit source, real amount) -> begin
 					print("ok")
 					let fp = damaged.getUserData() castTo FoodProjectile
+					if attached
+						source.damageTarget(victim.actor, amount)
 					fp.damage -= amount
-					tt.setText(damage.toString(), 10)
+					tt.setText(damage.toInt().toString(), 10)
 					if fp.damage <= 0
 						destroy fp
 				end)					
+				forUnitsInRange(getPos2(),getFeedRadius(lvl),(unit u) -> onInRange(u))
 				range_trigger = CreateTrigger()
-				range_trigger.registerUnitInRangeSource(dummyUnit,400, null)
+				range_trigger.registerUnitInRangeSource(dummyUnit,getFeedRadius(lvl), null)
 				range_trigger.addAction(function onFoodRange)
 				tt = createTTEx(getPos3() + vec3(0,0,100), damage.toString(), 10, colorA(250,80,80,210))
 		else
 			setSpeed(getSpeed()*friction)
+		if arrived and attached
+			if not victim.actor.isAliveTrick()
+				attached = false
+				victim = null
+			else
+				dummyUnit.setPos(victim.getPos2())
+				setPos2(victim.getPos2(),false)
+				
+				tt.setPos(getPos2().toVec3() + vec3(0,0,20))
 			
 	function onInRange(unit target)
 		Entity e = target.getEntity()
 		if e instanceof Creep
 			var c = e castTo Creep
-			c.actor.issueTargetOrder("attack",dummyUnit)
+			if not (attached and c == victim)
+				c.actor.issueTargetOrder("attack",dummyUnit)
 		
 	static function onFoodRange()
 		unit source = GetTriggeringTrigger().getSource()
@@ -87,10 +136,16 @@ public function init_Feed(boolean compileTime)
 		feed..removeChannelProperties(true)..setName("Feed")
 			..setButtonPositionNormalX(0)..setButtonPositionNormalY(2)
 			..setButtonPositionResearchX(0)..setButtonPositionResearchY(0)
-			..setIcon("BTNHolyBolt")..setOption(Option.VISIBLE, true)
-			..setTargetType(Targettype.PUTARGET)
+			..setIcon("BTNMonsterLure")..setOption(Option.VISIBLE, true)
+			..setTargetType(Targettype.PUTARGET)..setHotkey(FEED_HOTKEY)
 			..setCastRange(1,400)
 			..setOrderStringActivate("warstomp")
+			
+		new AbilityTooltipGenerator(FEED_NAME, FEED_HOTKEY, Targettype.NOTARGET, FEED_MAXLVL, "Tosses a chunk of food, making enemies around attack it. \nCan be attached to bosses.")
+		..addProperty("Hitpoints of Meat:", (int lvl) -> getFeedMeatHP(lvl).toString())
+		..addProperty("Cooldown:", (int lvl) -> getFeedCooldown(lvl).toString())
+		..addProperty("Duration of effect:", (int lvl) -> getFeedDuration(lvl).toString())
+		..applyToDef(feed)
 			
 	FOOD_DUMMY_ID = UNIT_ID_GEN.next()
 	if compileTime
