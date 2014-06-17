@@ -17,7 +17,7 @@ function getBackOffRadius(int lvl) returns real
 	return 300. + 64 * lvl
 	
 function getBackOffPower(int lvl) returns real
-	return 7.5 + 2.5 * lvl
+	return 17.5 + 5 * lvl
 	
 function getBackOffDamage(int lvl) returns real
 	return 20. + 15 * (lvl*lvl)
@@ -58,12 +58,12 @@ public function init_BackOff(boolean compileTime)
 		backoff..removeChannelProperties(true)..setName("Back Off")
 			..setButtonPositionNormalX(0)..setButtonPositionNormalY(2)
 			..setIcon("BTNCrushUndead")..setOption(Option.VISIBLE, true)
-			..setOrderStringActivate("warstomp")
+			..setOrderStringActivate("warstomp")..setHotkey(BACKOFF_HOTKEY)
 			//new AbilityTooltipGenerator
 		new AbilityTooltipGenerator(BACKOFF_NAME, BACKOFF_HOTKEY, Targettype.NOTARGET, BACKOFF_MAXLVL, "Knocks back enemies in front of crusader, applying stun.")
 		..addProperty("Area of Effect:", (int lvl) -> getBackOffRadius(lvl).toString())
 		..addProperty("Cooldown:", (int lvl) -> getBackOffCooldown(lvl).toString())
 		..addProperty("Knockback Power:", (int lvl) -> getBackOffPower(lvl).toString())
-		..addProperty("Damage:", (int lvl) -> getBackOffPower(lvl).toString())
+		..addProperty("Damage:", (int lvl) -> getBackOffDamage(lvl).toString())
 		..addProperty("Stun Duration:", (2.).toString())
 		..applyToDef(backoff)

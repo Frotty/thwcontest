@@ -12,19 +12,40 @@ public int CAGE_SPELL_ID
 public int CAGE_SECONDARY_SPELL_ID
 int CAGE_NODE_ID
 
+constant CAGE_NAME = "Electric Cage"
+constant CAGE_HOTKEY = "R"
+constant CAGE_MAXLVL = 2
+
+constant color_avail = colorA(100,255,100,64)
+constant color_active = colorA(255,255,255,192)
+constant color_unavail = colorA(255,50,50,64)
+
 constant zoffset = vec3(0,0,60)
 constant ACTIVATION_DIST = 60.
 
-function getCageDuration(int lvl) returns real
+public function getCageDuration(int lvl) returns real
 	return 15. + lvl
 	
 function getCagePower(int lvl) returns real
+	return 27.5 + 2.5 * lvl
+	
+function getCageDamage(int lvl) returns real
 	return 7.5 + 2.5 * lvl
+	
+function getCageCooldown(int lvl) returns int
+	return 32 - 6  * (lvl-1)
+	
+function getCageMaxRange(int lvl) returns real
+	return 400. + 100. * lvl
+	
+function getCageMinRange() returns real
+	return 200.
 
 public class CageNode extends Entity
 
 	lightning lng
 	boolean fixed = false
+	boolean canfix = false
 	
 	construct( vec3 pos, player owner)
 		super(pos, new Fx(pos, angle(0), "buildings\\nightelf\\ChimaeraRoost\\ChimaeraRoost.mdl"))
@@ -40,6 +61,7 @@ public class CageNode extends Entity
 
 public class Cage
 	LinkedList<CageNode> nodes
+	group effected
 	Hero caster
 	int lvl
 	int i = 0
@@ -47,14 +69,16 @@ public class Cage
 	construct(vec3 pos, Hero caster,int level)
 		//Creating the lists
 		nodes = new LinkedList<CageNode> ()
+		effected = CreateGroup()
 		//add a new node right away
 		nodes.add(new CageNode(pos,caster.owner))
 		lvl = level
 		this.caster = caster
-		//lngs = new LinkedList<lightning> ()
-		//Add a new lighting, which is likely bugs while adding to list
-		nodes.get(nodes.getSize()-1).lng = addLightning("FORK", true, pos+zoffset+vec3(100,100,0), caster.getPos3()+zoffset)
-		nodes.get(nodes.getSize()-1).lng.setColor(colorA(255,255,255,64))
+		caster.owner.setAbilityAvailable(CAGE_SPELL_ID, false)
+		caster.actor.addAbility(CAGE_SECONDARY_SPELL_ID)
+		caster.actor.setAbilityLevel(CAGE_SECONDARY_SPELL_ID, lvl)
+		nodes.get(nodes.getSize()-1).lng = addLightning("FORK", true, pos+zoffset, caster.getPos3()+zoffset)
+		nodes.get(nodes.getSize()-1).lng.setColor(color_unavail)
 		doPeriodicallyTimed(ANIMATION_PERIOD,getCageDuration(lvl), (CallbackCounted cb)-> begin 
 			update()
 			if cb.isLast()
@@ -63,31 +87,49 @@ public class Cage
 		
 	function addNode(vec3 pos)
 		var size = nodes.getSize()
-		nodes.get(size-1).fixed = true
-		if size < 4
-			//Adding new nodes to the "fence"
-			nodes.add(new CageNode(pos,caster.owner))
-			size = nodes.getSize()
-			nodes.get(size-1).lng = addLightning("FORK", true, pos+zoffset+vec3(100,100,0), caster.getPos3()+zoffset)
-			nodes.get(size-1).lng.setColor(colorA(255,255,255,64))
-			//lightnings not act as intended, for example the lighting created above is not visible in game
-			print("Node added: " + nodes.getSize().toString() + " and " + nodes.get(size-1).fx.getDummy().getHandleId().toString())
-			if size >= 2
-				//If there are more then 2 lightnings, the latter shall be "fixed" to the two nodes before. 
-				//Since position is right because update, there is no need to move, only color
-				nodes.get(size-2).lng.setColor(colorA(255,255,255,192))
-				if size == 4
-					nodes.get(size-1).lng.move(true, nodes.get(size-1).getPos3()+zoffset, nodes.get(0).getPos3()+zoffset)
-				else
-					nodes.get(size-1).lng.move(true, nodes.get(size-1).getPos3()+zoffset, nodes.get(size-2).getPos3()+zoffset)
-		else if size == 4
-			nodes.get(size-1).lng.setColor(colorA(255,255,255,192))
+		if nodes.get(size-1).canfix
+			nodes.get(size-1).fixed = true
+			if size < 4
+				//Adding new nodes to the "fence"
+				nodes.add(new CageNode(pos,caster.owner))
+				size = nodes.getSize()
+				nodes.get(size-1).lng = addLightning("FORK", true, pos+zoffset, caster.getPos3()+zoffset)
+				nodes.get(size-1).lng.setColor(color_unavail)
+				//lightnings not act as intended, for example the lighting created above is not visible in game
+				print("Node added: " + nodes.getSize().toString() + " and " + nodes.get(size-1).fx.getDummy().getHandleId().toString())
+				if size >= 2
+					//If there are more then 2 lightnings, the latter shall be "fixed" to the two nodes before. 
+					//Since position is right because update, there is no need to move, only color
+					nodes.get(size-2).lng.setColor(color_active)
+					if size == 4
+						nodes.get(size-1).lng.move(true, nodes.get(size-1).getPos3()+zoffset, nodes.get(0).getPos3()+zoffset)
+						var dist =  nodes.get(0).getPos2().distToVec(nodes.get(size-1).getPos2())
+						if not (dist > getCageMaxRange(lvl) or dist < getCageMinRange())
+							nodes.get(size-1).canfix = true
+							nodes.get(size-1).lng.setColor(color_avail)
+					else
+						nodes.get(size-1).lng.move(true, nodes.get(size-1).getPos3()+zoffset, nodes.get(size-2).getPos3()+zoffset)
+			else if size == 4
+				caster.actor.removeAbility(CAGE_SECONDARY_SPELL_ID)
+				caster.owner.setAbilityAvailable(CAGE_SPELL_ID, true)
+				nodes.get(size-1).lng.setColor(color_active)
 	
 	function update()
 		//This move is definitely doesn't work :(
 		let size = nodes.getSize()
 		if size < 4
-			nodes.get(size-1).lng.move(true, nodes.get(size-1).getPos3()+zoffset, caster.getPos3()+zoffset)
+			var n = nodes.get(size-1)
+			n.lng.move(true, n.getPos3()+zoffset, caster.getPos3()+zoffset)
+			var dist =  caster.getPos2().distToVec(n.getPos2())
+			if dist > getCageMaxRange(lvl) or dist < getCageMinRange()
+				if n.canfix
+					n.canfix = false
+					n.lng.setColor(color_unavail)
+			else
+				if not n.canfix
+					n.canfix = true
+					n.lng.setColor(color_avail)
+					
 		for i = 0 to size-1 //Looping until the last ACTIVE nod
 			var n1 = nodes.get(i)
 			if n1.fixed
@@ -106,7 +148,10 @@ public class Cage
 						s += "and Creep"
 						if /*not c.flying and*/ c.getPos3().toVec2().distToSegmentSquared(n1.getPos3().toVec2(), n2.getPos3().toVec2() ) < ACTIVATION_DIST.squared()
 							s+= "and adding velocity"
-							c.applyVel(vec2(0,0).polarOffset(u.getFacingAngle() + angle(PI),getCagePower(lvl)).toVec3())
+							if not IsUnitInGroup(u,effected)
+								c.applyVel(vec2(0,0).polarOffset(u.getFacingAngle() + angle(PI),getCagePower(lvl)).toVec3())
+								effected.addUnit(u)
+								doAfter(1.,()-> effected.removeUnit(u))
 					print(s)
 				end)
 				
@@ -116,7 +161,19 @@ public class Cage
 		for n in nodes
 			destroy n
 		destroy nodes
+		effected.clear()
+		if caster.actor.hasAbility(CAGE_SECONDARY_SPELL_ID)
+			caster.actor.removeAbility(CAGE_SECONDARY_SPELL_ID)
+			caster.owner.setAbilityAvailable(CAGE_SPELL_ID, true)
 			
+function buildCageSpell(int id, int lvl) returns ChannelAbilityPreset
+	var pr = new ChannelAbilityPreset(id, lvl)
+		..removeChannelProperties(true)..setName("Cage")
+		..setButtonPositionNormalX(3)..setButtonPositionNormalY(2)
+		..setButtonPositionResearchX(3)..setButtonPositionResearchY(0)
+		..setIcon("BTNControlMagic")..setOption(Option.VISIBLE, true)
+		..setOrderStringActivate("holybolt")..setHotkey(CAGE_HOTKEY)
+	return pr
 			
 public function init_Cage(boolean compileTime)
 	
@@ -124,11 +181,16 @@ public function init_Cage(boolean compileTime)
 	CAGE_SECONDARY_SPELL_ID = ABIL_ID_GEN.next()
 	
 	if compileTime
-		var cage = new ChannelAbilityPreset(CAGE_SPELL_ID, 1)
-		cage..removeChannelProperties(true)..setName("Cage")
-			..setButtonPositionNormalX(3)..setButtonPositionNormalY(2)
-			..setButtonPositionResearchX(3)..setButtonPositionResearchY(0)
-			..setIcon("BTNHolyBolt")..setOption(Option.VISIBLE, true)
-			..setOrderStringActivate("holybolt")
-		
+		var cage = buildCageSpell(CAGE_SPELL_ID, CAGE_MAXLVL)
+		..setCooldown(1,30)
+			
+		var cagesecondary = buildCageSpell(CAGE_SECONDARY_SPELL_ID, CAGE_MAXLVL)
+
+		new AbilityTooltipGenerator(CAGE_NAME, CAGE_HOTKEY, Targettype.NOTARGET, CAGE_MAXLVL, "Creates fence of electricity knocking not letting enemies pass.")
+		..addProperty("Effect Duration:", (int lvl) -> getCageDuration(lvl).toString())
+		..addProperty("Cooldown:", (int lvl) -> getCageCooldown(lvl).toString())
+		..addProperty("Knockback Power:", (int lvl) -> getCagePower(lvl).toString())
+		..addProperty("Damage:", (int lvl) -> getCageDamage(lvl).toString())
+		..applyToDef(cage)
+		..applyToDef(cagesecondary)
 		

@@ -14,6 +14,7 @@ import Interpolation
 public int SPEAR_SPELL_ID
 
 constant SPEAR_FX = "abilities\\weapons\\WyvernSpear\\WyvernSpearMissile.mdl"
+constant SPEAR_HOTKEY = "E"
 
 function getSpearDamage(int lvl) returns real
 	return 10. + 10 * lvl*lvl
@@ -103,9 +104,9 @@ public function init_Spear(boolean compileTime)
 		var def = new ChannelAbilityPreset(SPEAR_SPELL_ID, 4)
 		// Set Attributes
 		def..removeChannelProperties(true)..setName("Sausage Spear")
-			..setButtonPositionNormalX(1)..setButtonPositionNormalY(2)
-			..setButtonPositionResearchX(1)..setButtonPositionResearchY(0)
+			..setButtonPositionNormalX(2)..setButtonPositionNormalY(2)
+			..setButtonPositionResearchX(2)..setButtonPositionResearchY(0)
 			..setIcon("BTNThoriumRanged")..setOption(Option.VISIBLE, true)
-			..setTargetType(Targettype.PUTARGET)
+			..setTargetType(Targettype.PUTARGET)..setHotkey(SPEAR_HOTKEY)
 			..setCastRange(1,1000)
 			..setOrderStringActivate("starfall")
