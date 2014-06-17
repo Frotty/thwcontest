@@ -29,7 +29,7 @@ function initResources(boolean compileTime)
 	init_Specialist(compileTime)
 	init_CollisionDetection(compileTime, 16, 256)
 	
-boolean testing = true
+boolean testing = false
 	
 init
 	doAfter(0.01, () -> begin
@@ -48,25 +48,25 @@ init
 			print("However it can only heal wounds once every minute, and your soul cannot be saved if every human is dead.")
 			print("Chose your champion wisely to endure this greatest challenge in life.")
 			//setting up the Heroes to pick:
-			let c = new Crusader(STATUE_POS.polarOffset(angle(0*2*PI/heroCount),200).withZ(50),Player(8) )
+			let c = new Crusader(STATUE_POS.polarOffset(angle(0*2*PI/heroCount),200).withZ(2200),Player(8) )
 			c.actor.setFacing(angle(0*2*PI/heroCount))
-			c.actor.setFlyHeight(1000, 0)
-			let t = new Technician(STATUE_POS.polarOffset(angle(1*2*PI/heroCount),200).toVec3(),Player(8) )
+			c.sleeping = true
+			let t = new Technician(STATUE_POS.polarOffset(angle(1*2*PI/heroCount),200).withZ(2200),Player(8) )
 			t.actor.setFacing(angle(1*2*PI/heroCount))
-			t.setPosZ(1300,false)
-			let m = new Mage(STATUE_POS.polarOffset(angle(2*2*PI/heroCount),200).toVec3(),Player(8) )
+			t.sleeping = true
+			let m = new Mage(STATUE_POS.polarOffset(angle(2*2*PI/heroCount),200).withZ(2200),Player(8) )
 			m.actor.setFacing(angle(2*2*PI/heroCount))
-			m.setPosZ(1000,false)
-			let s = new Specialist(STATUE_POS.polarOffset(angle(3*2*PI/heroCount),200).toVec3(),Player(8) )
+			m.sleeping = true
+			let s = new Specialist(STATUE_POS.polarOffset(angle(3*2*PI/heroCount),200).withZ(2200),Player(8) )
 			s.actor.setFacing(angle(3*2*PI/heroCount))
-			s.setPosZ(1000,false)
+			s.sleeping = true
 			
 		
 			for i = 1 to heroCount
 				var a = angle(i*2*PI/heroCount)
 				var offset = STATUE_POS.polarOffset(a,200)
 				
-				var plate = new Fx(offset.toVec3()+vec3(0,0,1236),a, "buildings\\other\\MagicVault\\MagicVault.mdl")
+				var plate = new Fx(offset.withZ(1400),a, "buildings\\other\\MagicVault\\MagicVault.mdl")
 				
 			//Todo playernumber
 			camerasetup pick_cam = gg_cam_Pick_Camera
