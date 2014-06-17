@@ -5,3 +5,4 @@ import public LinkedList
 import public Players
 import public AbilityTooltipGenerator
 
+public constant heroCount = 4

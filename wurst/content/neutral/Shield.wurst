@@ -1,5 +1,5 @@
 package Shield
-
+import GameConstants
 import Fx
 import MapStuff
 import Terrain

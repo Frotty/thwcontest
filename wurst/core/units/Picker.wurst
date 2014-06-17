@@ -6,6 +6,7 @@ import UnitObjEditing
 import MapStuff
 import Hero
 import ChannelAbilityPreset
+import GameConstants
 
 int PICKER_ID
 int PICK_SPELL_ID

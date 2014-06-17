@@ -3,6 +3,7 @@ import public Entity
 import MapStuff
 import UnitObjEditing
 import HashMap
+import GameConstants
 
 public enum CreepType
 	CREEP
