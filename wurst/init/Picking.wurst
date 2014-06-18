@@ -1,0 +1,149 @@
+package Picking
+
+import MapStuff
+import Crusader
+import Technician
+import Mage
+import Specialist
+import Hero
+import Fx
+import Terrain
+import WaveManager
+
+public int PICK_SPELL_ID
+
+LinkedList<Pickable> pickables
+
+
+function getHeroDescription(int id) returns string
+	if id == 0 //Crusader
+		return "Crusader is the main supportive hero of the game, who is also able to withstand tons of damage. He can be vital for surviving."
+	else if id == 1 //Technician
+		return "Technician is the most tactical hero. You can build your own battlefield, with huge explosives and fire."
+	else if id == 2 //Mage
+		return "\"Mage is truly epic.\" She stands in the middle of the battlefield, exploding enemies. Be careful though, if creeps manage to get near her, she dont have long left."
+	else if id == 3 //Specialist
+		return "Specialist is great at manipulating enemies, and reforming their hordes. Use him on side of a mage for maximal efficenty!"
+	
+	return "The Ghost Hero is the most powerful of all, truly, truly powerful. You may pick him quick, and pick him now!"
+
+class FxEntity extends Entity //THIS IS ONLY BECAUSE ENTITY IS ABSTRACT
+	construct(vec3 pos, Fx fx)
+		super(pos, fx)
+	
+class Pickable
+	Hero h
+	Entity platform
+	int id
+	trigger selectTrigger
+	trigger castTrigger
+
+	construct(int ord, Hero hero, Entity fx)
+		h = hero
+		platform = fx
+		id = ord
+		selectTrigger = CreateTrigger()
+		selectTrigger.registerUnitEvent(h.actor,EVENT_UNIT_SELECTED)
+		selectTrigger.addAction(function onSelect)
+		castTrigger.registerUnitEvent(h.actor, EVENT_UNIT_SPELL_EFFECT)
+		castTrigger.addAction(function onCast)
+		
+	function select(player p )
+		print("And it got trough")
+		for pi in pickables
+			if pi != this and pi.h.actor.getOwner() == p
+				h.actor.setOwner(Player(8),true)
+		h.actor.setOwner(p,true)
+		
+	function pick(player p)
+		h.actor.setOwner(p,true)
+		h.sleeping = false
+		h.actor.removeAbility(PICK_SPELL_ID)
+		ResetToGameCameraForPlayer(p, 1.)
+		checkIfStart()
+		destroy this
+		
+	static function onSelect()
+		var u = GetTriggerUnit()
+		var p = Player(8)
+		for i = 0 to 4
+			if IsUnitSelected(u,Player(i))
+				p = Player(i)
+		print("onSelect - Pickable " + p.getName())
+		var h = u.getEntity() castTo Hero
+		for pi in pickables
+			print("loop...")
+			if h == pi.h
+				pi.select(p)
+				
+	static function onCast()
+		if GetSpellAbilityId() == PICK_SPELL_ID
+			var u = GetTriggerUnit()
+			var h = u.getEntity() castTo Hero
+			for pi in pickables
+				print("loop...")
+				if h == pi.h
+					pi.pick(GetOwningPlayer(u))
+			
+
+	ondestroy
+		pickables.remove(this)
+		destroy platform
+		selectTrigger.destr()
+
+function createHero(int id, vec3 pos) returns Hero
+	Hero h = null
+	if id == 0
+		h = new Crusader(pos,Player(8) )
+	else if id == 1
+		h = new Technician(pos,Player(8) )
+	else if id == 2
+		h = new Mage(pos,Player(8) )
+	else if id == 3
+		h = new Specialist(pos,Player(8) )
+	if id < heroCount
+		h.actor.setPropWindow(0.)
+		h.sleeping = true
+		h.actor.addAbility(PICK_SPELL_ID)
+		ModifyHeroSkillPoints( h.actor,0, 0)
+	return h
+
+public function createPickabes()
+	pickables = new LinkedList<Pickable> ()
+	for i = 0 to heroCount-1
+		var a = angle(i*2*PI/heroCount)
+		var offset = STATUE_POS.polarOffset(a,200)
+		var z = getTerrainZ(offset.x,offset.y)
+		var fx =  new Fx(offset.withZ(2000),a, "buildings\\other\\MagicVault\\MagicVault.mdl")
+		pickables.add(new Pickable(i,createHero(i,offset.withZ(2200)),new FxEntity(offset.withZ(2000) , fx )))
+		pickables.get(pickables.getSize()-1).platform.sleeping = false
+				
+			//Todo playernumber
+	camerasetup pick_cam = gg_cam_Pick_Camera
+	CameraSetupSetDestPosition(pick_cam, STATUE_POS.x,STATUE_POS.y,0.)
+	CameraSetupApplyForceDuration(pick_cam, true,0.)
+	
+			//ResetToGameCamera(5.)
+			//SetCameraRotateMode(STATUE_POS.x, STATUE_POS.y, PI/6, 2)
+			//Setting up the pickers. Animation in constructor
+			/*for i = 0 to playernumber-1
+				var p = Player(i)
+				var pi = new Picker(p,angle(i*2*PI/playernumber))
+				p.select(pi.actor)
+				*/
+
+function checkIfStart()
+	if pickables.getSize() <= 1
+		WaveManager.startNextWave()
+
+public function init_Picking(boolean ct)
+	PICK_SPELL_ID = ABIL_ID_GEN.next()
+	
+	if ct
+		var pick = new ChannelAbilityPreset(PICK_SPELL_ID, 1)
+		// Set Attributes
+		pick..removeChannelProperties(true)..setName("Trojan")
+			..setButtonPositionNormalX(1)..setButtonPositionNormalY(1)
+			..setHeroAbility(false)
+			..setIcon("BTNWispSplode")..setOption(Option.VISIBLE, true)
+			..setTargetType(Targettype.NOTARGET)..setHotkey("D")

@@ -1,4 +1,5 @@
 package Hero
+import public MapStuff
 import public Entity
 import public HeroPreset
 import public ObjectIds
@@ -8,7 +9,7 @@ import public ChannelAbilityPreset
 public abstract class Hero extends Entity
 	
 	construct(vec3 pos, player owner, int id)
-		super(pos, createUnit(owner, id, pos, angle(0)))
+		super(pos, createUnit(owner, id, pos, pos.angleTo2d(STATUE_POS)))
 		castTrigger.registerUnitEvent(actor, EVENT_UNIT_SPELL_EFFECT)
 		active = true
 		sleeping = false

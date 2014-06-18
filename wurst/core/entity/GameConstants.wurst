@@ -11,6 +11,8 @@ public constant CREEP_PLAYER = Player(11)
 
 public constant vec2 STATUE_POS = vec2(-77,0)
 
+public constant heroCount = 4
+
 public var gravity = vec3(0,0,-1.4)
 public constant MAP_VER = "001"
 

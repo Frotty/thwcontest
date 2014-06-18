@@ -12,10 +12,11 @@ import Mage
 import Specialist
 import Mammoth
 import OrderStringFactory
-import Picker
+import Picking
 import CollisionDetection
 import Shield
 import GameConstants
+import Terrain
 
 function initResources(boolean compileTime)
 	init_MageHero(compileTime)
@@ -25,7 +26,7 @@ function initResources(boolean compileTime)
 	init_StunHandler(compileTime)
 	init_Technician(compileTime)
 	init_Mammoth(compileTime)
-	init_Picker(compileTime)
+	//init_Picker(compileTime)
 	init_Specialist(compileTime)
 	init_CollisionDetection(compileTime, 16, 256)
 	
@@ -48,42 +49,10 @@ init
 			print("However it can only heal wounds once every minute, and your soul cannot be saved if every human is dead.")
 			print("Chose your champion wisely to endure this greatest challenge in life.")
 			//setting up the Heroes to pick:
-			let c = new Crusader(STATUE_POS.polarOffset(angle(0*2*PI/heroCount),200).withZ(2200),Player(8) )
-			c.actor.setFacing(angle(0*2*PI/heroCount))
-			c.sleeping = true
-			let t = new Technician(STATUE_POS.polarOffset(angle(1*2*PI/heroCount),200).withZ(2200),Player(8) )
-			t.actor.setFacing(angle(1*2*PI/heroCount))
-			t.sleeping = true
-			let m = new Mage(STATUE_POS.polarOffset(angle(2*2*PI/heroCount),200).withZ(2200),Player(8) )
-			m.actor.setFacing(angle(2*2*PI/heroCount))
-			m.sleeping = true
-			let s = new Specialist(STATUE_POS.polarOffset(angle(3*2*PI/heroCount),200).withZ(2200),Player(8) )
-			s.actor.setFacing(angle(3*2*PI/heroCount))
-			s.sleeping = true
-			
-		
-			for i = 1 to heroCount
-				var a = angle(i*2*PI/heroCount)
-				var offset = STATUE_POS.polarOffset(a,200)
-				
-				var plate = new Fx(offset.withZ(1400),a, "buildings\\other\\MagicVault\\MagicVault.mdl")
-				
-			//Todo playernumber
-			camerasetup pick_cam = gg_cam_Pick_Camera
-			CameraSetupSetDestPosition(pick_cam, STATUE_POS.x,STATUE_POS.y,0.)
-			CameraSetupApplyForceDuration(pick_cam, true,0.)
-			//ResetToGameCamera(5.)
-			let playernumber = 5
-			//SetCameraRotateMode(STATUE_POS.x, STATUE_POS.y, PI/6, 2)
-			//Setting up the pickers. Animation in constructor
-			/*for i = 0 to playernumber-1
-				var p = Player(i)
-				var pi = new Picker(p,angle(i*2*PI/playernumber))
-				p.select(pi.actor)
-				*/
+			createPickabes()
 				
 		startEntityLoop()
-	end)	
+	end)
 	
 @compiletime function generateObjects()
 	initResources(true)
