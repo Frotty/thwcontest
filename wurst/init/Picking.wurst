@@ -9,6 +9,7 @@ import Hero
 import Fx
 import Terrain
 import WaveManager
+import Queue
 
 public int PICK_SPELL_ID
 
@@ -37,11 +38,15 @@ class Pickable
 	int id
 	trigger selectTrigger
 	trigger castTrigger
+	player viewing
+	Queue<player> waiting
 
 	construct(int ord, Hero hero, Entity fx)
 		h = hero
 		platform = fx
 		id = ord
+		viewing = Player(8)
+		waiting = new Queue<player>
 		selectTrigger = CreateTrigger()
 		selectTrigger.registerUnitEvent(h.actor,EVENT_UNIT_SELECTED)
 		selectTrigger.addAction(function onSelect)
@@ -49,15 +54,27 @@ class Pickable
 		castTrigger.addAction(function onCast)
 		
 	function select(player p )
+		if viewing == Player(8)
+			viewing = p
+		else
+			waiting.enqueue(p)
 		print("And it got trough")
-		for pi in pickables
-			if pi != this and pi.h.actor.getOwner() == p
-				h.actor.setOwner(Player(8),true)
-		h.actor.setOwner(p,true)
+		h.actor.setOwner(viewing,true)
+	
+	function deselect(player p)
+		//Checking if the player who is on front of the queue left already.
+		while (not IsUnitSelected(h.actor, waiting.peek())) and waiting.peek() != null
+			waiting.dequeue()
+		if IsUnitSelected(h.actor, waiting.peek()) and p != viewing
+			viewing = waiting.dequeue()
+			h.actor.setOwner(viewing,true)
+		else
+			h.actor.setOwner(Player(8),true)
 		
 	function pick(player p)
 		h.actor.setOwner(p,true)
 		h.sleeping = false
+		h.actor.setPropWindow(1.)
 		h.actor.removeAbility(PICK_SPELL_ID)
 		ResetToGameCameraForPlayer(p, 1.)
 		checkIfStart()
@@ -75,6 +92,8 @@ class Pickable
 			print("loop...")
 			if h == pi.h
 				pi.select(p)
+			if h != pi.h
+				pi.deselect(p)
 				
 	static function onCast()
 		if GetSpellAbilityId() == PICK_SPELL_ID

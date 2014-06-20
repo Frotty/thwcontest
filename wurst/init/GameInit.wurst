@@ -16,7 +16,8 @@ import Picking
 import CollisionDetection
 import Shield
 import GameConstants
-import Terrain
+import Intermission
+import CustomExp
 
 function initResources(boolean compileTime)
 	init_MageHero(compileTime)
@@ -29,6 +30,8 @@ function initResources(boolean compileTime)
 	//init_Picker(compileTime)
 	init_Specialist(compileTime)
 	init_CollisionDetection(compileTime, 16, 256)
+	init_Intermission(compileTime)
+	
 	
 boolean testing = false
 	

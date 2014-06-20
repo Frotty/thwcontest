@@ -21,6 +21,9 @@ constant MOLOTOV_MAXLVL = 4
 function getMolotovBounces(int lvl) returns int
 	return min(lvl, 3)
 	
+function getCastRange(int lvl) returns real
+	return 400 + 100.*lvl
+	
 constant THROW_SOUND = new Sound("Sounds\\sfx_throw.mp3", 532, false)
 constant EXPLO_SOUND = new Sound("Sounds\\sfx_molotov_explo.mp3", 4021, false)
 public int MOLOTOV_SPELL_ID
@@ -79,8 +82,11 @@ public function init_Molotov(boolean c)
 		let molotovPreset = new ChannelAbilityPreset(MOLOTOV_SPELL_ID, MOLOTOV_MAXLVL)
 		molotovPreset..setName("Molotov")..removeChannelProperties(true)..setOption(Option.VISIBLE, true)
 		..setIcon("BTNSunFragment")..setTargetType(Targettype.PTARGET)
-		..setCastRange(1, 400)..setButtonPosNormal(2, 2)..setHotkey(MOLOTOV_HOTKEY)
+		..setButtonPosNormal(2, 2)..setHotkey(MOLOTOV_HOTKEY)
+		for i = 1 to MOLOTOV_MAXLVL
+			molotovPreset.setCastRange(i, getCastRange(i))
 		new AbilityTooltipGenerator(MOLOTOV_NAME, MOLOTOV_HOTKEY, Targettype.PTARGET, MOLOTOV_MAXLVL, "Throws a burning Molotov into the target area.\nThe Molotov bounces.\n" + "When the Molotov hits the ground it ignites all Napalm and Xplosives near and burns enemies." )
-		..addProperty("Bounces", (int lvl) -> getMolotovBounces(lvl).toString())
+		..addProperty("Range:", (int lvl) -> getCastRange(lvl).toString())
+		..addProperty("Bounces:", (int lvl) -> getMolotovBounces(lvl).toString())
 		..applyToDef(molotovPreset)
 		

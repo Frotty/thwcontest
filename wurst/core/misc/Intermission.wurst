@@ -1,9 +1,52 @@
 package Intermission
 import GameConstants
 import MapStuff
+import UnitObjEditing
 import Fx
+import ClosureTimers
+import LinkedList
+
+int SHOP_ID
+
+unit SHOP_UNIT
+
+LinkedList<int> alwaysItemsIds = new LinkedList<int>()
+LinkedList<int> pauseItemsIds = new LinkedList<int>()
 
 public function startIntermission(real duration)
-	let fx = new Fx(STATUE_POS.withZ(150), angle(0))
+	let fx = new Fx(STATUE_POS.withZ(300), angle(0))
+	fx.setScale(2.)
 	fx.flash("Abilities\\Spells\\Undead\\ReplenishHealth\\ReplenishHealthCasterOverhead.mdl")
-	destroy fx
+	doPeriodicallyTimed(3, duration, (CallbackCounted cc) -> begin
+		fx.flash("Abilities\\Spells\\Undead\\ReplenishHealth\\ReplenishHealthCasterOverhead.mdl")
+	end)
+	printTimed("|cff086BAD>> |cffFFD64AWave finished!", duration/2)
+	printTimed("            |cffFFD64AYou can now regenrate and buy permanent items from the statue.", duration/2)
+	
+	for i in pauseItemsIds
+		AddItemToStock(SHOP_UNIT, i, 1, 2)
+		
+	doAfter(duration, () -> begin
+		printTimed("|cff086BAD>> |cffFFD64ANew Wave incoming!", 10)
+		for i in pauseItemsIds
+			RemoveItemFromStock(SHOP_UNIT, i)
+	end)
+	
+	
+public function addShopItem(int id, boolean always)
+	if always
+		alwaysItemsIds.add(id)
+	else
+		pauseItemsIds.add(id)
+	
+	
+public function init_Intermission(boolean c)
+	SHOP_ID = UNIT_ID_GEN.next()
+	SHOP_UNIT = createUnit(DUMMY_PLAYER, SHOP_ID, STATUE_POS, angle(0))
+	for i in alwaysItemsIds
+		AddItemToStock(SHOP_UNIT, i, 1, 2)
+	if c
+		let def = new BuildingDefinition(SHOP_ID, 'ngme')
+		def..setName("Statue")..setModelFile("Models\\Statue03_b.mdx")..setItemsSold("")
+		..setPathingMap("")..setGroundTexture("")..setCollisionSize(0)..setSelectionScale(0.8)..setScalingValue(1.5)
+	

@@ -22,7 +22,7 @@ public function wave_1() returns WavePool
 	// Create a CreepDefinition. Use a distinctive Name here for later copies
 	var def = new CreepDefinition("Lesser Zombie")
 	// Set Values..
-	def.hp = 1100
+	def.hp = 100
 	def.modelPath = "units\\creeps\\Zombie\\Zombie.mdl"
 	def.scale = 0.9
 	def.collisionSize = 8
