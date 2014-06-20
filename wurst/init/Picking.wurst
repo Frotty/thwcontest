@@ -50,28 +50,32 @@ class Pickable
 		selectTrigger = CreateTrigger()
 		selectTrigger.registerUnitEvent(h.actor,EVENT_UNIT_SELECTED)
 		selectTrigger.addAction(function onSelect)
+		castTrigger = CreateTrigger()
 		castTrigger.registerUnitEvent(h.actor, EVENT_UNIT_SPELL_EFFECT)
 		castTrigger.addAction(function onCast)
 		
 	function select(player p )
+		print("Selecting: " + id.toString())
 		if viewing == Player(8)
 			viewing = p
 		else
 			waiting.enqueue(p)
-		print("And it got trough")
 		h.actor.setOwner(viewing,true)
 	
 	function deselect(player p)
-		//Checking if the player who is on front of the queue left already.
-		while (not IsUnitSelected(h.actor, waiting.peek())) and waiting.peek() != null
-			waiting.dequeue()
-		if IsUnitSelected(h.actor, waiting.peek()) and p != viewing
-			viewing = waiting.dequeue()
-			h.actor.setOwner(viewing,true)
-		else
-			h.actor.setOwner(Player(8),true)
+		if p == viewing
+			print("Deselecting: " + id.toString())
+			//Checking if the player who is on front of the queue left already.
+			while (not IsUnitSelected(h.actor, waiting.peek())) and waiting.peek() != null
+				waiting.dequeue()
+			if IsUnitSelected(h.actor, waiting.peek()) and p != viewing
+				viewing = waiting.dequeue()
+				h.actor.setOwner(viewing,true)
+			else
+				h.actor.setOwner(Player(8),true)
 		
-	function pick(player p)
+	function pick()
+		player p = viewing
 		h.actor.setOwner(p,true)
 		h.sleeping = false
 		h.actor.setPropWindow(1.)
@@ -100,15 +104,15 @@ class Pickable
 			var u = GetTriggerUnit()
 			var h = u.getEntity() castTo Hero
 			for pi in pickables
-				print("loop...")
 				if h == pi.h
-					pi.pick(GetOwningPlayer(u))
+					pi.pick()
 			
 
 	ondestroy
 		pickables.remove(this)
 		destroy platform
 		selectTrigger.destr()
+		castTrigger.destr()
 
 function createHero(int id, vec3 pos) returns Hero
 	Hero h = null
@@ -161,7 +165,7 @@ public function init_Picking(boolean ct)
 	if ct
 		var pick = new ChannelAbilityPreset(PICK_SPELL_ID, 1)
 		// Set Attributes
-		pick..removeChannelProperties(true)..setName("Trojan")
+		pick..removeChannelProperties(true)..setName("Pick this hero")
 			..setButtonPositionNormalX(1)..setButtonPositionNormalY(1)
 			..setHeroAbility(false)
 			..setIcon("BTNWispSplode")..setOption(Option.VISIBLE, true)
