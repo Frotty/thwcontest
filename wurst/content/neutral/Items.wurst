@@ -1,0 +1,8 @@
+package Items
+import ItemObjEditing
+import ObjectIdGenerator
+
+public function init_Items(boolean c)
+	if c
+		let def = new ItemDefinition(ITEM_ID_GEN.next(), 'rat9')
+		def.setName("Clawrs")

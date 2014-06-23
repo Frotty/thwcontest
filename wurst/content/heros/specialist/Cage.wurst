@@ -55,6 +55,7 @@ public class CageNode extends Entity
 		fx.setScale(0.8)
 		fx.setPos(pos.x, pos.y, 0)
 		fx.getDummy()
+		fx.setOwner(owner, true)
 		
 	override function update()
 	

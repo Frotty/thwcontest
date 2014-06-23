@@ -6,7 +6,7 @@ public constant UNIT_ID_GEN = new IdGenerator('s000')
 public constant HERO_ID_GEN = new IdGenerator('H000')
 public constant ABIL_ID_GEN = new IdGenerator('A000')
 public constant BUFF_ID_GEN = new IdGenerator('B000')
-
+public constant ITEM_ID_GEN = new IdGenerator('I000')
 
 public class IdGenerator
 	int i1

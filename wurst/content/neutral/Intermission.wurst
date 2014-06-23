@@ -5,6 +5,7 @@ import UnitObjEditing
 import Fx
 import ClosureTimers
 import LinkedList
+import initlater WaveManager
 
 int SHOP_ID
 
@@ -27,9 +28,9 @@ public function startIntermission(real duration)
 		AddItemToStock(SHOP_UNIT, i, 1, 2)
 		
 	doAfter(duration, () -> begin
-		printTimed("|cff086BAD>> |cffFFD64ANew Wave incoming!", 10)
 		for i in pauseItemsIds
 			RemoveItemFromStock(SHOP_UNIT, i)
+		WaveManager.startNextWave()
 	end)
 	
 	

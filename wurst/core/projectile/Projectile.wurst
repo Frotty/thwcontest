@@ -23,6 +23,7 @@ public class Projectile extends Entity
 	construct( vec3 pos, player owner, angle xyAngle, string fxpath )
 		super(pos, new Fx(pos, xyAngle, fxpath))
 		setXYAngle(xyAngle)
+		this.owner = owner
 		
 	function setFixedFlyHeight(real z)
 		fixedFlyHeight = true

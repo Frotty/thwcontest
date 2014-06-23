@@ -18,12 +18,14 @@ import Shield
 import GameConstants
 import Intermission
 import CustomExp
+import Items
 
 function initResources(boolean compileTime)
 	init_MageHero(compileTime)
 	init_Crusader(compileTime)	
 	init_Spawner(compileTime)
 	init_Waves(compileTime)
+	init_Items(compileTime)
 	init_StunHandler(compileTime)
 	init_Technician(compileTime)
 	init_Mammoth(compileTime)

@@ -19,6 +19,7 @@ public class WaveManager
 		WaveManager.waves = waves
 		
 	static function startNextWave()
+		printTimed("|cff086BAD>> |cffFFD64ANew Wave incoming!", 10)
 		if currentWave != null
 			destroy currentWave
 		currentWave = waves.dequeue()
@@ -61,6 +62,5 @@ init
 		WaveManager.finished = true
 		startIntermission(INTERMISSION_DURATION)
 		WaveManager.onPropertyTrig.disable()
-		doAfter(INTERMISSION_DURATION, () -> WaveManager.startNextWave())
 	end)
 	WaveManager.onPropertyTrig.disable()
