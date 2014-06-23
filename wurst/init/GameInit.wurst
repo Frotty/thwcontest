@@ -33,7 +33,7 @@ function initResources(boolean compileTime)
 	init_Intermission(compileTime)
 	
 	
-boolean testing = true
+boolean testing = false
 	
 init
 	doAfter(0.01, () -> begin
@@ -52,6 +52,11 @@ init
 			print("However it can only heal wounds once every minute, and your soul cannot be saved if every human is dead.")
 			print("Chose your champion wisely to endure this greatest challenge in life.")
 			//setting up the Heroes to pick:
+			for i = 0 to 4
+				if GetPlayerSlotState( Player(i) ) == PLAYER_SLOT_STATE_PLAYING
+					playerNumber ++
+					
+			print("playerNumber = " + playerNumber.toString())
 			createPickabes()
 				
 		startEntityLoop()

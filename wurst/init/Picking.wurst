@@ -10,6 +10,7 @@ import Fx
 import Terrain
 import WaveManager
 import Queue
+import ClosureTimers
 
 public int PICK_SPELL_ID
 
@@ -54,6 +55,12 @@ class Pickable
 		castTrigger.registerUnitEvent(h.actor, EVENT_UNIT_SPELL_EFFECT)
 		castTrigger.addAction(function onCast)
 		
+		h.actor.setPropWindow(0.)
+		h.sleeping = true
+		h.actor.addAbility(PICK_SPELL_ID)
+		ModifyHeroSkillPoints(h.actor, bj_MODIFYMETHOD_SET, 0)
+		h.actor.setPathing(false)
+		
 	function select(player p )
 		print("Selecting: " + id.toString())
 		if viewing == Player(8)
@@ -80,8 +87,9 @@ class Pickable
 		h.sleeping = false
 		h.actor.setPropWindow(1.)
 		h.actor.removeAbility(PICK_SPELL_ID)
-		ResetToGameCameraForPlayer(p, 1.)
-		checkIfStart()
+		ModifyHeroSkillPoints(h.actor, bj_MODIFYMETHOD_SET, 1)
+		h.actor.setPathing(false)
+		ResetToGameCameraForPlayer(p, 1.3)
 		destroy this
 		
 	static function onSelect()
@@ -113,6 +121,7 @@ class Pickable
 		destroy platform
 		selectTrigger.destr()
 		castTrigger.destr()
+		checkIfStart()
 
 function createHero(int id, vec3 pos) returns Hero
 	Hero h = null
@@ -124,11 +133,6 @@ function createHero(int id, vec3 pos) returns Hero
 		h = new Mage(pos,Player(8) )
 	else if id == 3
 		h = new Specialist(pos,Player(8) )
-	if id < heroCount
-		h.actor.setPropWindow(0.)
-		h.sleeping = true
-		h.actor.addAbility(PICK_SPELL_ID)
-		ModifyHeroSkillPoints( h.actor,0, 0)
 	return h
 
 public function createPickabes()
@@ -146,18 +150,17 @@ public function createPickabes()
 	CameraSetupSetDestPosition(pick_cam, STATUE_POS.x,STATUE_POS.y,0.)
 	CameraSetupApplyForceDuration(pick_cam, true,0.)
 	
-			//ResetToGameCamera(5.)
-			//SetCameraRotateMode(STATUE_POS.x, STATUE_POS.y, PI/6, 2)
-			//Setting up the pickers. Animation in constructor
-			/*for i = 0 to playernumber-1
-				var p = Player(i)
-				var pi = new Picker(p,angle(i*2*PI/playernumber))
-				p.select(pi.actor)
-				*/
+boolean started = false
 
 function checkIfStart()
-	if pickables.getSize() <= 1
+	if not started and pickables.getSize() <= heroCount - playerNumber +1 //todo playerNumber +1 is because when its checked, last pickable isn't removed
 		WaveManager.startNextWave()
+		started = true
+		for pi in pickables
+			destroy pi.h
+			//**WARNING! THIS IS UGLY**//
+			doAfter(ANIMATION_PERIOD, ()->destroy pi)
+	
 
 public function init_Picking(boolean ct)
 	PICK_SPELL_ID = ABIL_ID_GEN.next()

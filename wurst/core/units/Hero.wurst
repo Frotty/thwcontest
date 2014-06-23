@@ -20,6 +20,8 @@ public abstract class Hero extends Entity
 		
 	abstract function onPointCast(int spellId, vec2 target, int lvl)
 		
+	ondestroy
+		actor.remove()
 	
 constant castTrigger = CreateTrigger()
 
