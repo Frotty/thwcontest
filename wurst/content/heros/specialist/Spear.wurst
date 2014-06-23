@@ -14,7 +14,9 @@ import Interpolation
 public int SPEAR_SPELL_ID
 
 constant SPEAR_FX = "abilities\\weapons\\WyvernSpear\\WyvernSpearMissile.mdl"
-constant SPEAR_HOTKEY = "E"
+constant SPEAR_NAME = "Sausage Spear"
+constant SPEAR_HOTKEY = "W"
+constant SPEAR_MAXLVL = 4
 
 function getSpearDamage(int lvl) returns real
 	return 10. + 10 * lvl*lvl
@@ -23,10 +25,13 @@ function getSpearTargetCount(int lvl) returns int
 	return 1 + 2 * lvl*lvl
 
 function getSpearSpeed(int lvl) returns real
-	return (200. + 50 * lvl)
+	return (800. + 50 * lvl)
 	
 function getSpearRange(int lvl) returns real
 	return 600. + 200 * lvl
+	
+function getSpearCooldown(int lvl) returns int
+	return 30 + 7 * lvl
 
 class SpearCreep
 	Creep creep
@@ -41,10 +46,11 @@ public class Spear extends Projectile
 	LinkedList<SpearCreep> targets = new LinkedList<SpearCreep>()
 	
 	construct( vec3 pos, player owner, angle xyAngle, int lvl )
-		super(pos, owner, xyAngle, SPEAR_FX )
+		super(pos , owner, xyAngle, SPEAR_FX )
 		
 		setRanged(getSpearRange(lvl))
 		setSpeed(getSpearSpeed(lvl))
+		setFixedFlyHeight(30)
 		
 		fx.getDummy().registerOnHitCallback(32, true, (unit hit, unit hitter) -> begin
 			if fx.getDummy() == hitter
@@ -103,10 +109,20 @@ public function init_Spear(boolean compileTime)
 	if compileTime
 		var def = new ChannelAbilityPreset(SPEAR_SPELL_ID, 4)
 		// Set Attributes
-		def..removeChannelProperties(true)..setName("Sausage Spear")
+		def..removeChannelProperties(true)..setName(SPEAR_NAME)
 			..setButtonPositionNormalX(2)..setButtonPositionNormalY(2)
 			..setButtonPositionResearchX(2)..setButtonPositionResearchY(0)
-			..setIcon("BTNThoriumRanged")..setOption(Option.VISIBLE, true)
+			..setIcon("BTNBloodFilledGlassArrow")..setOption(Option.VISIBLE, true)
 			..setTargetType(Targettype.PUTARGET)..setHotkey(SPEAR_HOTKEY)
+			..setLevels(SPEAR_MAXLVL)
 			..setCastRange(1,1000)
 			..setOrderStringActivate("starfall")
+			
+		
+		new AbilityTooltipGenerator(SPEAR_NAME, SPEAR_HOTKEY, Targettype.PUTARGET, SPEAR_MAXLVL, "Specialist throws a spear which drags enemies along it's path.")
+		..addProperty("Travel Range:", (int lvl) -> getSpearRange(lvl).toString())
+		..addProperty("Cooldown:", (int lvl) -> getSpearCooldown(lvl).toString())
+		..addProperty("Maximum targets:", (int lvl) -> getSpearTargetCount(lvl).toString())
+		..addProperty("Damage:", (int lvl) -> getSpearDamage(lvl).toString())
+		..applyToDef(def)
+		

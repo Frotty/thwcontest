@@ -1,0 +1,46 @@
+package Trojan
+
+import MapStuff
+import ClosureTimers
+
+
+public int TROJAN_SPELL_ID
+constant GHOST = 'Agho'
+
+constant TROJAN_NAME = "Slink"
+constant TROJAN_HOTKEY = "E"
+constant TROJAN_MAXLVL = 4
+
+function getTrojanDuration(int lvl) returns real
+	return 10. + 5. * lvl
+	
+function getTrojanCooldown(int lvl) returns real
+	return getTrojanDuration(TROJAN_MAXLVL) + 5
+
+public function castTrojan(unit actor, int lvl)
+	actor.addAbility(GHOST)
+	doAfter(getTrojanDuration(lvl), ()-> actor.removeAbility(GHOST))
+
+public function init_Trojan(boolean compileTime)
+
+	TROJAN_SPELL_ID = ABIL_ID_GEN.next()
+	
+	if compileTime
+		// Generate def if compieltime
+		// Set Attributes
+		var trojan = new ChannelAbilityPreset(TROJAN_SPELL_ID, 4)
+		// Set Attributes
+		trojan..removeChannelProperties(true)..setName("Trojan")
+			..setButtonPositionNormalX(1)..setButtonPositionNormalY(2)
+			..setButtonPositionResearchX(1)..setButtonPositionResearchY(0)
+			..setIcon("BTNWispSplode")..setOption(Option.VISIBLE, true)
+			..setTargetType(Targettype.NOTARGET)..setHotkey(TROJAN_HOTKEY)
+		for lvl = 1 to TROJAN_MAXLVL
+			trojan.setCooldown(lvl,getTrojanCooldown(lvl))
+			
+		new AbilityTooltipGenerator(TROJAN_NAME, TROJAN_HOTKEY, Targettype.NOTARGET, TROJAN_MAXLVL, "Specialist hides himself from enemies by covering himself in zombie blood.")
+		..addProperty("Duration:", (int lvl) -> getTrojanDuration(lvl).toString())
+		..addProperty("Cooldown:", (int lvl) -> getTrojanCooldown(lvl).toString())
+		..applyToDef(trojan)
+		
+	

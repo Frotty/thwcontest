@@ -9,10 +9,10 @@ import Terrain
 import Feed
 import Spear
 import Cage
+import Trojan
 
 int SPECIALIST_ID
 
-int TROJAN_SPELL_ID
 
 public class Specialist extends Hero
 	Cage cage 
@@ -37,6 +37,8 @@ public class Specialist extends Hero
 			if target == actor // Avoiding agnle being 0 when cast on self (near hero)
 				xyAngle = actor.getFacingAngle()
 			new FoodProjectile( getPos3(), owner, getPos2().distToVec(target.getPos()) + 10., xyAngle, lvl)
+		else if spellId == TROJAN_SPELL_ID
+			castTrojan(actor, lvl)
 
 	override function onPointCast(int spellId, vec2 target, int lvl)
 		if spellId == FEED_SPELL_ID
@@ -50,27 +52,17 @@ public function init_Specialist(boolean compileTime)
 	// generate valid id
 	init_Feed(compileTime)
 	init_Spear(compileTime)
-	TROJAN_SPELL_ID = ABIL_ID_GEN.next()
+	init_Trojan(compileTime)
 	//SAUSAGE_SPEAR_SPELL_ID = ABIL_ID_GEN.next()
 	init_Cage(compileTime)
 	
 	if compileTime
 		// Generate def if compieltime
-		// Set Attributes
-		var trojan = new ChannelAbilityPreset(TROJAN_SPELL_ID, 4)
-		// Set Attributes
-		trojan..removeChannelProperties(true)..setName("Trojan")
-			..setButtonPositionNormalX(1)..setButtonPositionNormalY(2)
-			..setButtonPositionResearchX(1)..setButtonPositionResearchY(0)
-			..setIcon("BTNWispSplode")..setOption(Option.VISIBLE, true)
-			..setCastRange(1,400)
-			..setTargetType(Targettype.PUTARGET)
-			..setTargetsAllowed(1,"friend")
-			
 		
 		let preset = new HeroPreset(SPECIALIST_ID, 'Edem', "Specialist")
 		preset..addProperName("Francis")
-			..setModelFile("units\\creeps\\Medivh\\Medivh.mdl")
+			..setModelFile("Models\\DarkSoldier_Hero.mdl")
+			..setIconGameInterface("ReplaceableTextures\\CommandButtons\\BTNDarkSoldier.blp")
 			..addHeroAbility(FEED_SPELL_ID)
 			..addHeroAbility(SPEAR_SPELL_ID)
 			..addHeroAbility(TROJAN_SPELL_ID)

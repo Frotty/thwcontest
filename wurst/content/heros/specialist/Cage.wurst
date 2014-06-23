@@ -50,11 +50,11 @@ public class CageNode extends Entity
 	boolean canfix = false
 	
 	construct( vec3 pos, player owner)
-		super(pos, new Fx(pos, angle(0), "buildings\\nightelf\\ChimaeraRoost\\ChimaeraRoost.mdl"))
+		super(pos, new Fx(pos, angle(0), "units\\orc\\StasisTotem\\StasisTotem.mdl"))
 		fixed = false
-		fx.setScale(0.3)
+		fx.setScale(0.8)
 		fx.setPos(pos.x, pos.y, 0)
-		fx.getDummy().setAnimation("Work")
+		fx.getDummy()
 		
 	override function update()
 	
@@ -175,7 +175,7 @@ function buildCageSpell(int id, int lvl) returns ChannelAbilityPreset
 		..removeChannelProperties(true)..setName("Cage")
 		..setButtonPositionNormalX(3)..setButtonPositionNormalY(2)
 		..setButtonPositionResearchX(3)..setButtonPositionResearchY(0)
-		..setIcon("BTNControlMagic")..setOption(Option.VISIBLE, true)
+		..setIcon("BTNStaticShock")..setOption(Option.VISIBLE, true)
 		..setOrderStringActivate("holybolt")..setHotkey(CAGE_HOTKEY)
 	return pr
 			
@@ -186,7 +186,7 @@ public function init_Cage(boolean compileTime)
 	
 	CAGE_BUFF_DEF = new BuffDef("Shocked", "This unit is shocked, and cant get hit by electric spells meanwhile", "BTNOrbOfLightning")
 	CAGE_BUFF_DEF.stacking = false
-	CAGE_BUFF_DEF.buffArt = "Abilities\\Spells\\Human\\FlameStrike\\FlameStrikeEmbers.mdl"
+	CAGE_BUFF_DEF.buffArt = "Abilities\\Spells\\Orc\\LightningShield\\LightningShieldBuff.mdl"
 	
 	if compileTime
 		CAGE_BUFF_DEF.generate()

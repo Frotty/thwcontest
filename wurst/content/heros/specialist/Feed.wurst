@@ -17,7 +17,7 @@ public int FEED_SPELL_ID
 int FOOD_DUMMY_ID
 
 constant FEED_NAME = "Fresh Meat"
-constant FEED_HOTKEY = "W"
+constant FEED_HOTKEY = "Q"
 constant FEED_MAXLVL = 4
 
 function getFeedMeatHP(int lvl) returns int

@@ -33,7 +33,7 @@ function initResources(boolean compileTime)
 	init_Intermission(compileTime)
 	
 	
-boolean testing = false
+boolean testing = true
 	
 init
 	doAfter(0.01, () -> begin
