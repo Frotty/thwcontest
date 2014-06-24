@@ -29,11 +29,11 @@ function initResources(boolean compileTime)
 	init_Picking(compileTime)
 	init_Spawner(compileTime)
 	init_Waves(compileTime)
+	init_Intermission(compileTime)
 	init_Items(compileTime)
 	init_StunHandler(compileTime)
 	init_Mammoth(compileTime)
 	init_CollisionDetection(compileTime, 16, 256)
-	init_Intermission(compileTime)
 	
 	
 function init_PlayerNumber(boolean compileTime)
@@ -43,7 +43,7 @@ function init_PlayerNumber(boolean compileTime)
 			if GetPlayerSlotState(Player(i)) == PLAYER_SLOT_STATE_PLAYING
 				playerNumber ++
 	
-boolean testing = false
+boolean testing = true
 	
 init
 	doAfter(0.01, () -> begin
