@@ -41,7 +41,7 @@ function getCageMaxRange(int lvl) returns real
 	return 400. + 100. * lvl
 	
 function getCageMinRange() returns real
-	return 200.
+	return 120.
 
 public class CageNode extends Entity
 
@@ -107,7 +107,7 @@ public class Cage
 					if size == 4
 						nodes.get(size-1).lng.move(true, nodes.get(size-1).getPos3()+zoffset, nodes.get(0).getPos3()+zoffset)
 						var dist =  nodes.get(0).getPos2().distToVec(nodes.get(size-1).getPos2())
-						if not (dist > getCageMaxRange(lvl) or dist < getCageMinRange())
+						if not (dist > getCageMaxRange(lvl) ) //Isn't checking minDistance at last segment.
 							nodes.get(size-1).canfix = true
 							nodes.get(size-1).lng.setColor(color_avail)
 					else
@@ -118,7 +118,6 @@ public class Cage
 				nodes.get(size-1).lng.setColor(color_active)
 	
 	function update()
-		//This move is definitely doesn't work :(
 		let size = nodes.getSize()
 		if size < 4
 			var n = nodes.get(size-1)

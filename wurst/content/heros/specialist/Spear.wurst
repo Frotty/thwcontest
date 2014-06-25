@@ -25,10 +25,10 @@ function getSpearTargetCount(int lvl) returns int
 	return 1 + 2 * lvl*lvl
 
 function getSpearSpeed(int lvl) returns real
-	return (800. + 50 * lvl)
+	return (800.)
 	
 function getSpearRange(int lvl) returns real
-	return 600. + 200 * lvl
+	return 400. + 50 * lvl
 	
 function getSpearCooldown(int lvl) returns int
 	return 30 + 7 * lvl
@@ -110,8 +110,8 @@ public function init_Spear(boolean compileTime)
 		var def = new ChannelAbilityPreset(SPEAR_SPELL_ID, 4)
 		// Set Attributes
 		def..removeChannelProperties(true)..setName(SPEAR_NAME)
-			..setButtonPositionNormalX(2)..setButtonPositionNormalY(2)
-			..setButtonPositionResearchX(2)..setButtonPositionResearchY(0)
+			..setButtonPositionNormalX(1)..setButtonPositionNormalY(2)
+			..setButtonPositionResearchX(1)..setButtonPositionResearchY(0)
 			..setIcon("BTNBloodFilledGlassArrow")..setOption(Option.VISIBLE, true)
 			..setTargetType(Targettype.PUTARGET)..setHotkey(SPEAR_HOTKEY)
 			..setLevels(SPEAR_MAXLVL)

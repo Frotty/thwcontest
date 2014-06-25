@@ -31,8 +31,8 @@ public function init_Trojan(boolean compileTime)
 		var trojan = new ChannelAbilityPreset(TROJAN_SPELL_ID, 4)
 		// Set Attributes
 		trojan..removeChannelProperties(true)..setName("Trojan")
-			..setButtonPositionNormalX(1)..setButtonPositionNormalY(2)
-			..setButtonPositionResearchX(1)..setButtonPositionResearchY(0)
+			..setButtonPositionNormalX(2)..setButtonPositionNormalY(2)
+			..setButtonPositionResearchX(2)..setButtonPositionResearchY(0)
 			..setIcon("BTNWispSplode")..setOption(Option.VISIBLE, true)
 			..setTargetType(Targettype.NOTARGET)..setHotkey(TROJAN_HOTKEY)
 		for lvl = 1 to TROJAN_MAXLVL

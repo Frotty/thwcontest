@@ -6,6 +6,7 @@ import public ObjectIds
 import public ObjectIdGenerator
 import public ChannelAbilityPreset
 import public Items
+import ClosureTimers
 
 public abstract class Hero extends Entity
 	WeaponItem weapon
@@ -13,10 +14,10 @@ public abstract class Hero extends Entity
 	construct(vec3 pos, player owner, int id)
 		super(pos, createUnit(owner, id, pos, pos.angleTo2d(STATUE_POS)))
 		castTrigger.registerUnitEvent(actor, EVENT_UNIT_SPELL_EFFECT)
-		//itemTrigger.registerUnitEvent(actor, EVENT_UNIT_USE_ITEM)
+		itemTrigger.registerUnitEvent(actor, EVENT_UNIT_USE_ITEM)
 		active = true
 		sleeping = false
-		//weapon.refreshWeapon(actor)
+		doAfter(1., ()-> weapon.refreshWeapon(actor) )
 			
 	abstract function onCast(int spellId, int lvl)
 		
@@ -28,7 +29,7 @@ public abstract class Hero extends Entity
 		actor.remove()
 	
 constant castTrigger = CreateTrigger()
-//constant itemTrigger = CreateTrigger()
+constant itemTrigger = CreateTrigger()
 
 init
 	castTrigger.addAction(() -> begin
@@ -51,7 +52,7 @@ init
 			hero.onCast(id, lvl)
 		
 	end)
-	/*itemTrigger.addAction(() -> begin
+	itemTrigger.addAction(() -> begin
 		let hero = GetTriggerUnit().getEntity() castTo Hero
 		let ite = GetManipulatedItem()
 		let id = GetItemTypeId(ite)
@@ -60,4 +61,4 @@ init
 		if id == DMG_POWERUP_ID
 			print("Bought item")
 			hero.weapon.upgradeDamage(hero.actor)
-	end) */
+	end) 

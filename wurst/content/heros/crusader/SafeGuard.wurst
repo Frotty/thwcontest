@@ -23,6 +23,9 @@ function getSafeGuardHealPercent(int lvl) returns real
 
 function getSafeGuardCooldown(int lvl) returns int
 	return 26 - 3 * lvl
+	
+function getMaxDistance(int lvl) returns real
+	return 300. + 50. * lvl
 
 public class SafeGuardCast
 	Hero caster
@@ -49,9 +52,9 @@ public class SafeGuardCast
 			var jump_duration = caster.getPos2().distToVec(targetEntity.getPos2()) / speed //Using the same formula as the setTarget() function here.
 			if jump_duration < 1.
 				jump_duration = 1./speed
-			jump_duration *= ANIMATION_PERIOD
+			//jump_duration *= ANIMATION_PERIOD // this was in because of old entity system 
 			doAfter(jump_duration, () -> begin //We only add the effects of the ability when the jump is done.
-				let maxDistance = 300
+				var maxDistance = getMaxDistance(lvl)
 				let lng = addLightning("SPLK", true, caster.getPos3()+zoffset, targetEntity.getPos3()+zoffset)
 				let eff = AddSpecialEffectTarget("Models\\DivineBarrier1.mdx",targetEntity.actor,"origin")
 				sg_tt = createTTEx(target.getPos().withZ(150), "", 11, colorA(122,200,255,255))

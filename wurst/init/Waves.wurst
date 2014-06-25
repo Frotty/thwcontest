@@ -48,27 +48,18 @@ public function wave_2() returns WavePool
 	// Copy an existing CreepDef
 	// This still creates a new Object (as needed by the system)
 	// But reduces codeLength and copy-paste work (readability too)
-	var mam = new CreepDefinition("Mammoth", CreepType.MAMMOTH)
-	mam.hp = 300
-	mam.movementSpeed = 200
-	mam.modelPath = "Units\\Creeps\\MammothBlack\\MammothBlack.mdl"
-	mam.scale *= 1.2
-	pool.addSpawn(mam,1,21,SpawnerGroup.NORTH)
-	
-	pool.addSpawn(copyCreepDef("Lesser Zombie"), 1*playerNumber, 0, SpawnerGroup.ALL)
-	pool.addSpawn(copyCreepDef("Lesser Zombie"), 1*playerNumber, 1, SpawnerGroup.ALL)
-	pool.addSpawn(copyCreepDef("Lesser Zombie"), 1*playerNumber, 2, SpawnerGroup.ALL)
-	
-	
 	var zom =new CreepDefinition("Zombie")
 	zom.hp = 200
 	zom.modelPath = "units\\creeps\\Zombie\\Zombie.mdl"
 	zom.collisionSize = 12
 	zom.damage = 30
 	
-	pool.addSpawn(zom,1*playerNumber,2.5,SpawnerGroup.WEST)
+	pool.addSpawn(copyCreepDef("Lesser Zombie"), 1*playerNumber, 0, SpawnerGroup.ALL)
+	pool.addSpawn(copyCreepDef("Lesser Zombie"), 1*playerNumber, 1, SpawnerGroup.ALL)
+	pool.addSpawn(copyCreepDef("Lesser Zombie"), 1*playerNumber, 2, SpawnerGroup.ALL)
+	pool.addSpawn(zom, 1*playerNumber , 2.5 , SpawnerGroup.WEST )
 	
-	pool.setDuration(50)
+	//pool.setDuration(50)
 	return pool
 
 public function wave_3() returns WavePool
@@ -100,9 +91,16 @@ public function wave_4() returns WavePool
 	var def2 = new CreepDefinition("Big Zombie")
 	def2.hp = 500
 	def2.modelPath = "units\\creeps\\Zombie\\Zombie.mdl"
-	def2.scale *= 0.7
+	def2.scale *= 1.3
 	def2.collisionSize = 4
 	def2.movementSpeed = 300
+	
+	var mam = new CreepDefinition("Mammoth", CreepType.MAMMOTH)
+	mam.hp = 300
+	mam.movementSpeed = 200
+	mam.modelPath = "Units\\Creeps\\MammothBlack\\MammothBlack.mdl"
+	mam.scale *= 1.2
+	pool.addSpawn(mam,1,21,SpawnerGroup.NORTH)
 	
 	
 	pool.addSpawn(def2,1,2.5,SpawnerGroup.ALL)

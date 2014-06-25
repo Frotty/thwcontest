@@ -27,10 +27,10 @@ function getBonusLifeSteal(int lvl) returns real
 	return 0.1 * lvl * lvl
 
 public class WeaponItem
-	int dmg
-	int aspeed
-	int lifesteal
-	int spelldmg
+	int dmg = 0
+	int aspeed = 0
+	int lifesteal = 0
+	int spelldmg = 0
 	
 	function addBonuses(unit actor)
 		addUnitBonus(actor, Bonus.DAMAGE, getBonusDmg(dmg))
@@ -47,7 +47,8 @@ public class WeaponItem
 		for i = 0 to 5
 			if GetItemName( UnitItemInSlot(actor,i) ) == "Weapon"
 				actor.removeItem( UnitItemInSlot(actor,i) )
-		actor.addItem( WEAPON_ITEM_IDS[getWeaponId(dmg,aspeed,spelldmg,lifesteal)] )
+		//var tmp = createItem( WEAPON_ITEM_IDS[getWeaponId(dmg,aspeed,spelldmg,lifesteal)], vec2(actor.getX(),actor.getY()))
+		//UnitAddItem(actor, tmp)
 
 function getWeaponId(int dmg, int asp, int spdm, int lif) returns int
 	return lif + (LIFESTEAL_MAXLVL+1)*( spdm + (SPELLDMG_MAXLVL+1)*( asp + (ASPEED_MAXLVL+1)*( dmg ) ) )
@@ -85,7 +86,9 @@ public function init_Items(boolean c)
 					for l = 0 to LIFESTEAL_MAXLVL
 						let def = new ItemDefinition(WEAPON_ITEM_IDS[getWeaponId(d,a,s,l)], 'rat9')
 						def..setName("Weapon")
+							..setTooltipBasic("Weapon")
 							..setDescription(getDescription(d,a,s,l))
+							..setTooltipExtended(getDescription(d,a,s,l))
 							..setCanBeDropped(false)
 							..setCanBeSoldToMerchants(false)
 							
