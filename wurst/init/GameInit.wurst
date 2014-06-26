@@ -29,14 +29,27 @@ function initResources(boolean compileTime)
 	init_Specialist(compileTime)
 	init_Picking(compileTime)
 	init_Spawner(compileTime)
+	print(">>>>>>>>>>1")
 	init_Waves(compileTime)
+	print(">>>>>>>>>>2")
 	init_Intermission(compileTime)
-	init_Items(compileTime)
+	print(">>>>>>>>>>3")
+	
+	print(">>>>>>>>>>4")
 	init_StunHandler(compileTime)
+	print(">>>>>>>>>>5")
 	init_Mammoth(compileTime)
+	print(">>>>>>>>>>6")
 	init_CollisionDetection(compileTime, 16, 256)
+	print(">>>>>>>>>>7")
 	init_Intermission(compileTime)
+	print(">>>>>>>>>>8")
 	init_AI(compileTime)
+	print(">>>>>>>>>>9")
+	if not compileTime
+		nullTimer(() -> init_Items(compileTime))
+	
+	print(">>>>>>>>>>10")
 
 	
 	
@@ -54,12 +67,12 @@ init
 	doAfter(0.01, () -> begin
 		initResources(false)
 		if testing
-			let h = new Technician(vec3(0,300,1200),Player(0) )  
-			let s = new Specialist(vec3(0,100,1200),Player(1) ) // Fortesting
+			let h = new Technician(vec3(0,300,800),Player(0) )  
+			let s = new Specialist(vec3(0,100,800),Player(1) ) // Fortesting
 
 			SetHeroLevel(h.actor, 4, false)
 			SetHeroLevel(s.actor, 4, false)
-			WaveManager.startNextWave()
+			startIntermission(20, "You have 20 seconds till the first attack..")
 			
 		else
 			//Welcome message

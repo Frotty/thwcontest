@@ -14,18 +14,18 @@ unit SHOP_UNIT
 LinkedList<int> alwaysItemsIds = new LinkedList<int>()
 LinkedList<int> pauseItemsIds = new LinkedList<int>()
 
-public function startIntermission(real duration)
+public function startIntermission(real duration, string text)
 	let fx = new Fx(STATUE_POS.withZ(300), angle(0))
 	fx.setScale(2.)
 	fx.flash("Abilities\\Spells\\Undead\\ReplenishHealth\\ReplenishHealthCasterOverhead.mdl")
 	doPeriodicallyTimed(3, duration, (CallbackCounted cc) -> begin
 		fx.flash("Abilities\\Spells\\Undead\\ReplenishHealth\\ReplenishHealthCasterOverhead.mdl")
 	end)
-	printTimed("|cff086BAD>> |cffFFD64AWave finished!", duration/2)
-	printTimed("            |cffFFD64AYou can now regenrate and buy permanent items from the statue.", duration/2)
+	printTimed("|cff086BAD>> |cffFFD64A" + text + "|r", duration-4)
+	printTimed("            |cffFFD64AYou can now regenrate and buy permanent items from the statue.", duration-4)
 	
-	SHOP_UNIT.addAbility('ACnr')
-	SHOP_UNIT.addAbility('ANre')
+//	SHOP_UNIT.addAbility('ACnr')
+//	SHOP_UNIT.addAbility('ANre')
 	
 	for i in pauseItemsIds
 		AddItemToStock(SHOP_UNIT, i, 1, 2)
@@ -48,11 +48,12 @@ public function addShopItem(int id, boolean always)
 	
 public function init_Intermission(boolean c)
 	SHOP_ID = UNIT_ID_GEN.next()
-	SHOP_UNIT = createUnit(DUMMY_PLAYER, SHOP_ID, STATUE_POS, angle(0))
-	for i in alwaysItemsIds
-		AddItemToStock(SHOP_UNIT, i, 1, 2)
 	if c
 		let def = new BuildingDefinition(SHOP_ID, 'ngme')
 		def..setName("Statue")..setModelFile("Models\\Statue03_b.mdx")..setItemsSold("")
 		..setPathingMap("")..setGroundTexture("")..setCollisionSize(0)..setSelectionScale(0.8)..setScalingValue(1.5)
+	else
+		SHOP_UNIT = createUnit(DUMMY_PLAYER, SHOP_ID, STATUE_POS, angle(0))
+		for i in alwaysItemsIds
+			AddItemToStock(SHOP_UNIT, i, 1, 2)
 	

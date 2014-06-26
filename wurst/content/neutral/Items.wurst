@@ -9,9 +9,9 @@ import Intermission
 public int DMG_POWERUP_ID
 
 int array WEAPON_ITEM_IDS
-constant DMG_MAXLVL = 8
+constant DMG_MAXLVL = 4
 constant ASPEED_MAXLVL = 4
-constant SPELLDMG_MAXLVL = 8
+constant SPELLDMG_MAXLVL = 4
 constant LIFESTEAL_MAXLVL = 4
 
 function getBonusDmg(int lvl) returns int
@@ -64,8 +64,7 @@ function getDescription(int dmg, int asp, int spdm, int lif) returns string
 public function init_Items(boolean c)
 
 	DMG_POWERUP_ID = ITEM_ID_GEN.next()
-	addShopItem(DMG_POWERUP_ID, true)
-	addShopItem('phea', true)
+	
 	
 	// Creating every possible combination of item types.
 	for d = 0 to DMG_MAXLVL
@@ -73,18 +72,7 @@ public function init_Items(boolean c)
 			for s = 0 to SPELLDMG_MAXLVL
 				for l = 0 to LIFESTEAL_MAXLVL
 					WEAPON_ITEM_IDS[getWeaponId(d,a,s,l)] = ITEM_ID_GEN.next()
-	if c
-		let pow = new ItemDefinition(DMG_POWERUP_ID, 'gold')
-		pow..setName("Upgrade Damage")
-			..setDescription("Increases the damage of your weapon!")
-			..setGoldCost(0)
-			..setButtonPositionX(2)
-			..setButtonPositionY(0)
-		
-		for d = 0 to DMG_MAXLVL
-			for a = 0 to ASPEED_MAXLVL
-				for s = 0 to SPELLDMG_MAXLVL
-					for l = 0 to LIFESTEAL_MAXLVL
+					if c
 						let def = new ItemDefinition(WEAPON_ITEM_IDS[getWeaponId(d,a,s,l)], 'rat9')
 						def..setName("Weapon")
 							..setTooltipBasic("Weapon")
@@ -92,4 +80,18 @@ public function init_Items(boolean c)
 							..setTooltipExtended(getDescription(d,a,s,l))
 							..setCanBeDropped(false)
 							..setCanBeSoldToMerchants(false)
+	print("blub0")					
+	if c
+		let pow = new ItemDefinition(DMG_POWERUP_ID, 'gold')
+		pow..setName("Upgrade Damage")
+			..setDescription("Increases the damage of your weapon!")
+			..setGoldCost(0)
+			..setButtonPositionX(2)
+			..setButtonPositionY(0)
+	else
+		addShopItem(DMG_POWERUP_ID, true)
+		print("blub1")
+		addShopItem('phea', true)
+		print("blub2")
+						
 							

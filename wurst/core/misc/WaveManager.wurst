@@ -60,7 +60,7 @@ init
 	WaveManager.onPropertyTrig..registerPlayerStateEvent(CREEP_PLAYER, PLAYER_STATE_RESOURCE_FOOD_USED, LESS_THAN_OR_EQUAL, 0.00)
 	..addAction(() -> begin
 		WaveManager.finished = true
-		startIntermission(INTERMISSION_DURATION)
+		startIntermission(INTERMISSION_DURATION, "Wave cleared!")
 		WaveManager.onPropertyTrig.disable()
 	end)
 	WaveManager.onPropertyTrig.disable()
