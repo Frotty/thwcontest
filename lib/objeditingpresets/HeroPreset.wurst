@@ -23,8 +23,10 @@ public class HeroPreset extends HeroDefinition
 		setName(name)
 		
 	function buildHero()
+		setNormalAbilities("Ane2, Asud")
 		buildProperNames()
 		buildHeroAbilities()
+		
 		
 	/** Adds a proper Name to the Hero.
 		Remember to call .buildHero() after you finished your changes */

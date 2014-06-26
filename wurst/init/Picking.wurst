@@ -1,5 +1,5 @@
 package Picking
-
+import UnitObjEditing
 import MapStuff
 import Crusader
 import Technician
@@ -11,54 +11,42 @@ import Terrain
 import WaveManager
 import Queue
 import ClosureTimers
-
+import ItemObjEditing
+import Players
 public int PICK_SPELL_ID
 
 LinkedList<Pickable> pickables
 
 
 function getHeroDescription(int id) returns string
-	if id == 0 //Crusader
-		return "Crusader is the main supportive hero of the game, who is also able to withstand tons of damage. He can be vital for surviving."
-	else if id == 1 //Technician
-		return "Technician is the most tactical hero. You can build your own battlefield, with huge explosives and fire."
-	else if id == 2 //Mage
-		return "\"Mage is truly epic.\" She stands in the middle of the battlefield, exploding enemies. Be careful though, if creeps manage to get near her, she dont have long left."
-	else if id == 3 //Specialist
-		return "Specialist is great at manipulating enemies, and reforming their hordes. Use him on side of a mage for maximal efficenty!"
-	
-	return "The Ghost Hero is the most powerful of all, truly, truly powerful. You may pick him quick, and pick him now!"
+	switch id
+		case 0 //Crusader
+			return "Crusader is the main supportive hero of the game, who is also able to withstand tons of damage. He can be vital for surviving."
+		case 1 //Technician
+			return "Technician is the most tactical hero. You can build your own battlefield, with huge explosives and fire."
+		case 2 //Mage
+			return "\"Mage is truly epic.\" She stands in the middle of the battlefield, exploding enemies. Be careful though, if creeps manage to get near her, she dont have long left."
+		case 3 //Specialist
+			return "Specialist is great at manipulating enemies, and reforming their hordes. Use him on side of a mage for maximal efficenty!"
+		default
+			return "The Ghost Hero is the most powerful of all, truly, truly powerful. You may pick him quick, and pick him now!"
 
-class FxEntity extends Entity //THIS IS ONLY BECAUSE ENTITY IS ABSTRACT
-	construct(vec3 pos, Fx fx)
-		super(pos, fx)
 	
 class Pickable
 	Hero h
-	Entity platform
+	Fx platform
 	int id
-	trigger selectTrigger
 	trigger castTrigger
-	player viewing
-	Queue<player> waiting
 
-	construct(int ord, Hero hero, Entity fx)
+	construct(int ord, Hero hero, Fx fx)
 		h = hero
 		platform = fx
 		id = ord
-		viewing = Player(8)
-		waiting = new Queue<player>
-		
-		//THis trigger is activated whenever a pickable hero is selected
-		//See the onSelect for more info
-		selectTrigger = CreateTrigger()
-		selectTrigger.registerUnitEvent(h.actor,EVENT_UNIT_SELECTED)
-		selectTrigger.addAction(function onSelect)
 		
 		//This trigger is only created, because i wanted to test PICK_SPELL_ID in this package instead of doing it in Hero.wurst
 		castTrigger = CreateTrigger()
-		castTrigger.registerUnitEvent(h.actor, EVENT_UNIT_SPELL_EFFECT)
-		castTrigger.addAction(function onCast)
+		castTrigger.registerUnitEvent(h.actor, EVENT_UNIT_SELL)
+		castTrigger.addAction(function onSell)
 		
 		//Setting some properties of the hero actor:
 		h.actor.setPropWindow(0.)
@@ -66,87 +54,48 @@ class Pickable
 		h.actor.addAbility(PICK_SPELL_ID)
 		ModifyHeroSkillPoints(h.actor, bj_MODIFYMETHOD_SET, 0)
 		h.actor.setPathing(false)
+		hero.actor.setOwner(DUMMY_PLAYER, true)
+		hero.owner = DUMMY_PLAYER
+		AddUnitToStock(hero.actor, PICKDUMMY_ID, 1, 1)
 		
-	//This function does actual selecting.
-	function select(player p )
-		print("Selecting: " + id.toString())
-		//Displays info about hero:
-		printTimedToPlayerClear(getHeroDescription(id),10., p)
-		if viewing == Player(8)
-			//If there is no othre player viewing the hero, than set it to trigger player right away.
-			viewing = p
-			h.actor.setOwner(viewing,true)
-		else
-			//If someone other is viewing, add the player to the queue.
-			waiting.enqueue(p)
-	
-	//This function is called for the other two pickables. It only checks if the player who selected another hero, was a viewer at this one.
-	function deselect(player p)
-		print("Deselecting: " + id.toString())
-		//Checking if the player who is on front of the queue left already. Doing it until it finds a suitable player.
-		while (not IsUnitSelected(h.actor, waiting.peek())) and waiting.peek() != null
-			waiting.dequeue()
-		if IsUnitSelected(h.actor, waiting.peek()) and p != viewing 
-			//p != viewing is necessary because it is still selected by the player whent he event is triggered. Warcraft is like that :(
-			viewing = waiting.dequeue()
-			h.actor.setOwner(viewing,true)
-		else
-			//Didin't find suitable player in the queue, set it to player8 again
-			viewing = Player(8)
-			h.actor.setOwner(Player(8),true)
+		print("pickable done")
+		
 		
 	//Called when the pick is casted. Picks the hero.
-	function pick()
-		player p = viewing
+	function pick(player p)
 		h.actor.setOwner(p,true)
+		h.owner = p
 		h.sleeping = false
-		h.actor.setPropWindow(1.)
+		h.actor.setPropWindow(GetUnitDefaultPropWindow(h.actor))
 		h.actor.removeAbility(PICK_SPELL_ID)
 		ModifyHeroSkillPoints(h.actor, bj_MODIFYMETHOD_SET, 1)
 		h.actor.setPathing(true)
 		ResetToGameCameraForPlayer(p, 1.3)
+		pDatas[p.getId()].pickdummy.remove()
+		if GetLocalPlayer() == h.owner
+			ResetTerrainFog()
 		destroy this
-		
-	//Called when either of the pickables is picked.
-	static function onSelect()
-		var u = GetTriggerUnit()
-		var p = Player(8)
-		//The following rather longs sequence determines if any player needs to be registered at any pickable.
-		//This 
-		for i = 0 to 4 
-			if IsUnitSelected(u,Player(i))
-				for pi in pickables
-					var waits = false
-					for pl in pi.waiting
-						if pl == Player(i)
-							waits = true
-					if pi.viewing != Player(i) //and not waits
-						var h = u.getEntity() castTo Hero
-						if h == pi.h
-							pi.select(p)
-					if pi.viewing == Player(i)
-							pi.deselect(p)
-		print("onSelect - Pickable " + p.getName())
-	/*	for pi in pickables
-			print("loop...")
-			if h == pi.h
-				pi.select(p)
-				*/
-	static function onCast()
+
+				
+	static function onSell()
 		if GetSpellAbilityId() == PICK_SPELL_ID
-			var u = GetTriggerUnit()
-			var h = u.getEntity() castTo Hero
+			var u = GetSoldUnit()
+			var p = u.getOwner()
+			var h = GetTriggerUnit().getEntity() castTo Hero
+			
+			
+			print("p = " + p.getName())
 			for pi in pickables
 				if h == pi.h
-					pi.pick()
-			
+					pi.pick(p)
+			u.remove()
 
 	ondestroy
 		pickables.remove(this)
 		destroy platform
-		selectTrigger.destr()
 		castTrigger.destr()
 		checkIfStart()
+		h.actor..removeAbility('Ane2')..removeAbility('Asud')
 	
 public function testPicking()
 	for i = 1 to 3
@@ -178,10 +127,13 @@ public function createPickabes()
 		var a = angle(i*2*PI/heroCount)
 		var offset = STATUE_POS.polarOffset(a,200)
 		var z = getTerrainZ(offset.x,offset.y)
-		var fx =  new Fx(offset.withZ(2000),a, "buildings\\other\\MagicVault\\MagicVault.mdl")
-		pickables.add(new Pickable(i,createHero(i,offset.withZ(2200)),new FxEntity(offset.withZ(2000) , fx )))
-		pickables.get(pickables.getSize()-1).platform.sleeping = false
-				
+		let fx = new Fx(offset.withZ(2000),a, "buildings\\other\\MagicVault\\MagicVault.mdl")
+		fx.setZ(2000-z)
+		pickables.add(new Pickable(i,createHero(i,offset.withZ(2200)),fx))
+			
+	for p in allPlayers
+		p.pickdummy = createUnit(p.p, PICKDUMMY_ID, STATUE_POS, angle(0))	
+		SelectUnit(p.pickdummy, true)
 			//Todo playernumber
 	camerasetup pick_cam = gg_cam_Pick_Camera
 	CameraSetupSetDestPosition(pick_cam, STATUE_POS.x,STATUE_POS.y,0.)
@@ -198,15 +150,13 @@ function checkIfStart()
 			//**WARNING! THIS IS UGLY**//
 			doAfter(ANIMATION_PERIOD, ()->destroy pi)
 	
+int PICKDUMMY_ID
 
 public function init_Picking(boolean ct)
-	PICK_SPELL_ID = ABIL_ID_GEN.next()
-	
+	PICKDUMMY_ID = UNIT_ID_GEN.next()
 	if ct
-		var pick = new ChannelAbilityPreset(PICK_SPELL_ID, 1)
-		// Set Attributes
-		pick..removeChannelProperties(true)..setName("Pick this hero")
-			..setButtonPositionNormalX(1)..setButtonPositionNormalY(1)
-			..setHeroAbility(false)
-			..setIcon("BTNWispSplode")..setOption(Option.VISIBLE, true)
-			..setTargetType(Targettype.NOTARGET)..setHotkey("D")
+		let def = new UnitDefinition(PICKDUMMY_ID, 'hfoo')
+		..setNormalAbilities("Agho")..setSightRadiusDay(0)..setSightRadiusNight(0)..setModelFile("")
+		..setName("Pick Hero")..setGoldCost(0)..setFoodCost(0)..setTooltipBasic("Pick Hero")..setTooltipExtended("")
+		..setIconGameInterface("ReplaceableTextures\\CommandButtons\\BTNPickUpItem.blp")
+		
