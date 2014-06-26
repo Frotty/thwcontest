@@ -49,41 +49,54 @@ class Pickable
 		viewing = Player(8)
 		waiting = new Queue<player>
 		
+		//THis trigger is activated whenever a pickable hero is selected
+		//See the onSelect for more info
 		selectTrigger = CreateTrigger()
 		selectTrigger.registerUnitEvent(h.actor,EVENT_UNIT_SELECTED)
 		selectTrigger.addAction(function onSelect)
 		
+		//This trigger is only created, because i wanted to test PICK_SPELL_ID in this package instead of doing it in Hero.wurst
 		castTrigger = CreateTrigger()
 		castTrigger.registerUnitEvent(h.actor, EVENT_UNIT_SPELL_EFFECT)
 		castTrigger.addAction(function onCast)
 		
+		//Setting some properties of the hero actor:
 		h.actor.setPropWindow(0.)
 		h.sleeping = true
 		h.actor.addAbility(PICK_SPELL_ID)
 		ModifyHeroSkillPoints(h.actor, bj_MODIFYMETHOD_SET, 0)
 		h.actor.setPathing(false)
 		
+	//This function does actual selecting.
 	function select(player p )
 		print("Selecting: " + id.toString())
+		//Displays info about hero:
 		printTimedToPlayerClear(getHeroDescription(id),10., p)
 		if viewing == Player(8)
+			//If there is no othre player viewing the hero, than set it to trigger player right away.
 			viewing = p
+			h.actor.setOwner(viewing,true)
 		else
+			//If someone other is viewing, add the player to the queue.
 			waiting.enqueue(p)
-		h.actor.setOwner(viewing,true)
 	
+	//This function is called for the other two pickables. It only checks if the player who selected another hero, was a viewer at this one.
 	function deselect(player p)
 		if p == viewing
 			print("Deselecting: " + id.toString())
-			//Checking if the player who is on front of the queue left already.
+			//Checking if the player who is on front of the queue left already. Doing it until it finds a suitable player.
 			while (not IsUnitSelected(h.actor, waiting.peek())) and waiting.peek() != null
 				waiting.dequeue()
-			if IsUnitSelected(h.actor, waiting.peek()) and p != viewing
+			if IsUnitSelected(h.actor, waiting.peek()) and p != viewing 
+				//p != viewing is necessary because it is still selected by the player whent he event is triggered. Warcraft is like that :(
 				viewing = waiting.dequeue()
 				h.actor.setOwner(viewing,true)
 			else
+				//Didin't find suitable player in the queue, set it to player8 again
+				viewing = Player(8)
 				h.actor.setOwner(Player(8),true)
 		
+	//Called when the pick is casted. Picks the hero.
 	function pick()
 		player p = viewing
 		h.actor.setOwner(p,true)
@@ -91,25 +104,35 @@ class Pickable
 		h.actor.setPropWindow(1.)
 		h.actor.removeAbility(PICK_SPELL_ID)
 		ModifyHeroSkillPoints(h.actor, bj_MODIFYMETHOD_SET, 1)
-		h.actor.setPathing(false)
+		h.actor.setPathing(true)
 		ResetToGameCameraForPlayer(p, 1.3)
 		destroy this
 		
+	//Called when either of the pickables is picked.
 	static function onSelect()
 		var u = GetTriggerUnit()
 		var p = Player(8)
-		for i = 0 to 4
+		//The following rather longs sequence determines if any player needs to be registered at any pickable.
+		//This 
+		for i = 0 to 4 
 			if IsUnitSelected(u,Player(i))
-				p = Player(i)
+				for pi in pickables
+					var waits = false
+					for pl in pi.waiting
+						if pl == Player(i)
+							waits = true
+					if pi.viewing != Player(i) and not waits
+						var h = u.getEntity() castTo Hero
+						if h == pi.h
+							pi.select(p)
+						else
+							pi.deselect(p)
 		print("onSelect - Pickable " + p.getName())
-		var h = u.getEntity() castTo Hero
-		for pi in pickables
+	/*	for pi in pickables
 			print("loop...")
 			if h == pi.h
 				pi.select(p)
-			else
-				pi.deselect(p)
-				
+				*/
 	static function onCast()
 		if GetSpellAbilityId() == PICK_SPELL_ID
 			var u = GetTriggerUnit()
