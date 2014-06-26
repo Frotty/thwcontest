@@ -48,9 +48,11 @@ class Pickable
 		id = ord
 		viewing = Player(8)
 		waiting = new Queue<player>
+		
 		selectTrigger = CreateTrigger()
 		selectTrigger.registerUnitEvent(h.actor,EVENT_UNIT_SELECTED)
 		selectTrigger.addAction(function onSelect)
+		
 		castTrigger = CreateTrigger()
 		castTrigger.registerUnitEvent(h.actor, EVENT_UNIT_SPELL_EFFECT)
 		castTrigger.addAction(function onCast)
@@ -63,6 +65,7 @@ class Pickable
 		
 	function select(player p )
 		print("Selecting: " + id.toString())
+		printTimedToPlayerClear(getHeroDescription(id),10., p)
 		if viewing == Player(8)
 			viewing = p
 		else
@@ -104,7 +107,7 @@ class Pickable
 			print("loop...")
 			if h == pi.h
 				pi.select(p)
-			if h != pi.h
+			else
 				pi.deselect(p)
 				
 	static function onCast()
@@ -122,6 +125,18 @@ class Pickable
 		selectTrigger.destr()
 		castTrigger.destr()
 		checkIfStart()
+	
+public function testPicking()
+	for i = 1 to 3
+		doAfter(i* 5., ()->begin
+			SelectUnitForPlayerSingle( pickables.get(i).h.actor ,Player(1))
+			print("Player 1 selected " + pickables.get(i).h.actor.getName())
+		end)
+	for i = 1 to 3
+		doAfter(i* 2.7 + 5., ()->begin
+			SelectUnitForPlayerSingle( pickables.get(i).h.actor ,Player(2))
+			print("Player 2 selected " + pickables.get(i).h.actor.getName())
+		end)
 
 function createHero(int id, vec3 pos) returns Hero
 	Hero h = null

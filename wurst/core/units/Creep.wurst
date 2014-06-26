@@ -52,6 +52,7 @@ public class CreepDefinition
 	string modelPath
 	string name
 	real scale = 0.8
+	real weightFac = 1 //Goes from 1 to 0, 0 is infinite mass and is not effected by forces.
 	real collisionSize = 16
 	integer movementSpeed = 270
 	int damage = 10
@@ -82,6 +83,16 @@ public class CreepDefinition
 		cd.armor = armor
 		cd.modelPath = modelPath
 		cd.id = UNIT_ID_GEN.next()
+		cd.name = name
+		cd.scale = scale
+		cd.weightFac = weightFac
+		cd.collisionSize = collisionSize
+		cd.movementSpeed = movementSpeed
+		cd.damage = damage
+		cd.attackRange = attackRange
+		cd.shadowSize = shadowSize
+		cd.shadowCenter = shadowCenter
+		cd.ctype = ctype
 		return cd
 
 //	function createCreepEntity(vec3 pos) returns Creep

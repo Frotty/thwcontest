@@ -24,12 +24,17 @@ public function startIntermission(real duration)
 	printTimed("|cff086BAD>> |cffFFD64AWave finished!", duration/2)
 	printTimed("            |cffFFD64AYou can now regenrate and buy permanent items from the statue.", duration/2)
 	
+	SHOP_UNIT.addAbility('ACnr')
+	SHOP_UNIT.addAbility('ANre')
+	
 	for i in pauseItemsIds
 		AddItemToStock(SHOP_UNIT, i, 1, 2)
 		
 	doAfter(duration, () -> begin
 		for i in pauseItemsIds
 			RemoveItemFromStock(SHOP_UNIT, i)
+		SHOP_UNIT.removeAbility('ACnr')
+		SHOP_UNIT.removeAbility('ANre')
 		WaveManager.startNextWave()
 	end)
 	

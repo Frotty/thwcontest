@@ -13,7 +13,8 @@ constant CRUSHING_HALO_NAME = "Crushing Halo"
 constant CRUSHING_HALO_HOTKEY = "R"
 constant CRUSHING_HALO_COOLDOWN = 90
 constant CRUSHING_HALO_MAXLVL = 2
-constant CRUSHING_HALO_DESCR = "Crusader releases a massive halo of light, damaging and knocking up enemies in a circle.\n Also Heals allies compared to their missing Health."
+constant CRUSHING_HALO_DESCR = "Crusader releases a massive halo of light, damaging and knocking up enemies in a circle.\n" +
+								 "Also Heals allies compared to their missing Health."
 
 function getCrushingHaloRadius(int lvl) returns real
 	return (lvl* 100. + 400)
@@ -51,8 +52,9 @@ public class CrushingHalo
 			forUnitsInRange(pos.toVec2(),range,(unit u)->begin
 				if u.isAliveTrick() and not IsUnitInGroup(u,effected)
 					if u.getEntity() instanceof Creep
+						let c = u.getEntity() castTo Creep
 						dmger.damageTarget(u,getCrushingHaloDamage(level))
-						u.getEntity().applyVel(vec3(0,0,30))
+						c.applyVel(vec3(0,0,30))
 						effected.addUnit(u)
 						//print("++")
 					if u.getEntity() instanceof Hero and u != dmger

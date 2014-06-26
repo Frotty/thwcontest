@@ -19,16 +19,16 @@ public class Flipper extends Creep
 		
 	function onInRange(unit target)
 		Entity e = target.getEntity()
-		if e instanceof Hero and not flipped
-			flipped = true
+		if e instanceof Hero
+			range_trigger.disable()
 			actor.setAnimation("Spell Slam")
 			doAfter(.3,()-> begin
 				if actor.isAlive() and (getPos2().distToVec(e.getPos2()) < 100)
 					let angl = e.getPos2().angleTo(getPos2())
-					let speed = 64
+					let speed = 24
 					e.applyVel(vec3(angl.cos() * speed,angl.sin() * speed, speed*1.4))
 				else
-					flipped = false
+					range_trigger.enable()
 			end)
 			
 	static function onFlipperRange()

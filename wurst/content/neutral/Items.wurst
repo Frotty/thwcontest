@@ -1,8 +1,95 @@
 package Items
 import ItemObjEditing
 import ObjectIdGenerator
+import BonusHandler
+import Intermission
+
+//Item classes store the level of the different properties of the item. When buying from shop, these aspects get increased.
+
+public int DMG_POWERUP_ID
+
+int array WEAPON_ITEM_IDS
+constant DMG_MAXLVL = 8
+constant ASPEED_MAXLVL = 4
+constant SPELLDMG_MAXLVL = 8
+constant LIFESTEAL_MAXLVL = 4
+
+function getBonusDmg(int lvl) returns int
+	return lvl * 50
+	
+function getBonusAttackSpeed(int lvl) returns int
+	return 15 * lvl
+	
+function getBonusSpellDamage(int lvl) returns int
+	return 15 * lvl * lvl
+	
+function getBonusLifeSteal(int lvl) returns real
+	return 0.1 * lvl * lvl
+
+public class WeaponItem
+	int dmg = 0
+	int aspeed = 0
+	int lifesteal = 0
+	int spelldmg = 0
+	
+	function addBonuses(unit actor)
+		addUnitBonus(actor, Bonus.DAMAGE, getBonusDmg(dmg))
+		addUnitBonus(actor, Bonus.ATTACKSPEED, getBonusAttackSpeed(dmg))
+		
+	function upgradeDamage(unit actor)
+		if dmg < DMG_MAXLVL
+			dmg ++
+			addUnitBonus(actor, Bonus.DAMAGE, getBonusDmg(dmg)-getBonusDmg(dmg-1))
+			refreshWeapon(actor)
+		//else give back gold
+		
+	function refreshWeapon(unit actor)
+		for i = 0 to 5
+			if GetItemName( UnitItemInSlot(actor,i) ) == "Weapon"
+				actor.removeItem( UnitItemInSlot(actor,i) )
+		//var tmp = createItem( WEAPON_ITEM_IDS[getWeaponId(dmg,aspeed,spelldmg,lifesteal)], vec2(actor.getX(),actor.getY()))
+		//UnitAddItem(actor, tmp)
+
+function getWeaponId(int dmg, int asp, int spdm, int lif) returns int
+	return lif + (LIFESTEAL_MAXLVL+1)*( spdm + (SPELLDMG_MAXLVL+1)*( asp + (ASPEED_MAXLVL+1)*( dmg ) ) )
+
+function getDescription(int dmg, int asp, int spdm, int lif) returns string
+	var s = "Weapon\n\n"
+	s += "Extra Damage: " + getBonusDmg(dmg).toString() + "\n"
+	s += "Extra Attack Speed: " + getBonusAttackSpeed(asp).toString() + "\n"
+	s += "Extra Spell Damage: " + getBonusSpellDamage(spdm).toString() + "\n"
+	s += "Extra Life Steal: " + (100*getBonusLifeSteal(lif)).toInt().toString() + "%\n"
+	return s
 
 public function init_Items(boolean c)
+
+	DMG_POWERUP_ID = ITEM_ID_GEN.next()
+	addShopItem(DMG_POWERUP_ID, true)
+	addShopItem('phea', true)
+	
+	// Creating every possible combination of item types.
+	for d = 0 to DMG_MAXLVL
+		for a = 0 to ASPEED_MAXLVL
+			for s = 0 to SPELLDMG_MAXLVL
+				for l = 0 to LIFESTEAL_MAXLVL
+					WEAPON_ITEM_IDS[getWeaponId(d,a,s,l)] = ITEM_ID_GEN.next()
 	if c
-		let def = new ItemDefinition(ITEM_ID_GEN.next(), 'rat9')
-		def.setName("Clawrs")
+		let pow = new ItemDefinition(DMG_POWERUP_ID, 'gold')
+		pow..setName("Upgrade Damage")
+			..setDescription("Increases the damage of your weapon!")
+			..setGoldCost(0)
+			..setButtonPositionX(2)
+			..setButtonPositionY(0)
+		
+		for d = 0 to DMG_MAXLVL
+			for a = 0 to ASPEED_MAXLVL
+				for s = 0 to SPELLDMG_MAXLVL
+					for l = 0 to LIFESTEAL_MAXLVL
+						let def = new ItemDefinition(WEAPON_ITEM_IDS[getWeaponId(d,a,s,l)], 'rat9')
+						def..setName("Weapon")
+							..setTooltipBasic("Weapon")
+							..setDescription(getDescription(d,a,s,l))
+							..setTooltipExtended(getDescription(d,a,s,l))
+							..setCanBeDropped(false)
+							..setCanBeSoldToMerchants(false)
+							

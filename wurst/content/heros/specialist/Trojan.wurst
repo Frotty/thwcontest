@@ -2,24 +2,76 @@ package Trojan
 
 import MapStuff
 import ClosureTimers
-
+import LinkedList
+import Texttag
 
 public int TROJAN_SPELL_ID
 constant GHOST = 'Agho'
 
+constant ATTACK_ORDER_ID = 23234213
 constant TROJAN_NAME = "Slink"
 constant TROJAN_HOTKEY = "E"
 constant TROJAN_MAXLVL = 4
 
+LinkedList<TrojanBuff> trojans
+
 function getTrojanDuration(int lvl) returns real
 	return 10. + 5. * lvl
+	
+function getTrojanDamage(real dist, int lvl) returns real
+	return dist * 0.03125 * (1 + (0.5 * lvl))
 	
 function getTrojanCooldown(int lvl) returns real
 	return getTrojanDuration(TROJAN_MAXLVL) + 5
 
-public function castTrojan(unit actor, int lvl)
-	actor.addAbility(GHOST)
-	doAfter(getTrojanDuration(lvl), ()-> actor.removeAbility(GHOST))
+public class TrojanBuff
+	real dist
+	real damage
+	unit caster
+	int lvl
+	vec2 tmploc
+	texttag tt
+	CallbackCounted cb
+
+	construct(unit actor, int lvl)
+		damage = 0.
+		caster = actor
+		this.lvl = lvl
+		dist = 0.
+		tmploc = actor.getPos()
+		
+		actor.addAbility(GHOST)
+		tt = createTTEx(actor.getPos().withZ(150), "", 10, colorA(230,78,87,255))
+		
+		cb = (CallbackCounted cb)-> begin
+			dist += tmploc.distToVec(actor.getPos())
+			tmploc = actor.getPos()
+			damage = getTrojanDamage(dist, lvl)
+			tt.setText(damage.toInt().toString(), 10)
+			tt.setPos(tmploc.withZ(50))
+			if cb.isLast()
+				actor.removeAbility(GHOST)
+		end
+		
+		var t = CreateTrigger()
+		t.registerUnitEvent(actor,EVENT_UNIT_ISSUED_TARGET_ORDER)
+		t.addAction(()->begin
+			if GetIssuedOrderId() == ATTACK_ORDER_ID
+				for tro in trojans
+					if GetOrderedUnit() == tro.caster
+						GetTriggeringTrigger().destr()
+						endTrojan(tro.caster, tro.damage, GetTriggerUnit())
+						destroy tro.cb
+						destroy tro
+		end)
+		doPeriodicallyTimed(0.1, getTrojanDuration(lvl), cb )
+		
+	ondestroy
+		tt.destr()
+
+function endTrojan(unit actor,real dmg, unit target)
+		actor.removeAbility(GHOST)
+		actor.damageTarget(target, dmg)
 
 public function init_Trojan(boolean compileTime)
 
@@ -31,8 +83,8 @@ public function init_Trojan(boolean compileTime)
 		var trojan = new ChannelAbilityPreset(TROJAN_SPELL_ID, 4)
 		// Set Attributes
 		trojan..removeChannelProperties(true)..setName("Trojan")
-			..setButtonPositionNormalX(1)..setButtonPositionNormalY(2)
-			..setButtonPositionResearchX(1)..setButtonPositionResearchY(0)
+			..setButtonPositionNormalX(2)..setButtonPositionNormalY(2)
+			..setButtonPositionResearchX(2)..setButtonPositionResearchY(0)
 			..setIcon("BTNWispSplode")..setOption(Option.VISIBLE, true)
 			..setTargetType(Targettype.NOTARGET)..setHotkey(TROJAN_HOTKEY)
 		for lvl = 1 to TROJAN_MAXLVL
