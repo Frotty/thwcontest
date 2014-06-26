@@ -17,7 +17,7 @@ function getBackOffRadius(int lvl) returns real
 	return 300. + 64 * lvl
 	
 function getBackOffPower(int lvl) returns real
-	return 17.5 + 5 * lvl
+	return 10.5 + 5 * lvl
 	
 function getBackOffDamage(int lvl) returns real
 	return 20. + 15 * (lvl*lvl)

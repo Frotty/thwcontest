@@ -29,13 +29,17 @@ public class Spawner
 	function spawnCreep(CreepDefinition def)
 		switch def.ctype
 			case CREEP
-				new Creep(pos.toVec3(), def.id, pos.angleTo(mapCenter), target)
+				var c = new Creep(pos.toVec3(), def.id, pos.angleTo(mapCenter), target)
+				c.weightFactor = def.weightFac
 			case FLIPPER
-				new Flipper(pos.toVec3(), def.id, pos.angleTo(mapCenter), target)
+				var c = new Flipper(pos.toVec3(), def.id, pos.angleTo(mapCenter), target)
+				c.weightFactor = def.weightFac
 			case MAMMOTH
-				new Mammoth(pos.toVec3(), def.id, pos.angleTo(mapCenter), target)
+				var c = new Mammoth(pos.toVec3(), def.id, pos.angleTo(mapCenter), target)
+				c.weightFactor = def.weightFac
 			default
-				new Creep(pos.toVec3(), def.id, pos.angleTo(mapCenter), target)
+				var c = new Creep(pos.toVec3(), def.id, pos.angleTo(mapCenter), target)
+				c.weightFactor = def.weightFac
 				
 		
 	

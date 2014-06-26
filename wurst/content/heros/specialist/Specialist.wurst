@@ -15,7 +15,8 @@ int SPECIALIST_ID
 
 
 public class Specialist extends Hero
-	Cage cage 
+	Cage cage
+	int trojanDamage = 0
 
 	construct(vec3 pos, player owner )
 		super(pos, owner, SPECIALIST_ID)
@@ -38,7 +39,7 @@ public class Specialist extends Hero
 				xyAngle = actor.getFacingAngle()
 			new FoodProjectile( getPos3(), owner, getPos2().distToVec(target.getPos()) + 10., xyAngle, lvl)
 		else if spellId == TROJAN_SPELL_ID
-			castTrojan(actor, lvl)
+			new TrojanBuff(actor, lvl)
 
 	override function onPointCast(int spellId, vec2 target, int lvl)
 		if spellId == FEED_SPELL_ID

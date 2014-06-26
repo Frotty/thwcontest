@@ -65,6 +65,7 @@ public function init_Items(boolean c)
 
 	DMG_POWERUP_ID = ITEM_ID_GEN.next()
 	addShopItem(DMG_POWERUP_ID, true)
+	addShopItem('phea', true)
 	
 	// Creating every possible combination of item types.
 	for d = 0 to DMG_MAXLVL

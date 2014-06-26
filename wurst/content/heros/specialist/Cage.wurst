@@ -148,10 +148,10 @@ public class Cage
 					if u.isAliveTrick() and u.getEntity() instanceof Creep
 						var c = u.getEntity() castTo Creep
 						s += "and Creep"
-						if /*not c.flying and*/ c.getPos3().toVec2().distToSegmentSquared(n1.getPos3().toVec2(), n2.getPos3().toVec2() ) < ACTIVATION_DIST.squared()
+						if not c.flying and c.getPos3().toVec2().distToSegmentSquared(n1.getPos3().toVec2(), n2.getPos3().toVec2() ) < ACTIVATION_DIST.squared()
 							s+= "and adding velocity"
 							if not IsUnitInGroup(u,effected) // and u.hasAbility(CAGE_BUFF_DEF.buff_id)
-								c.applyVel(vec2(0,0).polarOffset(u.getFacingAngle() + angle(PI),getCagePower(lvl)).toVec3())
+								c.applyVel(vec2(0,0).polarOffset(u.getFacingAngle() + angle(PI),getCagePower(lvl)*(size/4)).toVec3())
 								caster.actor.damageTarget(u,getCageDamage(lvl))
 								u.applyBuff(CAGE_BUFF_DEF, 1.)
 								effected.addUnit(u)
