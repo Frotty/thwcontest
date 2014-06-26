@@ -22,7 +22,7 @@ import Items
 import SimpleAi
 
 function initResources(boolean compileTime)
-	init_PlayerNumber(compileTime)
+	init_Players(compileTime)
 	init_MageHero(compileTime)
 	init_Crusader(compileTime)
 	init_Technician(compileTime)
@@ -51,16 +51,8 @@ function initResources(boolean compileTime)
 	print(">>>>>>>>>>10")
 
 	
-	
-function init_PlayerNumber(boolean compileTime)
-	if not compileTime
-		playerNumber = 0
-		for i = 0 to 4
-			if GetPlayerSlotState(Player(i)) == PLAYER_SLOT_STATE_PLAYING
-				playerNumber ++
-	
 
-boolean testing = true
+boolean testing = false
 	
 init
 	doAfter(0.01, () -> begin
@@ -83,7 +75,7 @@ init
 			
 			print("playerNumber = " + playerNumber.toString())
 			createPickabes()
-			doAfter(0.3, ()->testPicking())
+			doAfter(0.0, ()->testPicking())
 				
 		startEntityLoop()
 	end)
