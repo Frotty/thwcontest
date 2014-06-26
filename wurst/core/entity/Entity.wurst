@@ -33,7 +33,7 @@ public abstract class Entity
 	
 	player owner
 	boolean active 		= false
-	real weightFactor = 0.92
+	real weightFactor = 1
 	unit actor = null
 	Fx fx = null
 
@@ -182,7 +182,7 @@ public abstract class Entity
 		updatePos()
 		if not pos.inBounds()
 			scaleVel(-1.5)
-		if pos.z <= terrainZ + 0.5
+		if pos.z <= terrainZ + 0.1
 			if flying
 				flying = false
 				onGroundHit()

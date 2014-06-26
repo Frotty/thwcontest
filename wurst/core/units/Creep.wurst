@@ -4,6 +4,8 @@ import MapStuff
 import UnitObjEditing
 import HashMap
 import GameConstants
+import LinkedListModule
+import SimpleAi
 
 public enum CreepType
 	CREEP
@@ -28,17 +30,20 @@ init
 public class Creep extends Entity
 	vec2 target
 	
+	use LinkedListModule
+	
 	construct(vec3 pos, int id, angle a, vec2 target)
 		super(pos, createUnit(CREEP_PLAYER, id, pos, a))
 		this.target = target
-		actor.issuePointOrder("attack", target)
+		this.registerAi()
 		creepDeath.registerUnitEvent(actor, EVENT_UNIT_DEATH)
 		sleeping = false
 		active = true
 		
-	function reorderAttack()
-		actor.issuePointOrder("attack", target)
-
+	ondestroy
+		this.unRegisterAi()
+		print("CREEP FOOD: " + CREEP_PLAYER.getState(PLAYER_STATE_RESOURCE_FOOD_USED).toString())
+		
 public class CreepDefinition
 	boolean generated = false
 	int id
@@ -94,5 +99,6 @@ public class CreepDefinition
 			..setAttack1DamageBase(damage)..setAttack1DamageNumberofDice(3)..setAttack1DamageSidesperDie(2)
 			..setShadowImageHeight(shadowSize)..setShadowImageWidth(shadowSize)
 			..setShadowImageCenterX(shadowCenter.x)..setShadowImageCenterY(shadowCenter.y)
+			..setFoodCost(1)
 			
 	

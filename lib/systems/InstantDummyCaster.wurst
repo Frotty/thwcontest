@@ -94,7 +94,7 @@ init
 		..setUnitClassification("_")
 		..setPropulsionWindowdegrees(1.0)
 		..setTooltipBasic("")
-		..setNormalAbilities("")
+		..setNormalAbilities("Agho")
 		..setGroundTexture("")
 		..setShadowTextureBuilding("")
 		..setCollisionSize(0)

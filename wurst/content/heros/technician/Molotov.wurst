@@ -1,5 +1,6 @@
 package Molotov
 import Projectile
+import Lightning
 import Terrain
 import MapStuff
 import ChannelAbilityPreset
@@ -37,7 +38,7 @@ public class Molotov extends Projectile
 		super(pos, caster.owner, pos.angleTo2d(target), "Models\\Molotov.mdx")
 		flying = true
 		bounces = getMolotovBounces(lvl)
-		setTarget(target, 275)
+		setTarget(target, 325)
 		this.caster = caster
 		THROW_SOUND.playSimulatePoint(pos.toVec2())
 		active = true
@@ -48,10 +49,13 @@ public class Molotov extends Projectile
 		if bounces < 0
 			destroy this
 		
-
 	override function onGroundHit()
+
+	override function onGround()
 		let pos = getPos2()
-		let nrml = getTerrainNormal(pos.x, pos.y, 12).norm()
+		var nrml = getTerrainNormal(pos.x, pos.y, 4).norm()
+		addLightning("LEAS", false, getPos3(), getPos3()+nrml*40)
+		setPos3(getPos3()+nrml*2, false)
 		if getVel().dot(nrml) > 0
 			return
 			
@@ -61,9 +65,7 @@ public class Molotov extends Projectile
 		EXPLO_SOUND.playSimulatePoint(pos)
 		fx.flash("Models\\FlameBomb.mdx")
 		forUnitsInRange(pos, 128, (unit u) -> begin
-			print("YAY")
 			if u.isAlive() and u.getEntity() instanceof Creep
-				print("YAYAY")
 				u.addXBurn(caster, 1)
 		end)
 		for n in freshNapalms
