@@ -82,19 +82,18 @@ class Pickable
 	
 	//This function is called for the other two pickables. It only checks if the player who selected another hero, was a viewer at this one.
 	function deselect(player p)
-		if p == viewing
-			print("Deselecting: " + id.toString())
-			//Checking if the player who is on front of the queue left already. Doing it until it finds a suitable player.
-			while (not IsUnitSelected(h.actor, waiting.peek())) and waiting.peek() != null
-				waiting.dequeue()
-			if IsUnitSelected(h.actor, waiting.peek()) and p != viewing 
-				//p != viewing is necessary because it is still selected by the player whent he event is triggered. Warcraft is like that :(
-				viewing = waiting.dequeue()
-				h.actor.setOwner(viewing,true)
-			else
-				//Didin't find suitable player in the queue, set it to player8 again
-				viewing = Player(8)
-				h.actor.setOwner(Player(8),true)
+		print("Deselecting: " + id.toString())
+		//Checking if the player who is on front of the queue left already. Doing it until it finds a suitable player.
+		while (not IsUnitSelected(h.actor, waiting.peek())) and waiting.peek() != null
+			waiting.dequeue()
+		if IsUnitSelected(h.actor, waiting.peek()) and p != viewing 
+			//p != viewing is necessary because it is still selected by the player whent he event is triggered. Warcraft is like that :(
+			viewing = waiting.dequeue()
+			h.actor.setOwner(viewing,true)
+		else
+			//Didin't find suitable player in the queue, set it to player8 again
+			viewing = Player(8)
+			h.actor.setOwner(Player(8),true)
 		
 	//Called when the pick is casted. Picks the hero.
 	function pick()
@@ -121,11 +120,11 @@ class Pickable
 					for pl in pi.waiting
 						if pl == Player(i)
 							waits = true
-					if pi.viewing != Player(i) and not waits
+					if pi.viewing != Player(i) //and not waits
 						var h = u.getEntity() castTo Hero
 						if h == pi.h
 							pi.select(p)
-						else
+					if pi.viewing == Player(i)
 							pi.deselect(p)
 		print("onSelect - Pickable " + p.getName())
 	/*	for pi in pickables

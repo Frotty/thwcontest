@@ -51,7 +51,7 @@ function initResources(boolean compileTime)
 	print(">>>>>>>>>>10")
 
 	
-	
+//Note that this is also done in Player.wurst
 function init_PlayerNumber(boolean compileTime)
 	if not compileTime
 		playerNumber = 0
@@ -60,7 +60,7 @@ function init_PlayerNumber(boolean compileTime)
 				playerNumber ++
 	
 
-boolean testing = true
+boolean testing = false
 	
 init
 	doAfter(0.01, () -> begin
