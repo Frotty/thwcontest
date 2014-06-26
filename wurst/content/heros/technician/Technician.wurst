@@ -6,6 +6,8 @@ import Napalm
 import ClosureTimers
 import XBurn
 import SoundHelper
+import ObjectIds
+import InfernalWheel
 
 int TECHNICIAN_ID
 
@@ -32,16 +34,20 @@ public class Technician extends Hero
 						new NapalmDroplet(napalm_Last, this, lvl)
 				end)		
 	override function onPointCast(int spellId, vec2 target, int lvl)
+		print("yaya " + idInteger2IdString(spellId))
 		switch spellId
 			case EXPLOSIVES_SPELL_ID
 				createXplosive(target, this, lvl)
 			case MOLOTOV_SPELL_ID
 				new Molotov(getPos3() + vec3(0,0,50), target, this, lvl)
+			case INFERNAL_WHEEL_ID
+				print("yaya")
+				new InfernalWheel(getPos2(), target, this)
 			
 	
 public function init_Technician(boolean compiletime)
 	TECHNICIAN_ID = HERO_ID_GEN.next()
-	
+	init_InfernalWheel(compiletime)
 	init_Xplosives(compiletime)
 	init_Molotov(compiletime)
 	init_XBurn(compiletime)
@@ -60,5 +66,6 @@ public function init_Technician(boolean compiletime)
 			..addHeroAbility(NAPALM_SPELL_ID)
 			..addHeroAbility(MOLOTOV_SPELL_ID)
 			..addHeroAbility(XBURN_SPELL_ID)
+			..addHeroAbility(INFERNAL_WHEEL_ID)
 		// Build at the end
 			..buildHero()

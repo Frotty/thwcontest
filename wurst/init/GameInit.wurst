@@ -34,7 +34,6 @@ function initResources(boolean compileTime)
 	print(">>>>>>>>>>2")
 	init_Intermission(compileTime)
 	print(">>>>>>>>>>3")
-	
 	print(">>>>>>>>>>4")
 	init_StunHandler(compileTime)
 	print(">>>>>>>>>>5")
@@ -72,7 +71,7 @@ init
 
 			SetHeroLevel(h.actor, 4, false)
 			SetHeroLevel(s.actor, 4, false)
-			startIntermission(20, "You have 20 seconds till the first attack..")
+			startIntermission(1, "You have 20 seconds till the first attack..")
 			
 		else
 			//Welcome message

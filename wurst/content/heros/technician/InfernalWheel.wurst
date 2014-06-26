@@ -1,4 +1,56 @@
 package InfernalWheel
 import Projectile
-//
-//public class InfernalWheel extends Projectile
+import MapStuff
+import Hero
+import Terrain
+import ChannelAbilityPreset
+import MapBounds
+import CollisionDetection
+import Creep
+
+constant INFERNAL_WHEEL_MODEL_PATH = "Models\\InfernalWheel.mdx"
+constant INFERNAL_WHEEL_MAX_LVL = 3
+constant INFERNAL_WHEEL_RANGE = 128.
+
+public int INFERNAL_WHEEL_ID
+
+
+public class InfernalWheel extends Projectile
+	real maxSpeed = 400
+	
+	construct(vec2 start, vec2 target, Hero caster)
+		super(start.withTerrainZ(), caster.owner, start.angleTo(target), INFERNAL_WHEEL_MODEL_PATH)
+		print("yay")
+		fx.setScale(2.)
+		fx.getDummy().setTimeScale(0.1)
+		setSpeed(50)
+		fixedFlyHeight = true
+		this.fx.getDummy().registerOnHitCallback(90, true, (unit hit, unit hitter) -> begin
+			let entity = hit.getEntity()
+			if this.fx.getDummy() == hitter and hit.isAliveTrick() and hit.getEntity() instanceof Creep and (entity.getPos3().z-this.getZ()).abs() < 64
+				
+				let angl = this.getPos2().angleTo(entity.getPos2())
+				hit.getEntity().applyVel(vec3(angl.cos()*getSpeed()/100,angl.sin()*getSpeed()/100, getSpeed()/200))
+				caster.actor.damageTarget(hit, getSpeed()/100)
+				hit.addEffect("Objects\\Spawnmodels\\NightElf\\NightElfLargeDeathExplode\\NightElfLargeDeathExplode.mdl", "chest").destr()
+		end)
+		
+	override function update()
+		setSpeed(min(maxSpeed, getSpeed() * 1.2))
+		if (getPos3() + getVel()).inBounds()
+			super.update()
+		else
+			destroy this
+		
+		
+public function init_InfernalWheel(boolean c)
+	INFERNAL_WHEEL_ID = ABIL_ID_GEN.next()
+	
+	if c
+		let def = new ChannelAbilityPreset(INFERNAL_WHEEL_ID, INFERNAL_WHEEL_MAX_LVL)
+		..removeChannelProperties(true)..setOption(Option.VISIBLE, true)
+		..setIcon("BTNSanitysEclipse")..setButtonPosNormal(3, 2)..setTargetType(Targettype.PTARGET)
+		for i = 1 to INFERNAL_WHEEL_MAX_LVL
+			def..setCastRange(i, INFERNAL_WHEEL_RANGE)
+
+		

@@ -6,7 +6,7 @@ import GameTimer
 import Intermission
 import GameConstants
 
-constant INTERMISSION_DURATION = 30.
+constant INTERMISSION_DURATION = 20.
 
 public class WaveManager
 	static Queue<WavePool> waves
