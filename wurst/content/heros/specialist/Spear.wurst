@@ -56,18 +56,14 @@ public class Spear extends Projectile
 			if fx.getDummy() == hitter
 				if hit.isAliveTrick() and hit.getEntity() instanceof Creep  
 					var affected = false
-					print("check")
 					//Checking if not targeted here
 					for t in targets
 						if t.creep.actor == hit
 							affected = true
-							print("already existing")
 							break
 					if not affected
-						print("not affected")
 						var c = hit.getEntity() castTo Creep
 						fx.getDummy().damageTarget(hit, getSpearDamage(lvl))
-						print("damage")
 						// Todo MASS handling
 						if targets.getSize() < getSpearTargetCount(lvl)
 							//If everything fine, then add.
@@ -81,7 +77,6 @@ public class Spear extends Projectile
 		for screep in targets
 			if screep.creep.actor.isAliveTrick()
 				screep.durPercent *= screep.creep.weightFactor
-				print("dur: " + screep.durPercent.toString())
 				if screep.durPercent < 0.05
 					targets.remove(screep)
 					screep.creep.active = true

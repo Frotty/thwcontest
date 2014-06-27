@@ -20,7 +20,6 @@ public class InfernalWheel extends Projectile
 	
 	construct(vec2 start, vec2 target, Hero caster)
 		super(start.withTerrainZ(), caster.owner, start.angleTo(target), INFERNAL_WHEEL_MODEL_PATH)
-		print("yay")
 		fx.setScale(2.)
 		fx.getDummy().setTimeScale(0.1)
 		setSpeed(50)

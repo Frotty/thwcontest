@@ -51,7 +51,7 @@ function initResources(boolean compileTime)
 	print(">>>>>>>>>>10")
 
 
-boolean testing = false
+boolean testing = true
 	
 init
 	doAfter(0.01, () -> begin
@@ -62,7 +62,7 @@ init
 
 			SetHeroLevel(h.actor, 4, false)
 			SetHeroLevel(s.actor, 4, false)
-			startIntermission(1, "You have 20 seconds till the first attack..")
+			startIntermission(10, "You have 20 seconds till the first attack..")
 			
 		else
 			//Welcome message

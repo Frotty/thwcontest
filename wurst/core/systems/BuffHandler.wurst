@@ -84,7 +84,6 @@ public class BuffContainer
 		this.def = def
 		buffed = u
 		duration = dur
-		print("trying to add abil " + idInteger2IdString(def.tornado_id))
 		u.addAbility(def.tornado_id)
 		
 		buffEffect = bfe

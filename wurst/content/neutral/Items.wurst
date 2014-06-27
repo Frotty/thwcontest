@@ -80,7 +80,6 @@ public function init_Items(boolean c)
 							..setTooltipExtended(getDescription(d,a,s,l))
 							..setCanBeDropped(false)
 							..setCanBeSoldToMerchants(false)
-	print("blub0")					
 	if c
 		let pow = new ItemDefinition(DMG_POWERUP_ID, 'gold')
 		pow..setName("Upgrade Damage")
@@ -90,8 +89,6 @@ public function init_Items(boolean c)
 			..setButtonPositionY(0)
 	else
 		addShopItem(DMG_POWERUP_ID, 1, 1, true)
-		print("blub1")
 		addShopItem('phea', 1, 2, true)
-		print("blub2")
 						
 							
