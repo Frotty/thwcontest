@@ -1,7 +1,7 @@
 package Players
 import LinkedList
 
-public int playerNumber
+public int playerNumber = 1
 
 public LinkedList<PData> allPlayers = new LinkedList<PData>()
 public PData array pDatas

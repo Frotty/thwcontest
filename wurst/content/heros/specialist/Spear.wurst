@@ -92,8 +92,9 @@ public class Spear extends Projectile
 					screep.creep.actor.setFlyHeight(0,0)
 			else
 				targets.remove(screep)
-				destroy screep
 				screep.creep.active = true
+				screep.creep.actor.setPropWindow(GetUnitDefaultPropWindow(screep.creep.actor))
+				destroy screep
 		super.update()
 		
 		
