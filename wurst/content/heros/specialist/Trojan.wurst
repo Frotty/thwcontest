@@ -20,10 +20,10 @@ function getTrojanDuration(int lvl) returns real
 	return 10. + 5. * lvl
 	
 function getTrojanDamage(real dist, int lvl) returns real
-	return dist * 0.03125 * (1 + (0.5 * lvl))
+	return dist * 0.0525 * (1 + (0.5 * lvl))
 	
 function getTrojanCooldown(int lvl) returns real
-	return getTrojanDuration(TROJAN_MAXLVL) + 5
+	return getTrojanDuration(lvl) + 5
 
 public class TrojanBuff
 	real dist
@@ -32,7 +32,6 @@ public class TrojanBuff
 	int lvl
 	vec2 tmploc
 	texttag tt
-	CallbackCounted cb
 	CallbackPeriodic ttcb
 
 	construct(unit actor, int lvl)
@@ -46,19 +45,18 @@ public class TrojanBuff
 		actor.addAbility(GHOST)
 		tt = createTTEx(actor.getPos().withZ(150), "", 10, colorA(230,78,87,255))
 		
-		cb = (CallbackCounted cb)-> begin
+		doAfter(getTrojanDuration(lvl), ()-> begin
+			if actor.hasAbility(GHOST)
+				actor.removeAbility(GHOST)
+		end)
+		
+		ttcb = (CallbackPeriodic cab)->begin
 			dist += tmploc.distToVec(actor.getPos())
 			tmploc = actor.getPos()
 			damage = getTrojanDamage(dist, lvl)
-			if cb.isLast()
-				actor.removeAbility(GHOST)
-		end
-		
-		ttcb = (CallbackPeriodic cab)->begin
 			tt.setText(damage.toInt().toString(), 10)
 			tt.setPos(tmploc.withZ(50))
 		end
-		
 		
 		var t = CreateTrigger()
 		t.registerUnitEvent(actor,EVENT_UNIT_ISSUED_TARGET_ORDER)
@@ -75,7 +73,7 @@ public class TrojanBuff
 						
 						destroy tro
 		end)
-		doPeriodicallyTimed(0.2, getTrojanDuration(lvl), cb )
+		
 		doPeriodically(ANIMATION_PERIOD, ttcb)
 		
 		
@@ -83,13 +81,10 @@ public class TrojanBuff
 		
 		OnDamage ond = (unit damaged, unit source, real amount) -> begin
 			if source == caster
-				caster.damageTarget(target, damage)
 				print("Damage")
 		end
 		
-		if cb!= null
-			caster.removeAbility(GHOST)
-			destroy cb
+		caster.damageTarget(target, damage)
 		
 		onDamage(target, ond)
 		
