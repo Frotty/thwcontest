@@ -47,8 +47,8 @@ public class WeaponItem
 		for i = 0 to 5
 			if GetItemName( UnitItemInSlot(actor,i) ) == "Weapon"
 				actor.removeItem( UnitItemInSlot(actor,i) )
-		//var tmp = createItem( WEAPON_ITEM_IDS[getWeaponId(dmg,aspeed,spelldmg,lifesteal)], vec2(actor.getX(),actor.getY()))
-		//UnitAddItem(actor, tmp)
+		var tmp = createItem( WEAPON_ITEM_IDS[getWeaponId(dmg,aspeed,spelldmg,lifesteal)], vec2(actor.getX(),actor.getY()))
+		UnitAddItem(actor, tmp)
 
 function getWeaponId(int dmg, int asp, int spdm, int lif) returns int
 	return lif + (LIFESTEAL_MAXLVL+1)*( spdm + (SPELLDMG_MAXLVL+1)*( asp + (ASPEED_MAXLVL+1)*( dmg ) ) )
@@ -89,9 +89,9 @@ public function init_Items(boolean c)
 			..setButtonPositionX(2)
 			..setButtonPositionY(0)
 	else
-		addShopItem(DMG_POWERUP_ID, true)
+		addShopItem(DMG_POWERUP_ID, 1, 1, true)
 		print("blub1")
-		addShopItem('phea', true)
+		addShopItem('phea', 1, 2, true)
 		print("blub2")
 						
 							

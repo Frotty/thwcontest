@@ -17,7 +17,7 @@ public abstract class Hero extends Entity
 		itemTrigger.registerUnitEvent(actor, EVENT_UNIT_USE_ITEM)
 		active = true
 		sleeping = false
-//		doAfter(1., ()-> weapon.refreshWeapon(actor) )
+		doAfter(1., ()-> weapon.refreshWeapon(actor) )
 			
 	abstract function onCast(int spellId, int lvl)
 		

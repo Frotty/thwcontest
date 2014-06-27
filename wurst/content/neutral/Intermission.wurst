@@ -11,7 +11,6 @@ int SHOP_ID
 
 unit SHOP_UNIT
 
-LinkedList<int> alwaysItemsIds = new LinkedList<int>()
 LinkedList<int> pauseItemsIds = new LinkedList<int>()
 
 public function startIntermission(real duration, string text)
@@ -39,9 +38,9 @@ public function startIntermission(real duration, string text)
 	end)
 	
 	
-public function addShopItem(int id, boolean always)
+public function addShopItem(int id, int currentStack, int maxStack, boolean always)
 	if always
-		alwaysItemsIds.add(id)
+		AddItemToStock(SHOP_UNIT, id, currentStack, maxStack)
 	else
 		pauseItemsIds.add(id)
 	
@@ -50,10 +49,8 @@ public function init_Intermission(boolean c)
 	SHOP_ID = UNIT_ID_GEN.next()
 	if c
 		let def = new BuildingDefinition(SHOP_ID, 'ngme')
-		def..setName("Statue")..setModelFile("Models\\Statue03_b.mdx")..setItemsSold("")
+		def..setName("Statue")..setModelFile("Models\\Statue03_b.mdx")..setItemsSold("")..setNormalAbilities("Asid, Aneu")
 		..setPathingMap("")..setGroundTexture("")..setCollisionSize(0)..setSelectionScale(0.8)..setScalingValue(1.5)
 	else
 		SHOP_UNIT = createUnit(DUMMY_PLAYER, SHOP_ID, STATUE_POS, angle(0))
-		for i in alwaysItemsIds
-			AddItemToStock(SHOP_UNIT, i, 1, 2)
 	

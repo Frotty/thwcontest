@@ -23,7 +23,7 @@ public class HeroPreset extends HeroDefinition
 		setName(name)
 		
 	function buildHero()
-		setNormalAbilities("Ane2, Asud")
+		setNormalAbilities("Ane2, Asud, AInv")
 		buildProperNames()
 		buildHeroAbilities()
 		
