@@ -16,5 +16,3 @@ public constant heroCount = 4
 public var gravity = vec3(0,0,-1.4)
 public constant MAP_VER = "001"
 
-public var playerNumber = 5
-

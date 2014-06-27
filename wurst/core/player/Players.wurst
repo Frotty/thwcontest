@@ -1,6 +1,8 @@
 package Players
 import LinkedList
 
+public int playerNumber
+
 public LinkedList<PData> allPlayers = new LinkedList<PData>()
 public PData array pDatas
 
@@ -19,3 +21,4 @@ public function init_Players(boolean c)
 			if players[i].getSlotState() == PLAYER_SLOT_STATE_PLAYING
 				pDatas[i] = new PData(players[i])
 				allPlayers.add(pDatas[i])
+		playerNumber = allPlayers.getSize()
