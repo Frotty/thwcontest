@@ -22,8 +22,14 @@ constant MOLOTOV_MAXLVL = 4
 function getMolotovBounces(int lvl) returns int
 	return min(lvl, 3)
 	
-function getCastRange(int lvl) returns real
+function getMolotovCastRange(int lvl) returns real
 	return 400 + 100.*lvl
+	
+function getMolotovCooldown(int lvl) returns real
+	return 25 - lvl * 2.
+	
+function getMolotovManaCost(int lvl) returns int
+	return 60
 	
 constant THROW_SOUND = new Sound("Sounds\\sfx_throw.mp3", 532, false)
 constant EXPLO_SOUND = new Sound("Sounds\\sfx_molotov_explo.mp3", 4021, false)
@@ -86,9 +92,13 @@ public function init_Molotov(boolean c)
 		..setIcon("BTNSunFragment")..setTargetType(Targettype.PTARGET)
 		..setButtonPosNormal(2, 2)..setHotkey(MOLOTOV_HOTKEY)
 		for i = 1 to MOLOTOV_MAXLVL
-			molotovPreset.setCastRange(i, getCastRange(i))
+			molotovPreset..setCastRange(i, getMolotovCastRange(i))
+			..setCooldown(i, getMolotovCooldown(i))
+			..setManaCost(i, getMolotovManaCost(i))
 		new AbilityTooltipGenerator(MOLOTOV_NAME, MOLOTOV_HOTKEY, Targettype.PTARGET, MOLOTOV_MAXLVL, "Throws a burning Molotov into the target area.\nThe Molotov bounces.\n" + "When the Molotov hits the ground it ignites all Napalm and Xplosives near and burns enemies." )
-		..addProperty("Range:", (int lvl) -> getCastRange(lvl).toString())
+		..addProperty("Cooldown:", (int lvl) -> getMolotovCooldown(lvl).toString())
+		..addProperty("Mana Cost:", (int lvl) -> getMolotovManaCost(lvl).toString())
+		..addProperty("Cast Range:", (int lvl) -> getMolotovCastRange(lvl).toString())
 		..addProperty("Bounces:", (int lvl) -> getMolotovBounces(lvl).toString())
 		..applyToDef(molotovPreset)
 		

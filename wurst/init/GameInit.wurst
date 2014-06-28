@@ -53,7 +53,7 @@ function initResources(boolean compileTime)
 	print(">>>>>>>>>>10")
 
 
-boolean testing = true
+boolean testing = false
 	
 init
 	doAfter(0.01, () -> begin

@@ -30,8 +30,11 @@ function getXplosionRadius(int lvl) returns real
 function getXplosionPower(int lvl) returns real
 	return 50. + 10 * lvl
 	
-function getXplosionCooldown(int lvl) returns int
-	return 35 - 2*lvl
+function getXplosionCooldown(int lvl) returns real
+	return 35 - 2.*lvl
+	
+function getXplosionManaCost(int lvl) returns int
+	return 35 + 20 * lvl
 
 public function registerHeroXplo(Hero h)
 	let t = CreateTrigger()
@@ -105,11 +108,15 @@ public function init_Xplosives(boolean c)
 		..setButtonPosNormal(0,2)..setIcon("BTNExplosiveBarrel")
 		..setOption(Option.VISIBLE, true)..setTargetType(Targettype.PTARGET)..setOption(Option.TARGETIMAGE, true)
 		..setAreaOfEffect(128)..setHotkey(XPLOSIVES_HOTKEY)
-		..setCastRange(1, 180)
+		..setCastRange(1, 180)..setRequiredLevel(2)
+		for i = 1 to 4
+			xplosivePreset..setCooldown(i, getXplosionCooldown(i))
+			..setManaCost(i, getXplosionManaCost(i))
 		new AbilityTooltipGenerator(XPLOSIVES_NAME, XPLOSIVES_HOTKEY, Targettype.PTARGET, XPLOSIVES_MAXLVL, "Bombz")
+		..addProperty("Cooldown:", (int lvl) -> getXplosionCooldown(lvl).toString())
+		..addProperty("Mana Cost:", (int lvl) -> getXplosionManaCost(lvl).toString())
 		..addProperty("Cast Range:", (180.).toString())
 		..addProperty("Area of Effect:", (int lvl) -> getXplosionRadius(lvl).toString())
-		..addProperty("Cooldown:", (int lvl) -> getXplosionCooldown(lvl).toString())
 		..addProperty("Xplosion Power:", (int lvl) -> getXplosionPower(lvl).toString())
 		..applyToDef(xplosivePreset)
 	
@@ -117,8 +124,8 @@ public function init_Xplosives(boolean c)
 		let xdum = new AbilityDefinitionBashcreep(MAX_EXPLOSIVES_ID)
 		xdum..setChancetoBash(1, 0)..setChancetoMiss(1, 0)..setButtonPosNormal(0, 2)
 		..setIcon("PASExplosiveBarrel")..setName("Maximum Amount")
-		new AbilityTooltipGenerator(MAX_XPLOSIVES_NAME, "", Targettype.PASSIVE, 4, "You reached the maximum Explosives for this level.")
-		..addProperty("Amount:", (int lvl) -> getMaxXplo(lvl).toString())
+		new AbilityTooltipGenerator(MAX_XPLOSIVES_NAME, "", Targettype.PASSIVE, 4, "You reached the maximum Xplosives for this level.")
+		..addProperty("Maximum Amount:", (int lvl) -> getMaxXplo(lvl).toString())
 		..applyToDef(xdum)
 			
 	

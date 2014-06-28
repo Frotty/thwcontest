@@ -110,6 +110,55 @@ public function wave_4() returns WavePool
 	pool.setDuration(400)
 	return pool
 	
+public function wave_5() returns WavePool
+	let pool = new WavePool()
+	
+	var def2 = new CreepDefinition("Big Zombie")
+	def2.hp = 500
+	def2.modelPath = "units\\creeps\\Zombie\\Zombie.mdl"
+	def2.scale *= 1.3
+	def2.collisionSize = 4
+	def2.movementSpeed = 300
+	
+	var mam = new CreepDefinition("Mammoth", CreepType.MAMMOTH)
+	mam.hp = 300
+	mam.movementSpeed = 200
+	mam.modelPath = "Units\\Creeps\\MammothBlack\\MammothBlack.mdl"
+	mam.scale *= 1.2
+	pool.addSpawn(mam,1,21,SpawnerGroup.NORTH)
+	
+	
+	pool.addSpawn(def2,1,2.5,SpawnerGroup.ALL)
+	pool.addSpawn(copyCreepDef("Zombie"), 4,0, SpawnerGroup.ALL)
+	
+	
+	pool.setDuration(400)
+	return pool
+	
+public function wave_6() returns WavePool
+	let pool = new WavePool()
+	
+	var def2 = new CreepDefinition("Big Zombie")
+	def2.hp = 500
+	def2.modelPath = "units\\creeps\\Zombie\\Zombie.mdl"
+	def2.scale *= 1.3
+	def2.collisionSize = 4
+	def2.movementSpeed = 300
+	
+	var mam = new CreepDefinition("Mammoth", CreepType.MAMMOTH)
+	mam.hp = 300
+	mam.movementSpeed = 200
+	mam.modelPath = "Units\\Creeps\\MammothBlack\\MammothBlack.mdl"
+	mam.scale *= 1.2
+	pool.addSpawn(mam,1,21,SpawnerGroup.NORTH)
+	
+	
+	pool.addSpawn(def2,1,2.5,SpawnerGroup.ALL)
+	pool.addSpawn(copyCreepDef("Zombie"), 4,0, SpawnerGroup.ALL)
+	
+	
+	pool.setDuration(400)
+	return pool
 	
 public function init_Waves(boolean c)
 	let waves = allWaves()
