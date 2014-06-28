@@ -1,0 +1,31 @@
+package Vampire
+import MapStuff
+import UnitObjEditing
+import WaveManager
+import WavePool
+import ClosureTimers
+
+int BOSS_VAMP_ID
+boolean defeated = false
+
+public function startVampireBoss()
+	let cc = new SpawnContainer(copyCreepDef("Lesser Zombie"), 1, 0, SpawnerGroup.ALL )
+	doPeriodically(10., (CallbackPeriodic cb) -> begin
+		if defeated
+			destroy cb
+		else
+			WaveManager.spawn(cc)
+	end)
+	
+
+public function endVampireBoss()
+	print("You win! (sorry didn't have time for more bosses)")
+	
+
+public function init_VampireBoss(boolean c)
+	BOSS_VAMP_ID = UNIT_ID_GEN.next()
+	
+	if c
+		new UnitDefinition(BOSS_VAMP_ID, 'ugho')	
+		..setName("Vampire")..setModelFile("units\\undead\\Tichondrius\\Tichondrius.mdx")..setScalingValue(2.5)..setCollisionSize(128)
+		

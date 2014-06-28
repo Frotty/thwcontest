@@ -5,6 +5,7 @@ import ClosureTimers
 import GameTimer
 import Intermission
 import GameConstants
+import initlater Vampire
 
 constant INTERMISSION_DURATION = 20.
 

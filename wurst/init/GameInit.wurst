@@ -20,6 +20,7 @@ import Intermission
 import CustomExp
 import Items
 import SimpleAi
+import Vampire
 
 function initResources(boolean compileTime)
 	init_Players(compileTime)
@@ -45,6 +46,7 @@ function initResources(boolean compileTime)
 	print(">>>>>>>>>>8")
 	init_AI(compileTime)
 	print(">>>>>>>>>>9")
+	init_VampireBoss(compileTime)
 	if not compileTime
 		nullTimer(() -> init_Items(compileTime))
 	

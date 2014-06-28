@@ -19,7 +19,7 @@ int defcount = 0
 public function copyCreepDef(string name) returns CreepDefinition
 	for i = 0 to defcount
 		if nameToId[i] == name
-			return creepDefs.get(i).copy()
+			return creepDefs.get(i)
 	error("No CreepDefinition saved for name: \"" + name + "\"")
 	return null
 	
