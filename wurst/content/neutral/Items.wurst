@@ -3,6 +3,7 @@ import ItemObjEditing
 import ObjectIdGenerator
 import BonusHandler
 import Intermission
+import AllwaysItemDefinitions
 
 //Item classes store the level of the different properties of the item. When buying from shop, these aspects get increased.
 

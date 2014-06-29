@@ -76,7 +76,6 @@ init
 			
 			print("playerNumber = " + playerNumber.toString())
 			createPickabes()
-			doAfter(0.0, ()->testPicking())
 				
 		startEntityLoop()
 	end)

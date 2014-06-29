@@ -31,19 +31,10 @@ public function wave_1() returns WavePool
 	def.collisionSize = 8
 	def.damage = 20
 	
-	
-	var def2 = new CreepDefinition("Assault Zombie", CreepType.FLIPPER)
-	def2.hp = 30
-	def2.modelPath = "units\\creeps\\Sasquatch\\Sasquatch.mdl"
-	def2.scale *= 0.7
-	def2.collisionSize = 4
-	def2.movementSpeed = 330
-	
 	// Add Def to pool with amount and time (when to spawn after wave started)
 	//Pool.setDuration is optional, its automatically set to the biggest spawn time.
 	//pool.setDuration(30)
 	
-	pool.addSpawn(def2, 1,0,SpawnerGroup.WEST) // Testing
 	pool.addSpawn(def,1*playerNumber,0,SpawnerGroup.WEST)
 	pool.addSpawn(def,1*playerNumber,0.5,SpawnerGroup.WEST)
 	pool.addSpawn(def,1*playerNumber,8,SpawnerGroup.NORTH)
