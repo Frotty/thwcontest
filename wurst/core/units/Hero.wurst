@@ -15,6 +15,7 @@ public abstract class Hero extends Entity
 		super(pos, createUnit(owner, id, pos, pos.angleTo2d(STATUE_POS)))
 		castTrigger.registerUnitEvent(actor, EVENT_UNIT_SPELL_EFFECT)
 		itemTrigger.registerUnitEvent(actor, EVENT_UNIT_USE_ITEM)
+		restitution = 0.2
 		active = true
 		sleeping = false
 		weapon = new WeaponItem()

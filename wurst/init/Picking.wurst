@@ -8,7 +8,7 @@ import Specialist
 import Hero
 import Fx
 import Terrain
-import WaveManager
+import Intermission
 import Queue
 import ClosureTimers
 import ItemObjEditing
@@ -133,7 +133,7 @@ boolean started = false
 
 function checkIfStart()
 	if not started and picked.getSize() == 0
-		WaveManager.startNextWave()
+		startIntermission(10, "You have 20 seconds till the first attack..")
 		started = true
 		destroy picked
 		for pi in pickables

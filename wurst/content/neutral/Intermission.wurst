@@ -6,6 +6,8 @@ import Fx
 import ClosureTimers
 import LinkedList
 import initlater WaveManager
+import ObjectIds
+import AllwaysItemDefinitions
 
 int SHOP_ID
 
@@ -44,7 +46,7 @@ public function startIntermission(real duration, string text)
 	
 public function addShopItem(int id, int currentStack, int maxStack, boolean always)
 	if always
-		AddItemToStock(SHOP_UNIT, id, currentStack, maxStack)
+		//AddItemToStock(SHOP_UNIT, id, currentStack, maxStack)
 	else
 		pauseItemsIds.add(id)
 	
@@ -55,6 +57,11 @@ public function init_Intermission(boolean c)
 		let def = new BuildingDefinition(SHOP_ID, 'ngme')
 		def..setName("Statue")..setModelFile("Models\\Statue03_b.mdx")..setItemsSold("")..setNormalAbilities("Asid, Aneu")
 		..setPathingMap("")..setGroundTexture("")..setCollisionSize(0)..setSelectionScale(0.8)..setScalingValue(1.5)
+		var s = ""
+		for a in alwaysItemsIds // In package AlwaysItemDefinitions
+			s = s + idInteger2IdString(a) + ","
+			print("ADAADADADADADFASDFADADADFASDFadf")
+		def.setItemsMade(s)
 	else
 		SHOP_UNIT = createUnit(DUMMY_PLAYER, SHOP_ID, STATUE_POS, angle(0))
 	

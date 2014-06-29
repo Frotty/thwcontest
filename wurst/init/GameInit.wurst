@@ -21,6 +21,7 @@ import CustomExp
 import Items
 import SimpleAi
 import Vampire
+import AllwaysItemDefinitions
 
 function initResources(boolean compileTime)
 	init_Players(compileTime)
@@ -30,6 +31,7 @@ function initResources(boolean compileTime)
 	init_Specialist(compileTime)
 	init_Picking(compileTime)
 	init_Spawner(compileTime)
+	init_AllwaysItems(compileTime)
 	print(">>>>>>>>>>1")
 	init_Waves(compileTime)
 	print(">>>>>>>>>>2")
@@ -74,6 +76,7 @@ init
 			print("However it can only heal wounds once every minute, and your soul cannot be saved if every human is dead.")
 			print("Chose your champion wisely to endure this greatest challenge in life.")
 			
+			SetPlayerState(Player(0),PLAYER_STATE_RESOURCE_GOLD,5400)
 			print("playerNumber = " + playerNumber.toString())
 			createPickabes()
 				
