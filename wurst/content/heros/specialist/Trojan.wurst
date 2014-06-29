@@ -24,6 +24,9 @@ function getTrojanDamage(real dist, int lvl) returns real
 	
 function getTrojanCooldown(int lvl) returns real
 	return getTrojanDuration(lvl) + 5
+	
+function getTrojanManaCost(int lvl) returns int
+	return 120 - 20*lvl
 
 public class TrojanBuff
 	real dist
@@ -112,7 +115,8 @@ public function init_Trojan(boolean compileTime)
 			..setIcon("BTNWispSplode")..setOption(Option.VISIBLE, true)
 			..setTargetType(Targettype.NOTARGET)..setHotkey(TROJAN_HOTKEY)
 		for lvl = 1 to TROJAN_MAXLVL
-			trojan.setCooldown(lvl,getTrojanCooldown(lvl))
+			trojan..setCooldown(lvl,getTrojanCooldown(lvl))
+			..setManaCost(lvl, getTrojanManaCost(lvl))
 			
 		new AbilityTooltipGenerator(TROJAN_NAME, TROJAN_HOTKEY, Targettype.NOTARGET, TROJAN_MAXLVL, "Specialist hides himself from enemies by covering himself in zombie blood.")
 		..addProperty("Duration:", (int lvl) -> getTrojanDuration(lvl).toString())

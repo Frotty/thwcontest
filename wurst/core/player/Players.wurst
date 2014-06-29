@@ -14,6 +14,7 @@ public class PData
 	construct(player p)
 		this.p = p
 		this.id = p.getId()
+		p.addGold(100)
 
 public function init_Players(boolean c)
 	if not c

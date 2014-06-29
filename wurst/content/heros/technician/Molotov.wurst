@@ -26,7 +26,7 @@ function getMolotovCastRange(int lvl) returns real
 	return 400 + 100.*lvl
 	
 function getMolotovCooldown(int lvl) returns real
-	return 25 - lvl * 2.
+	return 18 - lvl * 2.
 	
 function getMolotovManaCost(int lvl) returns int
 	return 60

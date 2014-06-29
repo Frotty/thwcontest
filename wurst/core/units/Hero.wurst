@@ -8,6 +8,7 @@ import public ChannelAbilityPreset
 import public Items
 import ClosureTimers
 import ClosureEvents
+import Intermission
 
 public abstract class Hero extends Entity
 	WeaponItem weapon
@@ -73,6 +74,7 @@ init
 		hero.deathTT = createTTEx(hero.getPos3() + vec3(-20,0,50), hero.owner.getName(), 8, colorA(255,0,0,255))
 		hero.crossFx = new Fx(hero.getPos2(), angle(0), "Doodads\\Cityscape\\Props\\CityGrave\\CityGrave3.mdl")
 		Hero.aliveCount--
+		fallenHeros.add(hero)
 		if Hero.aliveCount <= 0
 			print("GAME OVER")
 			PauseGame(true)

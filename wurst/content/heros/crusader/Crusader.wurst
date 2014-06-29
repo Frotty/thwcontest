@@ -22,6 +22,9 @@ int PHALANX_SPELL_ID
 
 function getPhalanxArmor(int lvl) returns real
 	return 0.5 + 0.5 * lvl
+	
+function getPhalanxCooldown(int lvl) returns real
+	return 5-lvl*1.
 
 public class Crusader extends Hero
 	trigger summontrigger
@@ -135,7 +138,8 @@ public function init_Crusader(boolean compiletime)
 			..setNumberofImages(1,2)..setDamageDealt(1,0)..setDamageTaken(1,1.2)
 			..setManaCost(1,0)..setIconNormal("ReplaceableTextures\\CommandButtons\\BTN_cr_charge.blp")
 			..setIconResearch("ReplaceableTextures\\CommandButtons\\BTN_cr_charge.blp")
-			
+		for i = 1 to 4
+			phalanx.setCooldown(i, getPhalanxCooldown(i))
 			//..setTooltipLearnExtended("Creates two identical Crusader fighters in a formation. Crusader will gain extra armor based on the number of zombies around, as long as he stays in the formation.")
 		// Doesnt work with mirrorImage preset:
 		new AbilityTooltipGenerator("Phalanx","W",Targettype.NOTARGET,4, "Creates two phalanx buddies")

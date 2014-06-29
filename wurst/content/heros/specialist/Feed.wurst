@@ -26,6 +26,9 @@ function getFeedMeatHP(int lvl) returns int
 function getFeedCooldown(int lvl) returns int
 	return 20 - lvl
 	
+function getManaCost(int lvl) returns int
+	return 30 + 10 * lvl
+	
 function getFeedDuration(int lvl) returns real
 	return 10. + 2*lvl
 	
@@ -136,8 +139,11 @@ public function init_Feed(boolean compileTime)
 			..setButtonPositionResearchX(0)..setButtonPositionResearchY(0)
 			..setIcon("BTNMonsterLure")..setOption(Option.VISIBLE, true)
 			..setTargetType(Targettype.PUTARGET)..setHotkey(FEED_HOTKEY)
-			..setCastRange(1,400)
 			..setOrderStringActivate("warstomp")
+		for i = 1 to 4
+			feed..setCastRange(i,400)
+			..setCooldown(i, getFeedCooldown(i) * 1.)
+			..setManaCost(i, getManaCost(i))
 			
 		new AbilityTooltipGenerator(FEED_NAME, FEED_HOTKEY, Targettype.NOTARGET, FEED_MAXLVL, "Tosses a chunk of food, making enemies around attack it. \nCan be attached to bosses.")
 		..addProperty("Hitpoints of Meat:", (int lvl) -> getFeedMeatHP(lvl).toString())

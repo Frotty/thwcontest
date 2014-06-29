@@ -24,6 +24,9 @@ function getBackOffDamage(int lvl) returns real
 	
 function getBackOffCooldown(int lvl) returns int
 	return BACKOFF_COOLDOWN - 2*lvl
+	
+function getBackManaCost(int lvl) returns int
+	return 25 + 5*lvl
 
 public function castBackOff(vec2 pos, unit actor, int lvl) // Q ability of Crusader. Instant cast.
 	real abilityrange = 400 //could be dynamic later?
@@ -60,7 +63,7 @@ public function init_BackOff(boolean compileTime)
 			..setIcon("BTNCrushUndead")..setOption(Option.VISIBLE, true)
 			..setOrderStringActivate("warstomp")..setHotkey(BACKOFF_HOTKEY)
 		for i = 1 to BACKOFF_MAXLVL
-			backoff..setManaCost(i,60)
+			backoff..setManaCost(i,getBackManaCost(i))
 				..setCooldown(i,getBackOffCooldown(i).toReal())
 			//new AbilityTooltipGenerator
 		new AbilityTooltipGenerator(BACKOFF_NAME, BACKOFF_HOTKEY, Targettype.NOTARGET, BACKOFF_MAXLVL, "Knocks back enemies in front of crusader, applying stun.")

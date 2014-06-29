@@ -27,7 +27,7 @@ function getNapalmLifespan(int lvl) returns int
 	return min(12, 6 + 2 * lvl)
 	
 function getNapalmCooldown(int lvl) returns real
-	return (25 - lvl * 1.5).round() * 1.
+	return (16 - lvl * 1.5).round() * 1.
 	
 function getNapalmManaCost(int lvl) returns int
 	return 20 + 10 * lvl

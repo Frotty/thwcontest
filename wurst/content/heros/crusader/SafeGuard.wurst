@@ -23,8 +23,11 @@ function getSafeGuardDuration(int lvl) returns real
 function getSafeGuardHealPercent(int lvl) returns real
 	return 50. + 0.125 * lvl
 
-function getSafeGuardCooldown(int lvl) returns int
-	return 26 - 3 * lvl
+function getSafeGuardCooldown(int lvl) returns real
+	return 26 - 3. * lvl
+	
+function getSafeGuardManaCost(int lvl) returns int
+	return 35 - 5*lvl
 	
 function getMaxDistance(int lvl) returns real
 	return 300. + 50. * lvl
@@ -142,7 +145,9 @@ public function init_SafeGuard(boolean compileTime)
 			..setIcon("BTNSpell_Holy_HolyNova")..setOption(Option.VISIBLE, true)
 			..setCastRange(1,400)..setTargetType(Targettype.UTARGET)
 			..setTargetsAllowed(1,"friend")..setHotkey(SAFEGUARD_HOTKEY)
-			
+		for i = 1 to 4
+			safeguard..setManaCost(i, getSafeGuardManaCost(i))
+			..setCooldown(i, getSafeGuardCooldown(i))
 		new AbilityTooltipGenerator(SAFEGUARD_NAME, SAFEGUARD_HOTKEY, Targettype.UTARGET, SAFEGUARD_MAXLVL, SAFEGUARD_DESCR)
 		..addProperty("Cast Range:", (400.).toString())
 		..addProperty("Duration:", (int lvl) -> getSafeGuardDuration(lvl).toString())

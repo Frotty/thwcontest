@@ -37,6 +37,9 @@ function getCageDamage(int lvl) returns real
 function getCageCooldown(int lvl) returns int
 	return 32 - 6  * (lvl-1)
 	
+function getCageManaCost(int lvl) returns int
+	return 60
+	
 function getCageMaxRange(int lvl) returns real
 	return 400. + 100. * lvl
 	
@@ -174,7 +177,15 @@ function buildCageSpell(int id, int lvl) returns ChannelAbilityPreset
 		..setButtonPositionNormalX(3)..setButtonPositionNormalY(2)
 		..setButtonPositionResearchX(3)..setButtonPositionResearchY(0)
 		..setIcon("BTNStaticShock")..setOption(Option.VISIBLE, true)
-		..setOrderStringActivate("holybolt")..setHotkey(CAGE_HOTKEY)
+		..setOrderStringActivate("holybolt")..setHotkey(CAGE_HOTKEY)..setRequiredLevel(6)
+		..setLevelSkipRequirement(3)
+	for i = 1 to 4
+		if id == CAGE_SPELL_ID
+			pr..setCooldown(i, getCageCooldown(i) * 1.)	
+			..setManaCost(i, getCageManaCost(i))
+		else
+			pr..setCooldown(i, 1.)	
+			..setManaCost(i, 0)
 	return pr
 			
 public function init_Cage(boolean compileTime)

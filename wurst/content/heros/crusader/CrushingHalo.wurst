@@ -24,6 +24,12 @@ function getCrushingHaloDamage(int lvl) returns real
 
 function getCrushingHaloHealPercent(int lvl) returns real
 	return 0.2 + 0.05 * lvl
+	
+function getCrushingHaloCooldown(int lvl) returns real
+	return 60 - 2.*lvl
+	
+function getCrushingHaloManaCost(int lvl) returns int
+	return 100 + 20 * lvl
 
 public class CrushingHalo
 	group effected
@@ -80,6 +86,10 @@ public function init_CrushingHalo(boolean compileTime)
 			..setButtonPositionResearchX(3)..setButtonPositionResearchY(0)
 			..setIcon("BTNHoly")..setOption(Option.VISIBLE, true)
 			..setOrderStringActivate("holybolt")..setRequiredLevel(6)..setLevelSkipRequirement(3)
+		for i = 1 to 4
+			crushinghalo..setManaCost(i, getCrushingHaloManaCost(i))
+			..setCooldown(i, getCrushingHaloCooldown(i))
+			
 		new AbilityTooltipGenerator(CRUSHING_HALO_NAME, CRUSHING_HALO_HOTKEY, Targettype.NOTARGET, CRUSHING_HALO_MAXLVL, CRUSHING_HALO_DESCR)
 		..addProperty("Area of Effect:", (int lvl) -> getCrushingHaloRadius(lvl).toString())
 		..addProperty("Damage:", (int lvl) -> getCrushingHaloDamage(lvl).toString())

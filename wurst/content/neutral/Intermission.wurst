@@ -15,7 +15,7 @@ int SHOP_ID
 unit SHOP_UNIT
 timerdialog td
 LinkedList<int> pauseItemsIds = new LinkedList<int>()
-LinkedList<Hero> fallenHeros = new LinkedList<Hero>()
+public LinkedList<Hero> fallenHeros = new LinkedList<Hero>()
 
 public function startIntermission(real duration, string text)
 	let fx = new Fx(STATUE_POS.withZ(300), angle(0))

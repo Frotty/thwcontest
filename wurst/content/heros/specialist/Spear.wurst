@@ -31,7 +31,10 @@ function getSpearRange(int lvl) returns real
 	return 400. + 50 * lvl
 	
 function getSpearCooldown(int lvl) returns int
-	return 30 + 7 * lvl
+	return 26 - 2 * lvl
+	
+function getSpearManaCost(int lvl) returns int
+	return 30 + 5 * lvl
 
 class SpearCreep
 	Creep creep
@@ -113,8 +116,11 @@ public function init_Spear(boolean compileTime)
 			..setIcon("BTNBloodFilledGlassArrow")..setOption(Option.VISIBLE, true)
 			..setTargetType(Targettype.PUTARGET)..setHotkey(SPEAR_HOTKEY)
 			..setLevels(SPEAR_MAXLVL)
-			..setCastRange(1,1000)
 			..setOrderStringActivate("starfall")
+		for i = 1 to 4
+			def..setCastRange(i,1000)
+			..setCooldown(i, getSpearCooldown(i) * 1.)
+			..setManaCost(i, getSpearManaCost(i))
 			
 		
 		new AbilityTooltipGenerator(SPEAR_NAME, SPEAR_HOTKEY, Targettype.PUTARGET, SPEAR_MAXLVL, "Specialist throws a spear which drags enemies along it's path.")

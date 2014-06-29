@@ -31,7 +31,7 @@ function getXplosionPower(int lvl) returns real
 	return 50. + 10 * lvl
 	
 function getXplosionCooldown(int lvl) returns real
-	return 35 - 2.*lvl
+	return 10 - 2.*lvl
 	
 function getXplosionManaCost(int lvl) returns int
 	return 35 + 20 * lvl
