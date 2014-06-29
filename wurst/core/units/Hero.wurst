@@ -39,16 +39,12 @@ init
 		let targetX = GetSpellTargetX()
 		let targetY = GetSpellTargetY()
 		let lvl = hero.actor.getAbilityLevel(id)
-		print("in action: " + targetUnit.getName())
 		
 		if targetUnit != null
-			print("onCast Unit")
 			hero.onUnitCast(id, targetUnit, lvl)
 		else if targetX != 0 
-			print("onCast Point")
 			hero.onPointCast(id, vec2(targetX, targetY), lvl)
 		else
-			print("onCast")
 			hero.onCast(id, lvl)
 		
 	end)
@@ -56,9 +52,7 @@ init
 		let hero = GetTriggerUnit().getEntity() castTo Hero
 		let ite = GetManipulatedItem()
 		let id = GetItemTypeId(ite)
-		print("in action: " + hero.actor.getName())
 		
 		if id == DMG_POWERUP_ID
-			print("Bought item")
 			hero.weapon.upgradeDamage(hero.actor)
 	end) 

@@ -81,7 +81,6 @@ public function init_CollisionDetection(boolean c, int minCollisionSize, int max
 				u.removeAbility('Bpxf')
 				var cc = callbackMap.get(u)
 				let u2 = GetEventDamageSource()
-				print(u2.getName())
 				if cc != null
 					cc.run(u, u2)
 				cc = callbackMap.get(u2)

@@ -26,6 +26,12 @@ public function getNapalmDropDuration(int lvl) returns int
 function getNapalmLifespan(int lvl) returns int
 	return min(12, 6 + 2 * lvl)
 	
+function getNapalmCooldown(int lvl) returns real
+	return (25 - lvl * 1.5).round() * 1.
+	
+function getNapalmManaCost(int lvl) returns int
+	return 20 + 10 * lvl
+	
 public constant DROP_SOUND = new Sound("Sounds\\sfx_napalm_drop.mp3", 4838, false)
 
 public LinkedList<NapalmDroplet> freshNapalms = new LinkedList<NapalmDroplet>()
@@ -87,10 +93,15 @@ public function init_Napalm(boolean c)
 		let spreset = new ChannelAbilityPreset(NAPALM_SPELL_ID, 4)
 		// Set Attributes
 		spreset..removeChannelProperties(true)..setName("Napalm")..setButtonPosNormal(1,2)
-			..setIcon("BTNFieryExplosion")..setOption(Option.VISIBLE, true)..setHotkey("W")
+			..setIcon("BTNFieryExplosion")..setOption(Option.VISIBLE, true)..setRequiredLevel(2)
+		for i = 1 to 4
+			spreset..setCooldown(i, getNapalmCooldown(i))
+			..setManaCost(i, getNapalmManaCost(i))
 		new AbilityTooltipGenerator(NAPALM_NAME, NAPALM_HOTKEY, Targettype.NOTARGET, 4, "Starts dropping Napalm for a given duration.\nThe napalm sticks to the ground and lasts until it gets ignited.\n" 
 																						+ "You can ignite Napalm with any fire source. Napalm ignites all objects around it.\n"
 																						+ "Enemies that run into Napalm cannot lose XBurn.")
+		..addProperty("Cooldown:", (int lvl) -> getNapalmCooldown(lvl).toString())
+		..addProperty("Mana Cost:", (int lvl) -> getNapalmManaCost(lvl).toString())
 		..addProperty("Dropping Duration:", (int lvl) -> getNapalmDropDuration(lvl).toString())
 		..addProperty("Lifespan:", (int lvl) -> getNapalmLifespan(lvl).toString())
 		..applyToDef(spreset)

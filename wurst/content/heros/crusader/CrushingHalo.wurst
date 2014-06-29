@@ -36,7 +36,6 @@ public class CrushingHalo
 		this.dmger = dmger
 		pos = p
 		this.level = level
-		print("Created CH")
 		effected = CreateGroup()
 		start()
 	
@@ -56,7 +55,6 @@ public class CrushingHalo
 						dmger.damageTarget(u,getCrushingHaloDamage(level))
 						c.applyVel(vec3(0,0,30))
 						effected.addUnit(u)
-						//print("++")
 					if u.getEntity() instanceof Hero and u != dmger
 						//Restore percentage of the missing hp
 						u.setHP(u.getHP() + (u.getMaxHP()- u.getHP())*getCrushingHaloHealPercent(level)) 

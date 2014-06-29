@@ -99,7 +99,7 @@ public class Cage
 				nodes.get(size-1).lng = addLightning("FORK", true, pos+zoffset, caster.getPos3()+zoffset)
 				nodes.get(size-1).lng.setColor(color_unavail)
 				//lightnings not act as intended, for example the lighting created above is not visible in game
-				print("Node added: " + nodes.getSize().toString() + " and " + nodes.get(size-1).fx.getDummy().getHandleId().toString())
+//				print("Node added: " + nodes.getSize().toString() + " and " + nodes.get(size-1).fx.getDummy().getHandleId().toString())
 				if size >= 2
 					//If there are more then 2 lightnings, the latter shall be "fixed" to the two nodes before. 
 					//Since position is right because update, there is no need to move, only color
@@ -135,7 +135,6 @@ public class Cage
 		for i = 0 to size-1 //Looping until the last ACTIVE nod
 			var n1 = nodes.get(i)
 			if n1.fixed
-				print("active - " + i.toString())
 				CageNode n2
 				if i == 3
 					n2 = nodes.get(0)
@@ -156,7 +155,6 @@ public class Cage
 								u.applyBuff(CAGE_BUFF_DEF, 1.)
 								effected.addUnit(u)
 								doAfter(1.,()-> effected.removeUnit(u))
-					print(s)
 				end)
 				
 		//if e.alive and not e.flying and e.pos.toVec2().distToSegmentSquared(pos.toVec2(), l.linkedNode.pos.toVec2() ) < ACTIVATION_DIST.squared()

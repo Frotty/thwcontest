@@ -44,7 +44,6 @@ public class SafeGuardCast
 		if target == caster.actor //Different effect if casted on self.
 			print("yuo cheating!")
 		else
-			print("created")
 			// Create local vars to be captured by closure (ignore warning)
 			let speed = 600.
 			let zoffset = vec3(0,0,50) // Lightning height offset

@@ -34,14 +34,12 @@ public class Technician extends Hero
 						new NapalmDroplet(napalm_Last, this, lvl)
 				end)		
 	override function onPointCast(int spellId, vec2 target, int lvl)
-		print("yaya " + idInteger2IdString(spellId))
 		switch spellId
 			case EXPLOSIVES_SPELL_ID
 				createXplosive(target, this, lvl)
 			case MOLOTOV_SPELL_ID
 				new Molotov(getPos3() + vec3(0,0,50), target, this, lvl)
 			case INFERNAL_WHEEL_ID
-				print("yaya")
 				new InfernalWheel(getPos2(), target, this)
 			
 	

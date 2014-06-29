@@ -12,6 +12,18 @@ constant INFERNAL_WHEEL_MODEL_PATH = "Models\\InfernalWheel.mdx"
 constant INFERNAL_WHEEL_MAX_LVL = 3
 constant INFERNAL_WHEEL_RANGE = 128.
 
+constant INFERNAL_WHEEL_NAME = "Infernal Wheel"
+constant INFERNAL_WHEEL_HOTKEY = "R"
+
+function getInfernalWheelDamage(int lvl) returns real
+	return 25 + 25. *lvl
+	
+function getInfernalWheelCooldown(int lvl) returns real
+	return 60. - 5 * lvl
+	
+function getInfernalWheelManaCost(int lvl) returns int
+	return 200
+
 public int INFERNAL_WHEEL_ID
 
 
@@ -20,7 +32,6 @@ public class InfernalWheel extends Projectile
 	
 	construct(vec2 start, vec2 target, Hero caster)
 		super(start.withTerrainZ(), caster.owner, start.angleTo(target), INFERNAL_WHEEL_MODEL_PATH)
-		print("yay")
 		fx.setScale(2.)
 		fx.getDummy().setTimeScale(0.1)
 		setSpeed(50)
@@ -50,7 +61,15 @@ public function init_InfernalWheel(boolean c)
 		let def = new ChannelAbilityPreset(INFERNAL_WHEEL_ID, INFERNAL_WHEEL_MAX_LVL)
 		..removeChannelProperties(true)..setOption(Option.VISIBLE, true)
 		..setIcon("BTNSanitysEclipse")..setButtonPosNormal(3, 2)..setTargetType(Targettype.PTARGET)
+		..setRequirementsLevels("5,8,11")
 		for i = 1 to INFERNAL_WHEEL_MAX_LVL
 			def..setCastRange(i, INFERNAL_WHEEL_RANGE)
-
+			..setManaCost(i, getInfernalWheelManaCost(i))
+			..setCooldown(i, getInfernalWheelCooldown(i))
+			
+		new AbilityTooltipGenerator(INFERNAL_WHEEL_NAME, INFERNAL_WHEEL_HOTKEY, Targettype.PTARGET, 3, "")
+		..addProperty("Cooldown", (int lvl) -> getInfernalWheelCooldown(lvl).toString())
+		..addProperty("Mana Cost", (int lvl) -> getInfernalWheelManaCost(lvl).toString())
+		..addProperty("Damage", (int lvl) -> getInfernalWheelDamage(lvl).toString())
+		..applyToDef(def)
 		

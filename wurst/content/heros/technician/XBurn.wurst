@@ -53,5 +53,6 @@ public function init_XBurn(boolean c)
 		new AbilityTooltipGenerator(XBURN_NAME, XBURN_HOTKEY, Targettype.PASSIVE, XBURN_MAXLEVEL, "Spells from the technician can inflict an XBurn.\nXBurn instances stack.\nXDoes damage over time.")
 		..addProperty("Max Stacks:", (int lvl) -> getXburnMaxStacks(lvl).toString())
 		..addProperty("Damage:", (int lvl) -> getXburnDamage(lvl).toString())
+		..addProperty("Duration:", XBURN_DURATION.toString())
 		..applyToDef(def)
 	

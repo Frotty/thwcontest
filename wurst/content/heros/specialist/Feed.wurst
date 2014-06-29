@@ -63,7 +63,6 @@ public class FoodProjectile extends Projectile
 				if hit.getEntity() instanceof Creep
 					let c = hit.getEntity() castTo Creep
 					if c.weightFactor < 0.1
-						print("attached")
 						setSpeed(0)
 						attached = true
 						victim = c
@@ -80,7 +79,6 @@ public class FoodProjectile extends Projectile
 				dummyUnit = createUnit(CREEP_PLAYER,FOOD_DUMMY_ID,getPos2(),angle(0))
 				dummyUnit..addAbility('Agho')..setUserData(this castTo int)
 				ond = onDamage(dummyUnit, (unit damaged, unit source, real amount) -> begin
-					print("ok")
 					let fp = damaged.getUserData() castTo FoodProjectile
 					if attached
 						source.damageTarget(victim.actor, amount)

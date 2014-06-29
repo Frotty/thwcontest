@@ -43,7 +43,6 @@ public class Crusader extends Hero
 		summontrigger.addAction(function addPhalanx)
 		
 	override function onCast(int spellId, int lvl)
-		print("Crusader - onCast function called")
 		switch spellId
 			case PHALANX_SPELL_ID
 				ph_pos = actor.getPos()
@@ -52,7 +51,6 @@ public class Crusader extends Hero
 				addUnitBonus(actor,Bonus.ARMOR, - ph_armor)
 	
 	override function onUnitCast(int spellId, unit target, int lvl)
-		print("Crusader - onUnitCast function called")
 		switch spellId
 			case BACKOFF_SPELL_ID
 				castBackOff(getPos2(),actor,lvl)
@@ -68,7 +66,6 @@ public class Crusader extends Hero
 		unit source = GetSummoningUnit()
 		Crusader c = source.getEntity() castTo Crusader
 		if not IsUnitIllusion(GetSummonedUnit())
-			print("setting Caster")
 			c.actor.setFacing(c.ph_facing)
 			//Throwing him from the air, so it ignores unit collosions when falling down (hopefully)
 			c.setPos3(c.ph_pos.toVec3() + vec3(0,0,30 + getTerrainZ(c.ph_pos.x,c.ph_pos.y)), true)
@@ -103,7 +100,6 @@ public class Crusader extends Hero
 			c.ph_armor = added_armor
 		else
 			angle f = c.ph_facing + angle(PI/2)
-			print("setting Illusion")
 			if c.ph_1_set == false
 				c.ph_unit1 = GetSummonedUnit()
 				c.ph_unit1..setFacing(c.ph_facing)
@@ -113,7 +109,6 @@ public class Crusader extends Hero
 					..setAnimation("defend")
 					//..setPathing(true)
 				c.ph_1_set = true
-				print("1st set")
 			else
 				c.ph_unit2 = GetSummonedUnit()
 				c.ph_unit2..setFacing(c.ph_facing)
@@ -122,7 +117,6 @@ public class Crusader extends Hero
 					..setPropWindow(0)
 					..setAnimation("defend")
 					//..setPathing(true)
-				print("2nd set")
 				
 		
 public function init_Crusader(boolean compiletime)
