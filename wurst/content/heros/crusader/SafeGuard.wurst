@@ -7,12 +7,14 @@ import DamageMod
 import Damager
 import Lightning
 import AbilityTooltipGenerator
+import Interpolation
 
 public int SAFEGUARD_SPELL_ID
 
 constant SAFEGUARD_NAME = "Safe Guard"
 constant SAFEGUARD_HOTKEY = "E"
 constant SAFEGUARD_MAXLVL = 4
+constant SLIDE_DURATION = 0.6
 constant SAFEGUARD_DESCR = "Shields an allied hero, and transmits all the damage it takes to the crusader.|n At the end of the effect the crusader heals for percentage of the taken damage. If crusader leaves the target's side, the effect ends."
 
 function getSafeGuardDuration(int lvl) returns real
@@ -47,22 +49,27 @@ public class SafeGuardCast
 			// Create local vars to be captured by closure (ignore warning)
 			let speed = 600.
 			let zoffset = vec3(0,0,50) // Lightning height offset
-			caster.setTarget(targetEntity.getPos2(),speed)
-			var jump_duration = caster.getPos2().distToVec(targetEntity.getPos2()) / speed //Using the same formula as the setTarget() function here.
-			if jump_duration < 1.
-				jump_duration = 1./speed
+			let ang = caster.getPos2().angleTo(targetEntity.getPos2())
+			let dist = caster.getPos2().distToVec(targetEntity.getPos2())
+			let spos = caster.getPos2()
+			addEffect("Abilities\\Spells\\Human\\Feedback\\SpellBreakerAttack.mdl",targetEntity.getPos2())
+			addEffect("Abilities\\Spells\\Human\\Feedback\\SpellBreakerAttack.mdl",caster.getPos2())
+			caster.actor..setPropWindow(0)..setTurnSpeed(0)..setTimeScale(10.)
+			doPeriodicallyTimed(ANIMATION_PERIOD, SLIDE_DURATION, (CallbackCounted cb) -> begin
+				caster.setPos2(spos.polarOffset(ang, bezier_3(0, dist * 0.8, dist, 1 - cb.getCount() / SLIDE_DURATION*ANIMATION_PERIOD)), false)
+				caster.actor..setAnimation("walk")..queueAnimation("walk")
+			end)
 			//jump_duration *= ANIMATION_PERIOD // this was in because of old entity system 
-			doAfter(jump_duration, () -> begin //We only add the effects of the ability when the jump is done.
+			doAfter(SLIDE_DURATION, () -> begin //We only add the effects of the ability when the jump is done.
 				var maxDistance = getMaxDistance(lvl)
 				let lng = addLightning("SPLK", true, caster.getPos3()+zoffset, targetEntity.getPos3()+zoffset)
 				let eff = AddSpecialEffectTarget("Models\\DivineBarrier1.mdx",targetEntity.actor,"origin")
 				sg_tt = createTTEx(target.getPos().withZ(150), "", 11, colorA(122,200,255,255))
-
+				caster.actor..setPropWindow(GetUnitDefaultPropWindow(caster.actor))..setTurnSpeed(GetUnitDefaultTurnSpeed(caster.actor))..setTimeScale(1.)
 				OnDamage ond = (unit damaged, unit source, real amount) -> begin
 					let dmg = getDamage() //* 0.75
 					modifyDamage(0)//(getDamage() * 0.25)
-					sg_damage += dmg
-					source.damageTarget(caster.actor, dmg)
+					
 					var col = lng.getColor()
 					if col.green > 150
 						col.green = 2
@@ -71,12 +78,15 @@ public class SafeGuardCast
 					lng.setColor(col)
 					AddSpecialEffectTarget("Abilities\\Spells\\Human\\Feedback\\SpellBreakerAttack.mdl",targetEntity.actor,"origin").destr()
 					AddSpecialEffectTarget("Abilities\\Spells\\Human\\Feedback\\SpellBreakerAttack.mdl",caster.actor,"origin").destr()
+					sg_damage += dmg
+					source.damageTarget(caster.actor, dmg)
 				end
 				
 				onDamage(target, ond)
 				doPeriodicallyTimed(ANIMATION_PERIOD, getSafeGuardDuration(lvl), (CallbackCounted cb) -> begin
+					let dist2 = caster.getPos2().distToVec(targetEntity.getPos2())
 					var col = lng.getColor()
-					col.alpha = ((maxDistance - (caster.getPos2().distToVec(targetEntity.getPos2()) / maxDistance)) * 255).toInt()
+					col.alpha = bezier_3(0, 200, 255, 1 - (dist2 / maxDistance)).toInt()
 					if col.blue < 255
 						col.blue = (col.blue*1.3).toInt()
 					if col.green < 255
@@ -90,6 +100,7 @@ public class SafeGuardCast
 						sg_damage = 0
 						AddSpecialEffectTarget("Abilities\\Spells\\Human\\HolyBolt\\HolyBoltSpecialArt.mdl",caster.actor,"origin").destr()
 						sg_tt.destr()
+						destroy cb
 						destroy ond
 						destroy this
 				end)

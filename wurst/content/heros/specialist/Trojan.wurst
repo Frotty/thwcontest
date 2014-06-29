@@ -62,13 +62,13 @@ public class TrojanBuff
 		var t = CreateTrigger()
 		t.registerUnitEvent(actor,EVENT_UNIT_ISSUED_TARGET_ORDER)
 		t.addAction(()->begin
-			print("order: " + GetIssuedOrderId().toString())
+//			print("order: " + GetIssuedOrderId().toString())
 			if GetIssuedOrderId() == ATTACK_ORDER_ID
-				print("Is Attacking.")
+//				print("Is Attacking.")
 				for tro in trojans
-					print("loop...")
+//					print("loop...")
 					if GetOrderedUnit() == tro.caster
-						print("Got you!!")
+//						print("Got you!!")
 						GetTriggeringTrigger().destr()
 						tro.endTrojan(GetTriggerUnit())
 						

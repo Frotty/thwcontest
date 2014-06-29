@@ -29,7 +29,7 @@ public function wave_1() returns WavePool
 	def.modelPath = "units\\creeps\\Zombie\\Zombie.mdl"
 	def.scale = 0.9
 	def.collisionSize = 8
-	def.damage = 8
+	def.damage = 9
 	
 	// Add Def to pool with amount and time (when to spawn after wave started)
 	//Pool.setDuration is optional, its automatically set to the biggest spawn time.
@@ -53,10 +53,10 @@ public function wave_2() returns WavePool
 	// This still creates a new Object (as needed by the system)
 	// But reduces codeLength and copy-paste work (readability too)
 	var zom =new CreepDefinition("Zombie")
-	zom.hp = 75
+	zom.hp = 85
 	zom.modelPath = "units\\creeps\\Zombie\\Zombie.mdl"
 	zom.collisionSize = 12
-	zom.damage = 12
+	zom.damage = 14
 	
 	pool.addSpawn(copyCreepDef("Lesser Zombie"), playerNumber, 0, SpawnerGroup.ALL)
 	pool.addSpawn(copyCreepDef("Lesser Zombie"), playerNumber, 5, SpawnerGroup.ALL)
@@ -136,10 +136,8 @@ public function init_Waves(boolean c)
 	let waves = allWaves()
 	// This Creates the Definitions as well but doesn#t generate the Objects (obviously we can't do this ingame)
 	WaveManager.addAllWaves(waves)
-	print("added")
 	if c
 		for w in waves
-			print("wave for in ")
 			w.generateObjects()
 
 	

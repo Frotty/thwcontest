@@ -30,27 +30,17 @@ function initResources(boolean compileTime)
 	init_Specialist(compileTime)
 	init_Picking(compileTime)
 	init_Spawner(compileTime)
-	print(">>>>>>>>>>1")
 	init_Waves(compileTime)
-	print(">>>>>>>>>>2")
 	init_Intermission(compileTime)
-	print(">>>>>>>>>>3")
-	print(">>>>>>>>>>4")
 	init_StunHandler(compileTime)
-	print(">>>>>>>>>>5")
 	init_Mammoth(compileTime)
-	print(">>>>>>>>>>6")
 	init_CollisionDetection(compileTime, 16, 256)
-	print(">>>>>>>>>>7")
 	init_Intermission(compileTime)
-	print(">>>>>>>>>>8")
 	init_AI(compileTime)
-	print(">>>>>>>>>>9")
 	init_VampireBoss(compileTime)
 	if not compileTime
 		nullTimer(() -> init_Items(compileTime))
 	
-	print(">>>>>>>>>>10")
 
 
 boolean testing = false
@@ -59,7 +49,7 @@ init
 	doAfter(0.01, () -> begin
 		initResources(false)
 		if testing
-			let h = new Technician(vec3(0,300,800),Player(0) )  
+			let h = new Crusader(vec3(0,300,800),Player(0) )  
 			let s = new Specialist(vec3(0,100,800),Player(1) ) // Fortesting
 
 			SetHeroLevel(h.actor, 4, false)
@@ -74,7 +64,6 @@ init
 			print("However it can only heal wounds once every minute, and your soul cannot be saved if every human is dead.")
 			print("Chose your champion wisely to endure this greatest challenge in life.")
 			
-			print("playerNumber = " + playerNumber.toString())
 			createPickabes()
 				
 		startEntityLoop()
