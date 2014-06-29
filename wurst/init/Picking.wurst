@@ -57,7 +57,10 @@ class Pickable
 		h.actor.setPathing(false)
 		hero.actor.setOwner(DUMMY_PLAYER, true)
 		hero.owner = DUMMY_PLAYER
-		AddUnitToStock(hero.actor, PICKDUMMY_ID, 1, 1)
+		if hero instanceof Mage
+			AddUnitToStock(hero.actor, UNAVAILABLE_ID, 0, 1)
+		else
+			AddUnitToStock(hero.actor, PICKDUMMY_ID, 1, 1)
 		
 		
 		
@@ -150,6 +153,7 @@ function checkIfStart()
 			doAfter(ANIMATION_PERIOD, ()->destroy pi)
 	
 int PICKDUMMY_ID
+int UNAVAILABLE_ID
 
 public function init_Picking(boolean ct)
 	if not ct
@@ -158,9 +162,16 @@ public function init_Picking(boolean ct)
 			picked.add(pd.p)
 
 	PICKDUMMY_ID = UNIT_ID_GEN.next()
+	UNAVAILABLE_ID = UNIT_ID_GEN.next()
 	if ct
 		let def = new UnitDefinition(PICKDUMMY_ID, 'hfoo')
 		..setNormalAbilities("Agho")..setSightRadiusDay(0)..setSightRadiusNight(0)..setModelFile("")
 		..setName("Pick Hero")..setGoldCost(0)..setFoodCost(0)..setTooltipBasic("Pick Hero")..setTooltipExtended("")
+		..setIconGameInterface("ReplaceableTextures\\CommandButtons\\BTNPickUpItem.blp")
+		
+		let def2 = new UnitDefinition(UNAVAILABLE_ID, 'hfoo')
+		..setNormalAbilities("Agho")..setSightRadiusDay(0)..setSightRadiusNight(0)..setModelFile("")
+		..setName("Hero unavailable")..setGoldCost(0)..setFoodCost(0)..setTooltipBasic("Hero unavailable")..setTooltipExtended("This hero is not finished yet and only selectable by creators")
+		..setStockStartDelay(10000)..setStockReplenishInterval(10000)
 		..setIconGameInterface("ReplaceableTextures\\CommandButtons\\BTNPickUpItem.blp")
 		

@@ -38,3 +38,4 @@ public function init_VampireBoss(boolean c)
 	if c
 		new UnitDefinition(BOSS_VAMP_ID, 'ugho')	
 		..setName("Vampire")..setModelFile("units\\undead\\Tichondrius\\Tichondrius.mdx")..setScalingValue(2.5)..setCollisionSize(128)
+		..setHitPointsMaximumBase(5000)..setSpeedBase(200)
