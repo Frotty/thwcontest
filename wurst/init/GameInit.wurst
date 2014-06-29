@@ -40,6 +40,8 @@ function initResources(boolean compileTime)
 	
 	init_AI(compileTime)
 	init_VampireBoss(compileTime)
+	if compileTime
+		init_Items(compileTime)
 	if not compileTime
 		nullTimer(() -> begin
 			init_Items(compileTime)

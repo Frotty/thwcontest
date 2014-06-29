@@ -47,8 +47,6 @@ public class WeaponItem
 		for i = 0 to 5
 			if GetItemName( UnitItemInSlot(actor,i) ) == "Weapon"
 				actor.removeItem( UnitItemInSlot(actor,i) )
-		var tmp = createItem( WEAPON_ITEM_IDS[getWeaponId(dmg,aspeed,lifesteal)], vec2(actor.getX(),actor.getY()))
-		UnitAddItem(actor, tmp)
 		actor.addItem(WEAPON_ITEM_IDS[getWeaponId(dmg,aspeed,lifesteal)])
 
 function getWeaponId(int dmg, int asp, int lif) returns int
@@ -75,7 +73,7 @@ public function init_Items(boolean c)
 				if c
 					let def = new ItemDefinition(WEAPON_ITEM_IDS[getWeaponId(d,a,l)], 'rat9')
 					def..setName("Weapon")
-						..setTooltipBasic("Weapon")
+						//..setTooltipBasic("Weapon")
 						..setDescription(getDescription(d,a,l))
 						..setTooltipExtended(getDescription(d,a,l))
 						..setCanBeDropped(false)
