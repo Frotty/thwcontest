@@ -30,7 +30,7 @@ function getHeroDescription(int id) returns string
 		case 3 //Specialist
 			return "Specialist is great at manipulating enemies, and reforming their hordes. Use him on side of a mage for maximal efficenty!"
 		default
-			return "The Ghost Hero is the most powerful of all, truly, truly powerful. You may pick him quick, and pick him now!"
+			return "The Ghost Hero is the most powerful of all, truly,yea truly powerful. You may pick him quick, and pick him now!"
 
 	
 class Pickable

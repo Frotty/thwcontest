@@ -67,8 +67,8 @@ public function init_Intermission(boolean c)
 		var s = ""
 		for a in alwaysItemsIds // In package AlwaysItemDefinitions
 			s = s + idInteger2IdString(a) + ","
-			print("ADAADADADADADFASDFADADADFASDFadf")
-		def.setItemsMade(s)
+		s = s.substring(0, s.length()-1)
+		def.setItemsSold(s)
 	else
 		SHOP_UNIT = createUnit(DUMMY_PLAYER, SHOP_ID, STATUE_POS, angle(0))
 	

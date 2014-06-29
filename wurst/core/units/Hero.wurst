@@ -38,6 +38,7 @@ public abstract class Hero extends Entity
 		
 	ondestroy
 		actor.remove()
+		aliveCount--
 	
 constant castTrigger = CreateTrigger()
 constant itemTrigger = CreateTrigger()
@@ -69,7 +70,7 @@ init
 	end) 
 	Hero.onDeath.addAction(() -> begin
 		let hero = GetTriggerUnit().getEntity() castTo Hero
-		hero.deathTT = createTTEx(hero.getPos3() + vec3(-20,0,50), hero.owner.getName(), 8, colorA(255,0,0,0))
+		hero.deathTT = createTTEx(hero.getPos3() + vec3(-20,0,50), hero.owner.getName(), 8, colorA(255,0,0,255))
 		hero.crossFx = new Fx(hero.getPos2(), angle(0), "Doodads\\Cityscape\\Props\\CityGrave\\CityGrave3.mdl")
 		Hero.aliveCount--
 		if Hero.aliveCount <= 0
