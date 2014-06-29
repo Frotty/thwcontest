@@ -25,7 +25,7 @@ public class Mammoth extends Creep//Upon taking damage parasites fall from it.
 			
 	function throwParasite()
 		var par = new Creep(getPos3() + vec3(0,0,30), PARASITE_DEF.id, actor.getFacingAngle(), mapCenter)
-		par.setVel( vec3(GetRandomReal(-16, 16),GetRandomReal(-16, 16), GetRandomReal(24, 32)) )
+		par.setVel( vec3(GetRandomReal(-8, 8),GetRandomReal(-8, 8), GetRandomReal(16, 24)) )
 		par.actor.setAnimation("birth")
 		
 

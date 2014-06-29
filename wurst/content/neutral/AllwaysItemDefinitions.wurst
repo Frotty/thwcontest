@@ -1,7 +1,34 @@
 package AllwaysItemDefinitions
 
+import ItemObjEditing
+import ObjectIdGenerator
+import AbilityObjEditing
 
 
 public int HP_POTI
+public int HP_POTI_ABIL
+constant hp_gain = 140
 public int MANA_POTI
 public int HASTE_POTI
+
+public function init_AllwaysItems(boolean c)
+	HP_POTI = ITEM_ID_GEN.next()
+	MANA_POTI = ITEM_ID_GEN.next()
+	HASTE_POTI = ITEM_ID_GEN.next()
+	
+	HP_POTI_ABIL = ABIL_ID_GEN.next()
+	
+	if c
+		let def = new AbilityDefinitionItemHealLesser(HP_POTI_ABIL)
+		def..setItemAbility(true)
+			..setHitPointsGained(0,hp_gain)
+		
+		let pow = new ItemDefinition(HP_POTI, 'phea')
+		pow..setName("Health Potion")
+			..setTooltipBasic("Health Potion")
+			..setDescription("Increases the hit points of the Hero with " + hp_gain.toString() + " instantly.")
+			..setTooltipExtended("Increases the hit points of the Hero with " + hp_gain.toString() + " instantly.")
+			..setGoldCost(20)
+			..setAbilities(HP_POTI_ABIL.toCharsetString())
+			..setButtonPositionX(0)
+			..setButtonPositionY(0)

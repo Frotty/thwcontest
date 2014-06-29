@@ -4,6 +4,7 @@ import ObjectIdGenerator
 import BonusHandler
 import Intermission
 import AllwaysItemDefinitions
+import Players
 
 //Item classes store the level of the different properties of the item. When buying from shop, these aspects get increased.
 
@@ -89,7 +90,8 @@ public function init_Items(boolean c)
 			..setButtonPositionX(2)
 			..setButtonPositionY(0)
 	else
-		addShopItem(DMG_POWERUP_ID, 1, 1, true)
+		//addShopItem(DMG_POWERUP_ID, 1, 1, true)
 		addShopItem('phea', 1, 2, true)
+		addShopItem(HP_POTI, 1, playerNumber, true)
 						
 							
