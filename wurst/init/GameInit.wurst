@@ -68,7 +68,7 @@ init
 			print("|cff22ccffHumanity is at extinction! The last heroes standing chose the perfect place to defend.\n" +
 			"A mountain ridge with a holy statue defending and blessing them.\n" +
 			"Sadly the statue can only give temporal defense, and the zombies are getting stronger!" +
-			"Chose your champion wisely to endure this greatest challenge in life.|r")
+			"Chose your champion wisely to endure the great challange|r")
 			
 			createPickabes()
 				
