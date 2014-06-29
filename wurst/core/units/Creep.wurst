@@ -69,6 +69,7 @@ public class CreepDefinition
 	int damage = 10
 	int attackRange = 80
 	real shadowSize = 80
+	int level = 1
 	vec2 shadowCenter = vec2(30,30)
 	CreepType ctype //Decides what class will be used for the creep.
 	
@@ -121,6 +122,6 @@ public class CreepDefinition
 			..setAttack1DamageBase(damage)..setAttack1DamageNumberofDice(3)..setAttack1DamageSidesperDie(2)
 			..setShadowImageHeight(shadowSize)..setShadowImageWidth(shadowSize)
 			..setShadowImageCenterX(shadowCenter.x)..setShadowImageCenterY(shadowCenter.y)
-			..setFoodCost(1)
+			..setFoodCost(1)..setLevel(level)
 			
 	
