@@ -1,0 +1,7 @@
+package AllwaysItemDefinitions
+
+
+
+public int HP_POTI
+public int MANA_POTI
+public int HASTE_POTI

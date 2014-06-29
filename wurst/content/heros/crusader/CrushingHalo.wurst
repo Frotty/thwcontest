@@ -51,8 +51,8 @@ public class CrushingHalo
 			forUnitsInRange(pos.toVec2(),range,(unit u)->begin
 				if u.isAliveTrick() and not IsUnitInGroup(u,effected)
 					if u.getEntity() instanceof Creep
-						let c = u.getEntity() castTo Creep
-						dmger.damageTarget(u,getCrushingHaloDamage(level))
+						var c = u.getEntity() castTo Creep
+						dmger.damageTarget( u, getCrushingHaloDamage(level)  )
 						c.applyVel(vec3(0,0,30))
 						effected.addUnit(u)
 					if u.getEntity() instanceof Hero and u != dmger

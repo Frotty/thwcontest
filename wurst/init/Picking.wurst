@@ -16,6 +16,7 @@ import Players
 public int PICK_SPELL_ID
 
 LinkedList<Pickable> pickables
+LinkedList<player> picked
 
 
 function getHeroDescription(int id) returns string
@@ -72,6 +73,7 @@ class Pickable
 		h.actor.setPathing(true)
 		ResetToGameCameraForPlayer(p, 1.3)
 		pDatas[p.getId()].pickdummy.remove()
+		picked.remove(p)
 		if GetLocalPlayer() == h.owner
 			ResetTerrainFog()
 		destroy this
@@ -97,18 +99,6 @@ class Pickable
 		checkIfStart()
 		h.actor..removeAbility('Ane2')..removeAbility('Asud')
 	
-public function testPicking()
-	for i = 1 to 3
-		doAfter(i* 5., ()->begin
-			SelectUnitForPlayerSingle( pickables.get(i).h.actor ,Player(1))
-			print("Player 1 selected " + pickables.get(i).h.actor.getName())
-		end)
-	for i = 1 to 3
-		doAfter(i* 2.7 + 5., ()->begin
-			SelectUnitForPlayerSingle( pickables.get(i).h.actor ,Player(2))
-			print("Player 2 selected " + pickables.get(i).h.actor.getName())
-		end)
-
 function createHero(int id, vec3 pos) returns Hero
 	Hero h = null
 	if id == 0
@@ -142,9 +132,10 @@ public function createPickabes()
 boolean started = false
 
 function checkIfStart()
-	if not started and pickables.getSize() <= heroCount - playerNumber +1 //todo playerNumber +1 is because when its checked, last pickable isn't removed
+	if not started and picked.getSize() == 0
 		WaveManager.startNextWave()
 		started = true
+		destroy picked
 		for pi in pickables
 			destroy pi.h
 			//**WARNING! THIS IS UGLY**//
@@ -153,6 +144,11 @@ function checkIfStart()
 int PICKDUMMY_ID
 
 public function init_Picking(boolean ct)
+	if not ct
+		picked = new LinkedList<player>()
+		for pd in allPlayers
+			picked.add(pd.p)
+
 	PICKDUMMY_ID = UNIT_ID_GEN.next()
 	if ct
 		let def = new UnitDefinition(PICKDUMMY_ID, 'hfoo')
