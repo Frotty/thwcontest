@@ -3,13 +3,23 @@ package AllwaysItemDefinitions
 import ItemObjEditing
 import ObjectIdGenerator
 import AbilityObjEditing
+import ObjectIds
+import Players
+import LinkedList
 
-
-public int HP_POTI
-public int HP_POTI_ABIL
 constant hp_gain = 140
+constant mana_gain = 200
+constant haste_dur = 12
+
+public LinkedList<int> alwaysItemsIds = new LinkedList<int>()
+public int HP_POTI
 public int MANA_POTI
 public int HASTE_POTI
+
+public int HP_POTI_ABIL
+public int MANA_POTI_ABIL
+public int HASTE_POTI_ABIL_1
+public int HASTE_POTI_ABIL_2
 
 public function init_AllwaysItems(boolean c)
 	HP_POTI = ITEM_ID_GEN.next()
@@ -17,11 +27,19 @@ public function init_AllwaysItems(boolean c)
 	HASTE_POTI = ITEM_ID_GEN.next()
 	
 	HP_POTI_ABIL = ABIL_ID_GEN.next()
+	MANA_POTI_ABIL = ABIL_ID_GEN.next()
+	HASTE_POTI_ABIL_1 = ABIL_ID_GEN.next()
+	HASTE_POTI_ABIL_2 = ABIL_ID_GEN.next()
+	
+	alwaysItemsIds.add(HP_POTI)
+	alwaysItemsIds.add(MANA_POTI)
+		//addShopItem(HASTE_POTI, 1, 2, true)
 	
 	if c
 		let def = new AbilityDefinitionItemHealLesser(HP_POTI_ABIL)
 		def..setItemAbility(true)
 			..setHitPointsGained(0,hp_gain)
+			..setCooldown(1,10)
 		
 		let pow = new ItemDefinition(HP_POTI, 'phea')
 		pow..setName("Health Potion")
@@ -29,6 +47,38 @@ public function init_AllwaysItems(boolean c)
 			..setDescription("Increases the hit points of the Hero with " + hp_gain.toString() + " instantly.")
 			..setTooltipExtended("Increases the hit points of the Hero with " + hp_gain.toString() + " instantly.")
 			..setGoldCost(20)
-			..setAbilities(HP_POTI_ABIL.toCharsetString())
-			..setButtonPositionX(0)
-			..setButtonPositionY(0)
+			..setAbilities(idInteger2IdString(HP_POTI_ABIL))
+			..setButtonPositionX(0)..setButtonPositionY(0)
+			
+		let def1 = new AbilityDefinitionItemManaRestoreLesser(MANA_POTI_ABIL)
+		def1..setItemAbility(true)
+			..setManaPointsGained(0,mana_gain)
+		
+		let pow1 = new ItemDefinition(MANA_POTI, 'pnvl')
+		pow1..setName("Mana Potion")
+			..setTooltipBasic("Mana Potion")
+			..setDescription("Restores " + mana_gain.toString() + " upon use.")
+			..setTooltipExtended("Restores " + mana_gain.toString() + " upon use.")
+			..setGoldCost(50)
+			..setInterfaceIcon("ReplaceableTextures\\CommandButtons\\BTNVialFull.blp")
+			..setAbilities(idInteger2IdString(MANA_POTI_ABIL))
+			..setButtonPositionX(0)..setButtonPositionY(1)
+			
+		let def2 = new AbilityDefinitionItemSpeed(HASTE_POTI_ABIL_1)
+		def2..setItemAbility(true)
+			..setDurationHero(1,haste_dur.toReal())
+			..setMovementSpeedIncrease(1,70)
+		
+		let def3 = new AbilityDefinitionAttackSpeedIncrease(HASTE_POTI_ABIL_2)
+		def3..setItemAbility(true)
+			..setDurationHero(1,haste_dur.toReal())
+			..setAttackSpeedIncrease(1,70)
+		
+		let pow2 = new ItemDefinition(HASTE_POTI, 'pman')
+		pow2..setName("Haste Elixir")
+			..setTooltipBasic("Haste Elixir")
+			..setDescription("Gives extra attack and movement speed for " + haste_dur.toString() + " seconds upon use.")
+			..setTooltipExtended("Gives extra attack and movement speed for " + haste_dur.toString() + " seconds upon use.")
+			..setGoldCost(70)..setInterfaceIcon("ReplaceableTextures\\CommandButtons\\BTNPotionBlueSmall.blp")
+			..setAbilities(idInteger2IdString(HASTE_POTI_ABIL_1)+ "," +idInteger2IdString(HASTE_POTI_ABIL_1))
+			..setButtonPositionX(0)..setButtonPositionY(3)

@@ -91,7 +91,5 @@ public function init_Items(boolean c)
 			..setButtonPositionY(0)
 	else
 		//addShopItem(DMG_POWERUP_ID, 1, 1, true)
-		addShopItem('phea', 1, 2, true)
-		addShopItem(HP_POTI, 1, playerNumber, true)
 						
 							

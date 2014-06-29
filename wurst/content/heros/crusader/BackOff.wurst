@@ -17,7 +17,7 @@ function getBackOffRadius(int lvl) returns real
 	return 300. + 64 * lvl
 	
 function getBackOffPower(int lvl) returns real
-	return 10.5 + 5 * lvl
+	return 7. + 5 * lvl
 	
 function getBackOffDamage(int lvl) returns real
 	return 20. + 15 * (lvl*lvl)
@@ -42,7 +42,7 @@ public function castBackOff(vec2 pos, unit actor, int lvl) // Q ability of Crusa
 			if (angl - facing).degrees().abs() < 60
 				//print("is angle")
 				var power = getBackOffPower(lvl)
-				creep.applyVel(vec3(angl.cos() * power, angl.sin() * power, power))
+				creep.applyVel(vec3(angl.cos() * power, angl.sin() * power, power*1.6))
 				creep.actor.applyStun(false, 2, creep.owner)
 				actor.damageTarget(creep.actor, getBackOffDamage(lvl))
 	end)
@@ -59,6 +59,9 @@ public function init_BackOff(boolean compileTime)
 			..setButtonPositionNormalX(0)..setButtonPositionNormalY(2)
 			..setIcon("BTNCrushUndead")..setOption(Option.VISIBLE, true)
 			..setOrderStringActivate("warstomp")..setHotkey(BACKOFF_HOTKEY)
+		for i = 1 to BACKOFF_MAXLVL
+			backoff..setManaCost(i,60)
+				..setCooldown(i,getBackOffCooldown(i).toReal())
 			//new AbilityTooltipGenerator
 		new AbilityTooltipGenerator(BACKOFF_NAME, BACKOFF_HOTKEY, Targettype.NOTARGET, BACKOFF_MAXLVL, "Knocks back enemies in front of crusader, applying stun.")
 		..addProperty("Area of Effect:", (int lvl) -> getBackOffRadius(lvl).toString())
