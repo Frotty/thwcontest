@@ -57,6 +57,7 @@ class Pickable
 		h.actor.setPathing(false)
 		hero.actor.setOwner(DUMMY_PLAYER, true)
 		hero.owner = DUMMY_PLAYER
+		hero.weapon.refreshWeapon(hero.actor)
 		if hero instanceof Mage
 			AddUnitToStock(hero.actor, UNAVAILABLE_ID, 0, 1)
 		else

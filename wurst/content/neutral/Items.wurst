@@ -13,7 +13,6 @@ public int DMG_POWERUP_ID
 int array WEAPON_ITEM_IDS
 constant DMG_MAXLVL = 4
 constant ASPEED_MAXLVL = 4
-constant SPELLDMG_MAXLVL = 4
 constant LIFESTEAL_MAXLVL = 4
 
 function getBonusDmg(int lvl) returns int
@@ -32,7 +31,6 @@ public class WeaponItem
 	int dmg = 0
 	int aspeed = 0
 	int lifesteal = 0
-	int spelldmg = 0
 	
 	function addBonuses(unit actor)
 		addUnitBonus(actor, Bonus.DAMAGE, getBonusDmg(dmg))
@@ -49,17 +47,18 @@ public class WeaponItem
 		for i = 0 to 5
 			if GetItemName( UnitItemInSlot(actor,i) ) == "Weapon"
 				actor.removeItem( UnitItemInSlot(actor,i) )
-		var tmp = createItem( WEAPON_ITEM_IDS[getWeaponId(dmg,aspeed,spelldmg,lifesteal)], vec2(actor.getX(),actor.getY()))
+		var tmp = createItem( WEAPON_ITEM_IDS[getWeaponId(dmg,aspeed,lifesteal)], vec2(actor.getX(),actor.getY()))
 		UnitAddItem(actor, tmp)
+		actor.addItem(WEAPON_ITEM_IDS[getWeaponId(dmg,aspeed,lifesteal)])
 
-function getWeaponId(int dmg, int asp, int spdm, int lif) returns int
-	return lif + (LIFESTEAL_MAXLVL+1)*( spdm + (SPELLDMG_MAXLVL+1)*( asp + (ASPEED_MAXLVL+1)*( dmg ) ) )
+function getWeaponId(int dmg, int asp, int lif) returns int
+	return lif + (LIFESTEAL_MAXLVL+1)*( asp + (ASPEED_MAXLVL+1)*( dmg ) )
 
-function getDescription(int dmg, int asp, int spdm, int lif) returns string
+function getDescription(int dmg, int asp, int lif) returns string
 	var s = "Weapon\n\n"
 	s += "Extra Damage: " + getBonusDmg(dmg).toString() + "\n"
 	s += "Extra Attack Speed: " + getBonusAttackSpeed(asp).toString() + "\n"
-	s += "Extra Spell Damage: " + getBonusSpellDamage(spdm).toString() + "\n"
+	//s += "Extra Spell Damage: " + getBonusSpellDamage(spdm).toString() + "\n"
 	s += "Extra Life Steal: " + (100*getBonusLifeSteal(lif)).toInt().toString() + "%\n"
 	return s
 
@@ -71,25 +70,27 @@ public function init_Items(boolean c)
 	// Creating every possible combination of item types.
 	for d = 0 to DMG_MAXLVL
 		for a = 0 to ASPEED_MAXLVL
-			for s = 0 to SPELLDMG_MAXLVL
-				for l = 0 to LIFESTEAL_MAXLVL
-					WEAPON_ITEM_IDS[getWeaponId(d,a,s,l)] = ITEM_ID_GEN.next()
-					if c
-						let def = new ItemDefinition(WEAPON_ITEM_IDS[getWeaponId(d,a,s,l)], 'rat9')
-						def..setName("Weapon")
-							..setTooltipBasic("Weapon")
-							..setDescription(getDescription(d,a,s,l))
-							..setTooltipExtended(getDescription(d,a,s,l))
-							..setCanBeDropped(false)
-							..setCanBeSoldToMerchants(false)
+			for l = 0 to LIFESTEAL_MAXLVL
+				WEAPON_ITEM_IDS[getWeaponId(d,a,l)] = ITEM_ID_GEN.next()
+				if c
+					let def = new ItemDefinition(WEAPON_ITEM_IDS[getWeaponId(d,a,l)], 'rat9')
+					def..setName("Weapon")
+						..setTooltipBasic("Weapon")
+						..setDescription(getDescription(d,a,l))
+						..setTooltipExtended(getDescription(d,a,l))
+						..setCanBeDropped(false)
+						..setCanBeSoldToMerchants(false)
+						..setInterfaceIcon("ReplaceableTextures\\CommandButtons\\BTNSteelMelee.blp")
 	if c
-		let pow = new ItemDefinition(DMG_POWERUP_ID, 'gold')
+		let pow = new ItemDefinition(DMG_POWERUP_ID, 'texp')
 		pow..setName("Upgrade Damage")
+			..setAbilities("")
+			..setTooltipBasic("Upgrade Damage")
 			..setDescription("Increases the damage of your weapon!")
-			..setGoldCost(0)
+			..setTooltipExtended("Increases the damage of your weapon!")
+			..setGoldCost(50)
 			..setButtonPositionX(2)
 			..setButtonPositionY(0)
-	else
-		//addShopItem(DMG_POWERUP_ID, 1, 1, true)
+	addShopItem(DMG_POWERUP_ID, 2, 2, false)
 						
 							
