@@ -61,7 +61,7 @@ public function init_InfernalWheel(boolean c)
 		let def = new ChannelAbilityPreset(INFERNAL_WHEEL_ID, INFERNAL_WHEEL_MAX_LVL)
 		..removeChannelProperties(true)..setOption(Option.VISIBLE, true)
 		..setIcon("BTNSanitysEclipse")..setButtonPosNormal(3, 2)..setTargetType(Targettype.PTARGET)
-		..setRequirementsLevels("5,8,11")
+		..setRequiredLevel(6)..setLevelSkipRequirement(3)
 		for i = 1 to INFERNAL_WHEEL_MAX_LVL
 			def..setCastRange(i, INFERNAL_WHEEL_RANGE)
 			..setManaCost(i, getInfernalWheelManaCost(i))

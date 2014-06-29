@@ -52,9 +52,9 @@ public class CrushingHalo
 				if u.isAliveTrick() and not IsUnitInGroup(u,effected)
 					if u.getEntity() instanceof Creep
 						let c = u.getEntity() castTo Creep
-						dmger.damageTarget(u,getCrushingHaloDamage(level))
 						c.applyVel(vec3(0,0,30))
 						effected.addUnit(u)
+						dmger.damageTarget(u,getCrushingHaloDamage(level))
 					if u.getEntity() instanceof Hero and u != dmger
 						//Restore percentage of the missing hp
 						u.setHP(u.getHP() + (u.getMaxHP()- u.getHP())*getCrushingHaloHealPercent(level)) 
@@ -79,7 +79,7 @@ public function init_CrushingHalo(boolean compileTime)
 			..setButtonPositionNormalX(3)..setButtonPositionNormalY(2)
 			..setButtonPositionResearchX(3)..setButtonPositionResearchY(0)
 			..setIcon("BTNHoly")..setOption(Option.VISIBLE, true)
-			..setOrderStringActivate("holybolt")
+			..setOrderStringActivate("holybolt")..setRequiredLevel(6)..setLevelSkipRequirement(3)
 		new AbilityTooltipGenerator(CRUSHING_HALO_NAME, CRUSHING_HALO_HOTKEY, Targettype.NOTARGET, CRUSHING_HALO_MAXLVL, CRUSHING_HALO_DESCR)
 		..addProperty("Area of Effect:", (int lvl) -> getCrushingHaloRadius(lvl).toString())
 		..addProperty("Damage:", (int lvl) -> getCrushingHaloDamage(lvl).toString())
