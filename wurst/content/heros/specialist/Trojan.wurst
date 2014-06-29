@@ -51,11 +51,12 @@ public class TrojanBuff
 		end)
 		
 		ttcb = (CallbackPeriodic cab)->begin
-			dist += tmploc.distToVec(actor.getPos())
-			tmploc = actor.getPos()
-			damage = getTrojanDamage(dist, lvl)
-			tt.setText(damage.toInt().toString(), 10)
-			tt.setPos(tmploc.withZ(50))
+			if actor.hasAbility(GHOST)
+				dist += tmploc.distToVec(actor.getPos())
+				tmploc = actor.getPos()
+				damage = getTrojanDamage(dist, lvl)
+				tt.setText(damage.toInt().toString(), 10)
+				tt.setPos(tmploc.withZ(50))
 		end
 		
 		var t = CreateTrigger()

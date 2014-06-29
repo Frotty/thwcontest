@@ -11,6 +11,8 @@ public function allWaves() returns Queue<WavePool>
 	queue.enqueue(wave_2())
 	queue.enqueue(wave_3())
 	queue.enqueue(wave_4())
+	queue.enqueue(wave_5())
+	queue.enqueue(wave_6())
 	// Return all waves
 	return queue
 
@@ -27,10 +29,21 @@ public function wave_1() returns WavePool
 	def.modelPath = "units\\creeps\\Zombie\\Zombie.mdl"
 	def.scale = 0.9
 	def.collisionSize = 8
+	def.damage = 20
+	
+	
+	var def2 = new CreepDefinition("Assault Zombie", CreepType.FLIPPER)
+	def2.hp = 30
+	def2.modelPath = "units\\creeps\\Sasquatch\\Sasquatch.mdl"
+	def2.scale *= 0.7
+	def2.collisionSize = 4
+	def2.movementSpeed = 330
+	
 	// Add Def to pool with amount and time (when to spawn after wave started)
 	//Pool.setDuration is optional, its automatically set to the biggest spawn time.
 	//pool.setDuration(30)
-
+	
+	pool.addSpawn(def2, 1,0,SpawnerGroup.WEST) // Testing
 	pool.addSpawn(def,1*playerNumber,0,SpawnerGroup.WEST)
 	pool.addSpawn(def,1*playerNumber,0.5,SpawnerGroup.WEST)
 	pool.addSpawn(def,1*playerNumber,8,SpawnerGroup.NORTH)
@@ -57,7 +70,7 @@ public function wave_2() returns WavePool
 	pool.addSpawn(copyCreepDef("Lesser Zombie"), 1*playerNumber, 0, SpawnerGroup.ALL)
 	pool.addSpawn(copyCreepDef("Lesser Zombie"), 1*playerNumber, 1, SpawnerGroup.ALL)
 	pool.addSpawn(copyCreepDef("Lesser Zombie"), 1*playerNumber, 2, SpawnerGroup.ALL)
-	pool.addSpawn(zom, 1*playerNumber , 2.5 , SpawnerGroup.WEST )
+	pool.addSpawn(zom, 2 * playerNumber , 2.5 , SpawnerGroup.WEST )
 	
 	//pool.setDuration(50)
 	return pool
@@ -70,16 +83,11 @@ public function wave_3() returns WavePool
 	def2.modelPath = "units\\creeps\\Sasquatch\\Sasquatch.mdl"
 	def2.scale *= 0.7
 	def2.collisionSize = 4
-	def2.movementSpeed = 300
+	def2.movementSpeed = 330
 	
-	var zom =new CreepDefinition("Zombie")
-	zom.hp = 200
-	zom.modelPath = "units\\creeps\\Zombie\\Zombie.mdl"
-	zom.collisionSize = 12
-	zom.damage = 30
-	
-	pool.addSpawn(def2,1,2.5,SpawnerGroup.ALL)
-	pool.addSpawn(zom, 10,0, SpawnerGroup.ALL)
+	pool.addSpawn(def2,1,2.2,SpawnerGroup.ALL)
+	pool.addSpawn(copyCreepDef("Zombie"), 3 + 1 * playerNumber ,0, SpawnerGroup.ALL)
+	pool.addSpawn(copyCreepDef("Zombie"), 1 * playerNumber ,2., SpawnerGroup.ALL)
 	
 	
 	pool.setDuration(40)
@@ -94,22 +102,47 @@ public function wave_4() returns WavePool
 	def2.scale *= 1.3
 	def2.collisionSize = 4
 	def2.movementSpeed = 300
-	
-	var mam = new CreepDefinition("Mammoth", CreepType.MAMMOTH)
-	mam.hp = 300
-	mam.movementSpeed = 200
-	mam.modelPath = "Units\\Creeps\\MammothBlack\\MammothBlack.mdl"
-	mam.scale *= 1.2
-	pool.addSpawn(mam,1,21,SpawnerGroup.NORTH)
-	
+	def2.damage = 70
 	
 	pool.addSpawn(def2,1,2.5,SpawnerGroup.ALL)
-	pool.addSpawn(copyCreepDef("Zombie"), 4,0, SpawnerGroup.ALL)
+	pool.addSpawn(copyCreepDef("Zombie"), 1 * playerNumber,0, SpawnerGroup.ALL)
+	pool.addSpawn(copyCreepDef("Lesser Zombie"), 2 * playerNumber,3, SpawnerGroup.ALL)
 	
-	
-	pool.setDuration(400)
 	return pool
 	
+public function wave_5() returns WavePool
+	let pool = new WavePool()
+	
+	var mam = new CreepDefinition("Mammoth", CreepType.MAMMOTH)
+	mam.hp = 3000
+	mam.movementSpeed = 200
+	mam.modelPath = "Units\\Creeps\\MammothBlack\\MammothBlack.mdl"
+	mam.scale *= 1.3
+	mam.damage = 70
+	
+	pool.addSpawn(copyCreepDef("Lesser Zombie"),2*playerNumber,0,SpawnerGroup.ALL)
+	pool.addSpawn(copyCreepDef("Zombie"),2*playerNumber,1, SpawnerGroup.ALL)
+	pool.addSpawn(mam,1,0,SpawnerGroup.WEST)
+	pool.addSpawn(copyCreepDef("Big Zombie"), 4, 0, SpawnerGroup.WEST)
+	
+	return pool
+		
+public function wave_6() returns WavePool
+	let pool = new WavePool()
+	
+	var col = new CreepDefinition("Colossus", CreepType.CREEP)
+	col.hp = 6000
+	col.movementSpeed = 160
+	col.modelPath = "Units\\Creeps\\MammothBlack\\MammothBlack.mdl"
+	col.scale *= 2
+	col.damage = 200
+	
+	pool.addSpawn(copyCreepDef("Zombie"),2*playerNumber,0,SpawnerGroup.ALL)
+	pool.addSpawn(copyCreepDef("Zombie"),2*playerNumber,1, SpawnerGroup.ALL)
+	pool.addSpawn( col , 1 + (0.2*playerNumber).toInt(),0,SpawnerGroup.WEST)
+	pool.addSpawn(copyCreepDef("Big Zombie"), 2*playerNumber , 0, SpawnerGroup.WEST)
+	
+	return pool
 	
 public function init_Waves(boolean c)
 	let waves = allWaves()
