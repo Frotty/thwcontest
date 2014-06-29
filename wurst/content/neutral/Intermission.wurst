@@ -29,9 +29,7 @@ public function startIntermission(real duration, string text)
 	end)
 	printTimed("|cff086BAD>> |cffFFD64A" + text + "|r", duration-4)
 	printTimed("            |cffFFD64AYou can now regenerate and buy permanent items from the statue.", duration-4)
-	
-//	SHOP_UNIT.addAbility('ACnr')
-//	SHOP_UNIT.addAbility('ANre')
+	SHOP_UNIT..addAbility('ACnr')..addAbility('ANre')
 	
 	for i in pauseItemsIds
 		AddItemToStock(SHOP_UNIT, i, 1, 2)
@@ -39,8 +37,7 @@ public function startIntermission(real duration, string text)
 	doAfter(duration, () -> begin
 		for i in pauseItemsIds
 			RemoveItemFromStock(SHOP_UNIT, i)
-		SHOP_UNIT.removeAbility('ACnr')
-		SHOP_UNIT.removeAbility('ANre')
+		SHOP_UNIT..removeAbility('ACnr')..removeAbility('ANre')
 		WaveManager.startNextWave()
 	end)
 	

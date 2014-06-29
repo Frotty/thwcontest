@@ -150,6 +150,10 @@ public function init_Crusader(boolean compiletime)
 			..addHeroAbility(PHALANX_SPELL_ID)
 			..addHeroAbility(SAFEGUARD_SPELL_ID)
 			..addHeroAbility(CRUSHING_HALO_SPELL_ID)
+			..setStartingAgility(15)..setAgilityPerLevel(1.8)
+			..setStartingIntelligence(17)..setIntelligencePerLevel(2)
+			..setStartingStrength(22)..setStrengthPerLevel(2.8)
+			
 		// Build at the end
 			..buildHero()
 		

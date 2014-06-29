@@ -95,6 +95,8 @@ public class Spear extends Projectile
 		
 	ondestroy
 		fx.getDummy().removeOnHitCallback()
+		for t in targets
+			t.creep.actor..setTurnSpeed(0.6)..setPropWindow(80)
 		destroy targets
 
 

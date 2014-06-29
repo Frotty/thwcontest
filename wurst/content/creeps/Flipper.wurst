@@ -5,6 +5,7 @@ import ClosureTimers
 import CollisionDetection
 
 trigger range_t
+constant FLIPPER_BOUNTY = 25
 
 public class Flipper extends Creep
 	CollisionCallback cc
@@ -13,6 +14,7 @@ public class Flipper extends Creep
 		super( pos, id, a, target)
 		var eff1 = AddSpecialEffectTarget("Abilities\\Spells\\Orc\\Bloodlust\\BloodlustTarget.mdl",actor,"hand left")
 		var eff2 = AddSpecialEffectTarget("Abilities\\Spells\\Orc\\Bloodlust\\BloodlustTarget.mdl",actor,"hand right")
+		bounty = FLIPPER_BOUNTY
 		
 		cc = (unit hit, unit hitter) -> begin
 			if actor == hitter

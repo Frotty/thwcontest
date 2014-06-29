@@ -68,5 +68,8 @@ public function init_Specialist(boolean compileTime)
 			..addHeroAbility(SPEAR_SPELL_ID)
 			..addHeroAbility(TROJAN_SPELL_ID)
 			..addHeroAbility(CAGE_SPELL_ID)
+			..setStartingAgility(21)..setAgilityPerLevel(1.8)
+			..setStartingIntelligence(16)..setIntelligencePerLevel(2)
+			..setStartingStrength(21)..setStrengthPerLevel(2)
 		// Build at the end
 			..buildHero()

@@ -6,6 +6,8 @@ import ObjectIds
 CreepDefinition PARASITE_DEF
 let parasite_dropping_rate = 7
 
+constant MAMMOTH_BOUNTY = 35
+constant PARASITE_BOUNTY = 2
 //Units\\Creeps\\MammothBlack\\MammothBlack.mdl
 
 public class Mammoth extends Creep//Upon taking damage parasites fall from it.
@@ -14,6 +16,7 @@ public class Mammoth extends Creep//Upon taking damage parasites fall from it.
 	construct(vec3 pos, int id, angle a, vec2 target)
 		super( pos, id, a, target)
 		lastPercent = 100
+		bounty = MAMMOTH_BOUNTY
 		
 	override function update()
 		super.update()
@@ -25,6 +28,7 @@ public class Mammoth extends Creep//Upon taking damage parasites fall from it.
 			
 	function throwParasite()
 		var par = new Creep(getPos3() + vec3(0,0,30), PARASITE_DEF.id, actor.getFacingAngle(), mapCenter)
+		par.bounty = PARASITE_BOUNTY
 		par.setVel( vec3(GetRandomReal(-16, 16),GetRandomReal(-16, 16), GetRandomReal(24, 32)) )
 		par.actor.setAnimation("birth")
 		

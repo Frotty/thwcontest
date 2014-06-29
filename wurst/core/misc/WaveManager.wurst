@@ -25,20 +25,18 @@ public class WaveManager
 			destroy currentWave
 		currentWave = waves.dequeue()
 		waveStartTime = getElapsedGameTime()
-		let wave_duration = currentWave.getDuration()
 		finished = false
-		doPeriodicallyTimed(0.25, wave_duration, (CallbackCounted cb) -> begin
+		doPeriodically(0.25, (CallbackPeriodic cb) -> begin
 			let gameTime = getElapsedGameTime()
 			for sp in currentWave.spawns
-				if waveStartTime + sp.time < gameTime and sp.amount > 0
-					spawn(sp)
-			if cb.isLast()
+				if waveStartTime + sp.time < gameTime 
+					if sp.amount > 0
+						spawn(sp)
+					else
+						currentWave.spawns.remove(sp)
+						destroy sp
+			if currentWave.spawns.getSize() <= 0
 				WaveManager.onPropertyTrig.enable()
-				doAfter(30, () -> begin
-					if not finished
-						finished = true
-						WaveManager.onPropertyTrig.disable()
-				end)
 		end)
 		
 	static trigger onPropertyTrig = CreateTrigger()
@@ -60,7 +58,6 @@ public class WaveManager
 init
 	WaveManager.onPropertyTrig..registerPlayerStateEvent(CREEP_PLAYER, PLAYER_STATE_RESOURCE_FOOD_USED, LESS_THAN_OR_EQUAL, 0.00)
 	..addAction(() -> begin
-		WaveManager.finished = true
 		startIntermission(INTERMISSION_DURATION, "Wave cleared!")
 		WaveManager.onPropertyTrig.disable()
 	end)

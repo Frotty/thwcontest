@@ -65,5 +65,8 @@ public function init_Technician(boolean compiletime)
 			..addHeroAbility(MOLOTOV_SPELL_ID)
 			..addHeroAbility(XBURN_SPELL_ID)
 			..addHeroAbility(INFERNAL_WHEEL_ID)
+			..setAgilityPerLevel(1.5)..setStartingAgility(15)
+			..setIntelligencePerLevel(2.9)..setStartingIntelligence(24)
+			..setStartingStrength(17)..setStrengthPerLevel(2.5)
 		// Build at the end
 			..buildHero()

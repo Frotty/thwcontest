@@ -28,19 +28,10 @@ public class SpawnContainer
 
 public class WavePool
 	LinkedList<SpawnContainer> spawns = new LinkedList<SpawnContainer>()
-	protected real duration = 30
 
 	function addSpawn(CreepDefinition def, int amount, real time, SpawnerGroup where)
 		spawns.add(new SpawnContainer(def, amount, time, where))
-		if duration < time
-			duration = time
 			
-	function setDuration(real d)
-		duration = d
-		
-	function getDuration() returns real
-		return duration
-		
 	function generateObjects()
 		for s in spawns
 			s.creepDef.generateObject()

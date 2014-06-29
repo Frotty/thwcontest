@@ -25,11 +25,11 @@ public function wave_1() returns WavePool
 	// Create a CreepDefinition. Use a distinctive Name here for later copies
 	var def = new CreepDefinition("Lesser Zombie")
 	// Set Values..
-	def.hp = 100
+	def.hp = 50
 	def.modelPath = "units\\creeps\\Zombie\\Zombie.mdl"
 	def.scale = 0.9
 	def.collisionSize = 8
-	def.damage = 20
+	def.damage = 8
 	
 	// Add Def to pool with amount and time (when to spawn after wave started)
 	//Pool.setDuration is optional, its automatically set to the biggest spawn time.
@@ -53,17 +53,16 @@ public function wave_2() returns WavePool
 	// This still creates a new Object (as needed by the system)
 	// But reduces codeLength and copy-paste work (readability too)
 	var zom =new CreepDefinition("Zombie")
-	zom.hp = 200
+	zom.hp = 75
 	zom.modelPath = "units\\creeps\\Zombie\\Zombie.mdl"
 	zom.collisionSize = 12
-	zom.damage = 30
+	zom.damage = 12
 	
-	pool.addSpawn(copyCreepDef("Lesser Zombie"), 1*playerNumber, 0, SpawnerGroup.ALL)
-	pool.addSpawn(copyCreepDef("Lesser Zombie"), 1*playerNumber, 1, SpawnerGroup.ALL)
-	pool.addSpawn(copyCreepDef("Lesser Zombie"), 1*playerNumber, 2, SpawnerGroup.ALL)
-	pool.addSpawn(zom, 2 * playerNumber , 2.5 , SpawnerGroup.WEST )
+	pool.addSpawn(copyCreepDef("Lesser Zombie"), playerNumber, 0, SpawnerGroup.ALL)
+	pool.addSpawn(copyCreepDef("Lesser Zombie"), playerNumber, 5, SpawnerGroup.ALL)
+	pool.addSpawn(copyCreepDef("Lesser Zombie"), playerNumber, 10, SpawnerGroup.ALL)
+	pool.addSpawn(zom, 2 * playerNumber , 15 , SpawnerGroup.WEST )
 	
-	//pool.setDuration(50)
 	return pool
 
 public function wave_3() returns WavePool
@@ -80,8 +79,6 @@ public function wave_3() returns WavePool
 	pool.addSpawn(copyCreepDef("Zombie"), 3 + 1 * playerNumber ,0, SpawnerGroup.ALL)
 	pool.addSpawn(copyCreepDef("Zombie"), 1 * playerNumber ,2., SpawnerGroup.ALL)
 	
-	
-	pool.setDuration(40)
 	return pool
 	
 public function wave_4() returns WavePool

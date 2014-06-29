@@ -1,11 +1,13 @@
 package Creep
 import public Entity
 import MapStuff
+import Players
 import UnitObjEditing
 import HashMap
 import GameConstants
 import LinkedListModule
 import SimpleAi
+import Bounty
 
 public enum CreepType
 	CREEP
@@ -25,17 +27,26 @@ public function copyCreepDef(string name) returns CreepDefinition
 	
 trigger creepDeath = CreateTrigger()
 init
-	creepDeath.addAction(() -> destroy GetTriggerUnit().getEntity())
+	creepDeath.addAction(() -> begin
+		let creep = GetTriggerUnit().getEntity() castTo Creep
+		let killer = GetKillingUnit()
+		killer.getOwner().addGold(creep.bounty mod allPlayers.getSize())
+		for i = 0 to playerNumber-1
+			Player(i).addGold((creep.bounty) div allPlayers.getSize())
+			showBountyTextTag((creep.bounty) div allPlayers.getSize(), creep.actor, Player(i))
+		destroy creep
+	end)
 
 public class Creep extends Entity
 	vec2 target
-	
+	int bounty = 5
 	use LinkedListModule
 	
 	construct(vec3 pos, int id, angle a, vec2 target)
 		super(pos, createUnit(CREEP_PLAYER, id, pos, a))
 		this.target = target
 		this.registerAi()
+		this.bounty = bounty
 		creepDeath.registerUnitEvent(actor, EVENT_UNIT_DEATH)
 		sleeping = false
 		active = true
