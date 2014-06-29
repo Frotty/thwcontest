@@ -282,7 +282,6 @@ public class StringLines
 		this.s = s
 		this.lineCount = lineCount
 		this.lastIndex = lastIndex
-		print(lastIndex.toString() + " - " + lineCount.toString())
 		
 	function iterator() returns thistype
 		return this

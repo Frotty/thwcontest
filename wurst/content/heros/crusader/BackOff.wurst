@@ -41,10 +41,10 @@ public function castBackOff(vec2 pos, unit actor, int lvl) // Q ability of Crusa
 			//print("actor = " + facing.degrees().toString() + "°")
 			if (angl - facing).degrees().abs() < 60
 				//print("is angle")
-				actor.damageTarget(creep.actor, getBackOffDamage(lvl))
 				var power = getBackOffPower(lvl)
 				creep.applyVel(vec3(angl.cos() * power, angl.sin() * power, power*1.6))
 				creep.actor.applyStun(false, 2, creep.owner)
+				actor.damageTarget(creep.actor, getBackOffDamage(lvl))
 	end)
 		
 	

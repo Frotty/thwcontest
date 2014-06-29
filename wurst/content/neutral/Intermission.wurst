@@ -8,12 +8,14 @@ import LinkedList
 import initlater WaveManager
 import ObjectIds
 import AllwaysItemDefinitions
+import initlater Hero
 
 int SHOP_ID
 
 unit SHOP_UNIT
 timerdialog td
 LinkedList<int> pauseItemsIds = new LinkedList<int>()
+LinkedList<Hero> fallenHeros = new LinkedList<Hero>()
 
 public function startIntermission(real duration, string text)
 	let fx = new Fx(STATUE_POS.withZ(300), angle(0))
@@ -21,6 +23,11 @@ public function startIntermission(real duration, string text)
 		DestroyTimerDialog(td)
 		GetExpiredTimer().release()
 	end)
+	for h in fallenHeros
+		h.actor.revive(STATUE_POS.polarOffset(angle(GetRandomReal(0, PI2)), 100), true)
+		Hero.aliveCount++
+		h.deathTT.destr()
+		destroy h.crossFx
 	td = CreateTimerDialog(t)
 	TimerDialogDisplay(td, true)
 	TimerDialogSetTitle(td, "Intermission")

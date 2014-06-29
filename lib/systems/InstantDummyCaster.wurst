@@ -35,10 +35,8 @@ public class InstantDummyCaster
 		boolean b
 		id = abilityId
 		prepare(owner, lvl)
-		print("prepared")
 		caster.setXY(GetWidgetX(target), GetWidgetY(target))
 		b = caster.issueTargetOrderById(OrderId(order), target)
-		print("casted + " + b.toString())
 		finish()
 		return b
 		
@@ -46,10 +44,8 @@ public class InstantDummyCaster
 		boolean b
 		id = abilityId
 		prepare(owner, lvl)
-		print("prepared")
 		caster.setXY(casterPos)
 		b = caster.issueTargetOrderById(OrderId(order), target)
-		print("casted + " + b.toString())
 		finish()
 		return b
 		

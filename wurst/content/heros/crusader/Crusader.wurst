@@ -73,7 +73,7 @@ public class Crusader extends Hero
 			var added_armor = 0
 			//Phalanx checks every second if Crusader moved, and adds the right amount of armor
 			doPeriodically(1., (CallbackPeriodic cb)->begin
-				var nearby = 0
+				var nearby = 1
 				//Counting the units Nearby to get how many extra armor we should add.
 				forUnitsInRange(c.getPos2(),600,(unit u)->begin
 					if GetFilterUnit().getEntity() instanceof Creep and GetFilterUnit().isAliveTrick()
@@ -135,6 +135,7 @@ public function init_Crusader(boolean compiletime)
 			..setNumberofImages(1,2)..setDamageDealt(1,0)..setDamageTaken(1,1.2)
 			..setManaCost(1,0)..setIconNormal("ReplaceableTextures\\CommandButtons\\BTN_cr_charge.blp")
 			..setIconResearch("ReplaceableTextures\\CommandButtons\\BTN_cr_charge.blp")
+			
 			//..setTooltipLearnExtended("Creates two identical Crusader fighters in a formation. Crusader will gain extra armor based on the number of zombies around, as long as he stays in the formation.")
 		// Doesnt work with mirrorImage preset:
 		new AbilityTooltipGenerator("Phalanx","W",Targettype.NOTARGET,4, "Creates two phalanx buddies")

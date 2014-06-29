@@ -137,18 +137,18 @@ public abstract class Entity
 		if fx != null
 			fx.setPos(pos.toVec2())
 		
-	function setTarget( vec2 tpos, real speed )
-		sleeping = false
-		let spd = (speed * ANIMATION_PERIOD)
-		var t = pos.distToVec2d(tpos) / spd
-		let tangle = pos.angleTo2d(tpos)
-		let e = getTerrainZ(tpos)
+	function setTarget( vec2 tpos, real speed2 )
+		let speed = speed2 * ANIMATION_PERIOD
+		var t = distanceBetweenCoords(pos.x, pos.y, tpos.x, tpos.y) / speed
+		let tangle = angleBetweenCoords(pos.x, pos.y, tpos.x, tpos.y)
+		let e = getTerrainZ(tpos.x,tpos.y)
+		
 		if t < 1.
-			t = 1. / spd
+			t = 1./speed
 		
 		let startZVelocity = ((-gravity.z * t) / 2 - pos.z/t + e/t)
-		this.setVel( vec3( tangle.radians().cos() * spd, tangle.radians().sin() * spd, startZVelocity) )
-				
+		this.setVel( vec3( Cos(tangle.radians()) * speed, Sin(tangle.radians()) * speed, startZVelocity) )
+
 	function update()
 		if not sleeping
 			physicsUpdate()

@@ -7,19 +7,27 @@ import public ObjectIdGenerator
 import public ChannelAbilityPreset
 import public Items
 import ClosureTimers
+import ClosureEvents
 
 public abstract class Hero extends Entity
 	WeaponItem weapon
+	static int aliveCount = 0
+	static trigger onDeath = CreateTrigger()
+	texttag deathTT
+	Fx crossFx
 	
 	construct(vec3 pos, player owner, int id)
 		super(pos, createUnit(owner, id, pos, pos.angleTo2d(STATUE_POS)))
 		castTrigger.registerUnitEvent(actor, EVENT_UNIT_SPELL_EFFECT)
 		itemTrigger.registerUnitEvent(actor, EVENT_UNIT_USE_ITEM)
 		restitution = 0.2
+		aliveCount++
 		active = true
 		sleeping = false
 		weapon = new WeaponItem()
 		doAfter(1., ()-> weapon.refreshWeapon(actor) )
+		onDeath.registerUnitEvent(actor, EVENT_UNIT_DEATH)
+		
 
 			
 	abstract function onCast(int spellId, int lvl)
@@ -59,3 +67,12 @@ init
 		if id == DMG_POWERUP_ID
 			hero.weapon.upgradeDamage(hero.actor)
 	end) 
+	Hero.onDeath.addAction(() -> begin
+		let hero = GetTriggerUnit().getEntity() castTo Hero
+		hero.deathTT = createTTEx(hero.getPos3() + vec3(-20,0,50), hero.owner.getName(), 8, colorA(255,0,0,0))
+		hero.crossFx = new Fx(hero.getPos2(), angle(0), "Doodads\\Cityscape\\Props\\CityGrave\\CityGrave3.mdl")
+		Hero.aliveCount--
+		if Hero.aliveCount <= 0
+			print("GAME OVER")
+			PauseGame(true)
+	end)

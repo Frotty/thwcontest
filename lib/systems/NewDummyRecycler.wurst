@@ -105,7 +105,6 @@ class DelayNode
 				
 	static function recycle()
 		DummyRecycler.recycle(first.u)
-		print("delay recycled")
 		let tmp = first
 		if first.next == null
 			first = null
