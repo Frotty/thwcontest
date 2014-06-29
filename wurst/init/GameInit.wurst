@@ -64,11 +64,11 @@ init
 			
 		else
 			//Welcome message
-			print("Welcome to [Enter appealing name here]!")
-			print("Your only hope against the rageing hordes of Zombies is the mighty statue of Clarity.")
-			print("It will protect you from turning into one of those monsters, if you stay nearby.")
-			print("However it can only heal wounds once every minute, and your soul cannot be saved if every human is dead.")
-			print("Chose your champion wisely to endure this greatest challenge in life.")
+			print("Welcome to |cffffcc00Hill Defense!|r")
+			print("|cff22ccffHumanity is at extinction! The last heroes standing chose the perfect place to defend.\n" +
+			"A mountain ridge with a holy statue defending and blessing them.\n" +
+			"Sadly the statue can only give temporal defense, and the zombies are getting stronger!" +
+			"Chose your champion wisely to endure this greatest challenge in life.|r")
 			
 			createPickabes()
 				
