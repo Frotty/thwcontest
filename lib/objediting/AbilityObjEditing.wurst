@@ -1,5 +1,7 @@
 package AbilityObjEditing
+import NoWurst
 import public ObjEditingNatives
+import String
 
 public class AbilityDefinition
 	protected ObjectDefinition def

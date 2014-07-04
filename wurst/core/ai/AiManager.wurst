@@ -1,0 +1,53 @@
+package AiManager
+import public StateMachine
+import Entity
+import UnitIndexer
+import initlater Creep
+import EventManager
+
+
+public class AiManager
+	private static timer aiTimer = CreateTimer()
+	private static StateMachine array stateMachines
+	private static int count = 0
+	private static Creep currentCreep = null
+	
+	static function getFSM(int index) returns StateMachine
+		return stateMachines[index]
+	
+	static function registerEntity(Entity e, State currentState)
+		if currentState == null
+			print("AiManager currentState null")
+		else
+			print("AiManager currentState != null")
+		stateMachines[e.actor.getIndex()] = new StateMachine(e, currentState, currentState)
+		EventManager.registerUnit(e.actor, stateMachines[e.actor.getIndex()])
+		count++
+		
+	static function unregisterEntity(Entity e)
+		destroy stateMachines[e.actor.getIndex()]
+		count--
+		
+	static function start()
+		aiTimer = CreateTimer()
+		aiTimer.start(aiUpdatePeriod(), function aiUpdate)
+		
+	static function aiUpdatePeriod() returns real
+		// the update period gets smaller when there are more soldiers
+		// +1 to avoid division by zero
+		return 0.001 + 4. / (1 + count)
+
+	static function aiUpdate()
+		print("ai update")
+		AiManager.aiTimer.start(aiUpdatePeriod(), function aiUpdate)
+		if currentCreep == null
+			currentCreep = Creep.first
+		if currentCreep != null
+			print("update")
+			stateMachines[currentCreep.actor.getIndex()].update()
+			print("update finished")
+			currentCreep = currentCreep.next
+
+public function init_AiManager(boolean c)
+	if not c
+		AiManager.aiUpdate()

@@ -1,0 +1,33 @@
+package EventManager
+import DamageDetection
+import UnitIndexer
+
+public enum UnitEvent
+	DAMAGED
+
+public interface UnitEventInterface
+	function onEvent(UnitEvent evt)
+
+public class EventManager
+	static boolean array wantsEvents
+	static UnitEventInterface array objects
+	
+	static function registerUnit(unit u, UnitEventInterface onEvent)
+		let index = u.getIndex()
+		wantsEvents[index] = true
+		objects[index] = onEvent
+	
+	static function onDamageEvent() returns boolean
+		let damaged = GetTriggerUnit()
+		let index = damaged.getIndex()
+		if wantsEvents[index]
+			objects[index].onEvent(UnitEvent.DAMAGED)
+		return false
+	
+init
+	addOnDamageFunc(Filter(function EventManager.onDamageEvent))
+	onDeindex(() -> begin
+		if EventManager.wantsEvents[getIndexUnit().getIndex()]
+			
+	end)
+		

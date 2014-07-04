@@ -1,0 +1,67 @@
+package PriorityAi
+import AiManager
+import MapStuff
+import HashMap
+import LinkedList
+import LastOrder
+
+LinkedList<unit> targets = new LinkedList<unit>()
+int array startPriorities
+
+public function addPriorityAiTarget(unit target, int startPrio)
+	targets.add(target)
+	startPriorities[target.getIndex()] = startPrio
+
+public function removePriorityAiTarget(unit target)	
+	targets.remove(target)
+	startPriorities[target.getIndex()] = 0
+		
+	
+public class PA_Normal implements State
+	static thistype INSTANCE
+	static HashMap<unit, int> array priorityMaps
+	static unit array chosenTarget
+	
+	static function findTarget(int index)
+		var highest = 0
+		unit u = null
+		var count = 0
+		for t in targets
+			if priorityMaps[t.getIndex()].get(t) > highest
+				highest = priorityMaps[index].get(t)
+				u = t
+				
+			count++
+			
+		chosenTarget[index] = u
+	
+	function enter(Entity entity)
+		print("enter")
+		let index = entity.actor.getIndex()
+		if priorityMaps[index] == null
+			priorityMaps[index] = new HashMap<unit, int>()
+		for t in targets
+			priorityMaps[index].put(t, startPriorities[t.getIndex()])
+		findTarget(index)
+		entity.actor.issueTargetOrder("attack", chosenTarget[entity.actor.getIndex()])
+		
+	function execute(Entity entity)
+		print("execute")
+		if entity.actor.getPastOrder(0).typ == ORDER_TYPE.IMMEDIATE
+			entity.actor.issueTargetOrder("attack", chosenTarget[entity.actor.getIndex()])
+		
+	function exit(Entity entity)
+	function onEvent(UnitEvent evnt, Entity entity)
+		let index = entity.actor.getIndex()
+		switch evnt
+			case DAMAGED
+				let prioAdd = (GetEventDamage() / 10 / 2).toInt()
+				let u = GetEventDamageSource()
+				priorityMaps[index].put(u, priorityMaps[index].get(u) + prioAdd)
+				findTarget(index)
+			default
+				debugPrint("unhandled event", 3)
+
+public function init_PriorityAi(boolean c)
+	if not c
+		PA_Normal.INSTANCE = new PA_Normal()

@@ -19,11 +19,13 @@ import GameConstants
 import Intermission
 import CustomExp
 import Items
-import SimpleAi
 import Vampire
 import AllwaysItemDefinitions
+import AiManager
+import PriorityAi
 
 function initResources(boolean compileTime)
+	init_PriorityAi(compileTime)
 	init_Players(compileTime)
 	init_MageHero(compileTime)
 	init_Crusader(compileTime)
@@ -38,11 +40,11 @@ function initResources(boolean compileTime)
 	init_Mammoth(compileTime)
 	init_CollisionDetection(compileTime, 16, 256)
 	
-	init_AI(compileTime)
+	init_AiManager(compileTime)
 	init_VampireBoss(compileTime)
 	if compileTime
 		init_Items(compileTime)
-	if not compileTime
+	else
 		nullTimer(() -> begin
 			init_Items(compileTime)
 			init_Intermission(compileTime)
@@ -50,8 +52,8 @@ function initResources(boolean compileTime)
 	
 
 
-boolean testing = false
-	
+boolean testing = true
+
 init
 	doAfter(0.01, () -> begin
 		initResources(false)
