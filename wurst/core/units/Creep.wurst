@@ -50,11 +50,8 @@ public class Creep extends Entity
 		creepDeath.registerUnitEvent(actor, EVENT_UNIT_DEATH)
 		sleeping = false
 		active = true
-		if PA_Normal.INSTANCE == null
-			PA_Normal.INSTANCE = new PA_Normal()
-			AiManager.registerEntity(this, PA_Normal.INSTANCE)
-		else
-			AiManager.registerEntity(this, PA_Normal.INSTANCE)
+		AiManager.registerEntity(this, PA_Normal.INSTANCE)
+		
 	ondestroy
 		AiManager.unregisterEntity(this)
 		

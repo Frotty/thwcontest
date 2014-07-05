@@ -23,16 +23,16 @@ public class PA_Normal implements State
 	static unit array chosenTarget
 	
 	static function findTarget(int index)
-		var highest = 0
+		var highest = -1
 		unit u = null
 		var count = 0
 		for t in targets
-			if priorityMaps[t.getIndex()].get(t) > highest
+			if priorityMaps[index].get(t) > highest
 				highest = priorityMaps[index].get(t)
 				u = t
 				
 			count++
-			
+		print("found target " + u.getName())
 		chosenTarget[index] = u
 	
 	function enter(Entity entity)
