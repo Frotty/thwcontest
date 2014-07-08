@@ -2,7 +2,6 @@ package TypeCasting
 import NoWurst
 import Table
 import Unit
-import UnitIndexer
 
 Table typecastdata = new Table()
 

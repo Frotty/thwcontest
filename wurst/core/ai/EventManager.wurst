@@ -1,33 +1,50 @@
 package EventManager
 import DamageDetection
-import UnitIndexer
+import Entity
+import OnUnitEnterLeave
+import DamageMod
 
 public enum UnitEvent
 	DAMAGED
+	DAMAGEINFLICTED
+	CHANGESTATE
+	
+public function getInflictedDamage() returns real
+	return getDamage()
+	
+unit temptarget = null
+public function getDamageTarget() returns unit
+	return temptarget
 
 public interface UnitEventInterface
 	function onEvent(UnitEvent evt)
 
 public class EventManager
-	static boolean array wantsEvents
 	static UnitEventInterface array objects
 	
-	static function registerUnit(unit u, UnitEventInterface onEvent)
-		let index = u.getIndex()
-		wantsEvents[index] = true
-		objects[index] = onEvent
+	static function registerUnit(Entity e, UnitEventInterface onEvent)
+		objects[e castTo int] = onEvent
+		
+	static function unregisterUnit(Entity e)
+		objects[e castTo int] = null
+		
+	static function fireEventFor(Entity e, UnitEvent evt)
+		let index = e castTo int
+		if objects[index] != null
+			objects[index].onEvent(evt)
 	
 	static function onDamageEvent() returns boolean
 		let damaged = GetTriggerUnit()
-		let index = damaged.getIndex()
-		if wantsEvents[index]
-			objects[index].onEvent(UnitEvent.DAMAGED)
+		let source = GetEventDamageSource()
+		fireEventFor(damaged.getEntity(), UnitEvent.DAMAGED)
+		temptarget = damaged
+		fireEventFor(source.getEntity(), UnitEvent.DAMAGEINFLICTED)
+		temptarget = null
 		return false
+		
+		
+	static function onCustomEvent()
 	
 init
 	addOnDamageFunc(Filter(function EventManager.onDamageEvent))
-	onDeindex(() -> begin
-		if EventManager.wantsEvents[getIndexUnit().getIndex()]
-			
-	end)
-		
+	onLeave(() -> EventManager.unregisterUnit(getEnterLeaveUnit().getEntity()))

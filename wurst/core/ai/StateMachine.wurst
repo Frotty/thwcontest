@@ -28,6 +28,7 @@ public class StateMachine implements UnitEventInterface
 		else
 			print("this.currentState == null")
 		currentState.enter(owner)
+		EventManager.registerUnit(owner, this)
 		
 	function onEvent(UnitEvent evt)
 		currentState.onEvent(evt, owner)

@@ -30,7 +30,7 @@ public abstract class Hero extends Entity
 		weapon = new WeaponItem()
 		doAfter(1., ()-> weapon.refreshWeapon(actor) )
 		onDeath.registerUnitEvent(actor, EVENT_UNIT_DEATH)
-		addPriorityAiTarget(actor, 5)
+		addPriorityAiTarget(this, 5)
 
 			
 	abstract function onCast(int spellId, int lvl)

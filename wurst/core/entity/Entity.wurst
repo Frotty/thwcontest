@@ -7,7 +7,6 @@ import GameConstants
 import GameTimer
 import MapBounds
 import NewDummyRecycler
-import UnitIndexer
 
 public function item.getEntity() returns Entity
 	return this.getUserData() castTo Entity
@@ -16,15 +15,13 @@ public function item.setEntity(Entity e)
 	this.setUserData(e castTo int)
 
 public function unit.getEntity() returns Entity
-	return Entity.entities[this.getIndex()]
+	return this.getUserData() castTo Entity
 	
 public function unit.setEntity(Entity e)
-	Entity.entities[this.getIndex()] = e
+	this.setUserData(e castTo int)
 
 public abstract class Entity
 	use LinkedListModule
-	
-	static Entity array entities
 	
 	private vec3 pos
 	private vec3 vel = vec3(0,0,0)
@@ -48,7 +45,6 @@ public abstract class Entity
 		this.pos = pos
 		this.actor = actor
 		this.owner = actor.getOwner()
-		entities[actor.getIndex()] = this
 		actor..setEntity(this)..addAbility(HEIGHT_ENABLER)..removeAbility(HEIGHT_ENABLER)
 		..setXYZReal(pos)
 		
@@ -56,7 +52,7 @@ public abstract class Entity
 		this.pos = pos
 		this.fx = fx
 		this.owner = fx.getOwner()
-		entities[fx.getDummy().getIndex()] = this
+		fx.getDummy().setEntity(this)
 		fx.setPos(pos)
 		
 	function getZ() returns real

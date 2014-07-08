@@ -1,9 +1,8 @@
 package AiManager
 import public StateMachine
 import Entity
-import UnitIndexer
 import initlater Creep
-import EventManager
+import public EventManager
 
 
 public class AiManager
@@ -12,8 +11,8 @@ public class AiManager
 	private static int count = 0
 	private static Creep currentCreep = null
 	
-	static function getFSM(int index) returns StateMachine
-		return stateMachines[index]
+	static function getFSM(Entity e) returns StateMachine
+		return stateMachines[e castTo int]
 	
 	static function registerEntity(Entity e, State currentState)
 		if currentState == null
@@ -21,12 +20,14 @@ public class AiManager
 		else
 			print("AiManager currentState != null")
 		stateMachines[e castTo int] = new StateMachine(e, currentState, currentState)
-		EventManager.registerUnit(e.actor, stateMachines[e castTo int])
+		EventManager.registerUnit(e, stateMachines[e castTo int])
 		print("SM id: " + (stateMachines[e castTo int] castTo int).toString())
 		count++
 		
 	static function unregisterEntity(Entity e)
 		destroy stateMachines[e castTo int]
+		if currentCreep == e
+			currentCreep = currentCreep.next
 		count--
 		
 	static function start()
@@ -39,15 +40,11 @@ public class AiManager
 		return 0.001 + 4. / (1 + count)
 
 	static function aiUpdate()
-		print("ai update")
 		AiManager.aiTimer.start(aiUpdatePeriod(), function aiUpdate)
 		if currentCreep == null
 			currentCreep = Creep.first
 		if currentCreep != null
-			print("update")
-			print("SM id: " + (stateMachines[currentCreep castTo int] castTo int).toString())
 			stateMachines[currentCreep castTo int].update()
-			print("update finished")
 			currentCreep = currentCreep.next
 
 public function init_AiManager(boolean c)

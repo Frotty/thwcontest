@@ -59,7 +59,7 @@ init
 		initResources(false)
 		if testing
 			let h = new Crusader(vec3(0,300,800),Player(0) )  
-			let s = new Specialist(vec3(0,100,800),Player(1) ) // Fortesting
+			let s = new Specialist(vec3(0,100,800),Player(0) ) // Fortesting
 			SetPlayerState(Player(0),PLAYER_STATE_RESOURCE_GOLD,5400)
 
 			SetHeroLevel(h.actor, 4, false)
