@@ -22,6 +22,7 @@ import Items
 import SimpleAi
 import Vampire
 import AllwaysItemDefinitions
+import PauseItemDefinitions
 
 function initResources(boolean compileTime)
 	init_Players(compileTime)
@@ -32,6 +33,7 @@ function initResources(boolean compileTime)
 	init_Picking(compileTime)
 	init_Spawner(compileTime)
 	init_AllwaysItems(compileTime)
+	init_PauseItems(compileTime)
 	init_Waves(compileTime)
 	init_Intermission(compileTime)
 	init_StunHandler(compileTime)

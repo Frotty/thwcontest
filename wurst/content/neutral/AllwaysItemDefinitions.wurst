@@ -31,9 +31,10 @@ public function init_AllwaysItems(boolean c)
 	HASTE_POTI_ABIL_1 = ABIL_ID_GEN.next()
 	HASTE_POTI_ABIL_2 = ABIL_ID_GEN.next()
 	
-	alwaysItemsIds.add(HP_POTI)
-	alwaysItemsIds.add(MANA_POTI)
-	//alwaysItemsIds.add(HASTE_POTI)
+	if c
+		alwaysItemsIds.add(HP_POTI)
+		alwaysItemsIds.add(MANA_POTI)
+		//alwaysItemsIds.add(HASTE_POTI)
 	
 	if c
 		let def = new AbilityDefinitionItemHealLesser(HP_POTI_ABIL)

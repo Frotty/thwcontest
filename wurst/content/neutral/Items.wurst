@@ -4,6 +4,7 @@ import ObjectIdGenerator
 import BonusHandler
 import Intermission
 import AllwaysItemDefinitions
+import PauseItemDefinitions
 import Players
 
 //Item classes store the level of the different properties of the item. When buying from shop, these aspects get increased.
@@ -62,8 +63,6 @@ function getDescription(int dmg, int asp, int lif) returns string
 
 public function init_Items(boolean c)
 
-	DMG_POWERUP_ID = ITEM_ID_GEN.next()
-	
 	
 	// Creating every possible combination of item types.
 	for d = 0 to DMG_MAXLVL
@@ -79,16 +78,4 @@ public function init_Items(boolean c)
 						..setCanBeDropped(false)
 						..setCanBeSoldToMerchants(false)
 						..setInterfaceIcon("ReplaceableTextures\\CommandButtons\\BTNSteelMelee.blp")
-	if c
-		let pow = new ItemDefinition(DMG_POWERUP_ID, 'texp')
-		pow..setName("Upgrade Damage")
-			..setAbilities("")
-			..setTooltipBasic("Upgrade Damage")
-			..setDescription("Increases the damage of your weapon!")
-			..setTooltipExtended("Increases the damage of your weapon!")
-			..setGoldCost(50)
-			..setButtonPositionX(2)
-			..setButtonPositionY(0)
-	addShopItem(DMG_POWERUP_ID, 2, 2, false)
-						
-							
+	
