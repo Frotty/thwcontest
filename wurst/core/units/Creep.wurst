@@ -6,8 +6,10 @@ import UnitObjEditing
 import HashMap
 import GameConstants
 import LinkedListModule
-import SimpleAi
 import Bounty
+import StateMachine
+import AiManager
+import PriorityAi
 
 public enum CreepType
 	CREEP
@@ -41,19 +43,18 @@ public class Creep extends Entity
 	vec2 target
 	int bounty = 5
 	use LinkedListModule
-	
 	construct(vec3 pos, int id, angle a, vec2 target)
 		super(pos, createUnit(CREEP_PLAYER, id, pos, a))
 		this.target = target
-		this.registerAi()
 		this.bounty = bounty
 		creepDeath.registerUnitEvent(actor, EVENT_UNIT_DEATH)
 		sleeping = false
 		active = true
+		applyPriorityAi(this)
 		
 	ondestroy
-		this.unRegisterAi()
-//		print("CREEP FOOD: " + CREEP_PLAYER.getState(PLAYER_STATE_RESOURCE_FOOD_USED).toString())
+		AiManager.unregisterEntity(this)
+		
 		
 public class CreepDefinition
 	boolean generated = false

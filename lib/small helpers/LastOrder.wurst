@@ -4,7 +4,7 @@ package LastOrder
 	Should be at least 2 */
 constant int ORDERS_TO_HOLD = 3
 
-enum ORDER_TYPE
+public enum ORDER_TYPE
 	TARGET
 	POINT
 	IMMEDIATE

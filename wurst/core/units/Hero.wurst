@@ -9,6 +9,8 @@ import public Items
 import ClosureTimers
 import ClosureEvents
 import Intermission
+import PriorityAi
+
 
 public abstract class Hero extends Entity
 	WeaponItem weapon
@@ -28,7 +30,7 @@ public abstract class Hero extends Entity
 		weapon = new WeaponItem()
 		doAfter(1., ()-> weapon.refreshWeapon(actor) )
 		onDeath.registerUnitEvent(actor, EVENT_UNIT_DEATH)
-		
+		addPriorityAiTarget(this, 5)
 
 			
 	abstract function onCast(int spellId, int lvl)

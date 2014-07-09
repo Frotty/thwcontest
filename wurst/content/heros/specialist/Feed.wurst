@@ -9,6 +9,7 @@ import DamageMod
 import ClosureTimers
 import ClosureForGroups
 import CollisionDetection
+import PriorityAi
 //import Damager
 import Terrain
 import ClosureEvents
@@ -54,6 +55,8 @@ public class FoodProjectile extends Projectile
 	
 	construct( vec3 pos, player owner, real dist, angle xyAngle, int lvl )
 		super( pos, owner, xyAngle, foodProjectile_fx )
+		CreateTrigger()..addAction(() -> print("1"))..addAction(() -> print("2"))..addAction(() -> print("3"))
+		..evaluate()
 		//Do the same as setTarget
 		setSpeed((1/friction - 1)*dist / ANIMATION_PERIOD)
 		fx.setScale(0.7)
@@ -73,16 +76,21 @@ public class FoodProjectile extends Projectile
 				fx.getDummy().removeOnHitCallback()
 		end)
 	
+	static FoodProjectile array datas
 	override function update()
 		super.update()
 		if getSpeed() < 20
 			if not arrived 
 				setSpeed(0) 
 				arrived = true
-				dummyUnit = createUnit(CREEP_PLAYER,FOOD_DUMMY_ID,getPos2(),angle(0))
-				dummyUnit..addAbility('Agho')..setUserData(this castTo int)
+				dummyUnit = actor
+				actor = createUnit(CREEP_PLAYER,FOOD_DUMMY_ID,getPos2(),angle(0))
+				actor.setUserData(this castTo int)
+				addPriorityAiTarget(this, 20)
+				actor..addAbility('Agho')
+				
 				ond = onDamage(dummyUnit, (unit damaged, unit source, real amount) -> begin
-					let fp = damaged.getUserData() castTo FoodProjectile
+					let fp = datas[damaged.getUserData()]
 					if attached
 						source.damageTarget(victim.actor, amount)
 					fp.damage -= amount
@@ -92,7 +100,7 @@ public class FoodProjectile extends Projectile
 				end)					
 				forUnitsInRange(getPos2(),getFeedRadius(lvl),(unit u) -> onInRange(u))
 				range_trigger = CreateTrigger()
-				range_trigger.registerUnitInRangeSource(dummyUnit,getFeedRadius(lvl), null)
+				range_trigger.registerUnitInRangeSource(actor,getFeedRadius(lvl), null)
 				range_trigger.addAction(function onFoodRange)
 				tt = createTTEx(getPos3() + vec3(0,0,100), damage.toString(), 10, colorA(250,80,80,210))
 		else
@@ -112,15 +120,16 @@ public class FoodProjectile extends Projectile
 		if e instanceof Creep
 			var c = e castTo Creep
 			if not (attached and c == victim)
-				c.actor.issueTargetOrder("attack",dummyUnit)
+				dummyUnit.damageTarget(c.actor, 1)
 		
 	static function onFoodRange()
 		unit source = GetTriggeringTrigger().getSource()
 		unit u = GetTriggerUnit()
-		FoodProjectile f = source.getUserData() castTo FoodProjectile
+		FoodProjectile f = source.getEntity() castTo FoodProjectile
 		f.onInRange(u)
 		
 	ondestroy
+		removePriorityAiTarget(this)
 		dummyUnit.remove()
 		range_trigger.destr()
 		tt.destr()
@@ -128,7 +137,7 @@ public class FoodProjectile extends Projectile
 	
 
 public function init_Feed(boolean compileTime)
-
+	
 	FEED_SPELL_ID = ABIL_ID_GEN.next()
 	if compileTime
 	// Generate def if compieltime
@@ -150,6 +159,7 @@ public function init_Feed(boolean compileTime)
 		..addProperty("Cooldown:", (int lvl) -> getFeedCooldown(lvl).toString())
 		..addProperty("Duration of effect:", (int lvl) -> getFeedDuration(lvl).toString())
 		..applyToDef(feed)
+		
 			
 	FOOD_DUMMY_ID = UNIT_ID_GEN.next()
 	if compileTime

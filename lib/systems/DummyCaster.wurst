@@ -1,5 +1,5 @@
 package DummyCaster
-import DummyRecycler
+import NewDummyRecycler
 import ClosureTimers
 // @credit Anitarf
 
@@ -48,10 +48,10 @@ public class DummyCaster
 	function createDummyCaster( vec2 tpos ) returns unit
 		unit dummy
 		if customSource
-			dummy = newDummy(customPos, angle(0))
+			dummy = DummyRecycler.get(customPos.toVec2(), angle(0))
 		else
 			debugPrint("no custom source", 3)
-			dummy = newDummy(tpos, angle(0))
+			dummy = DummyRecycler.get(tpos, angle(0))
 			debugPrint("new dummy " + dummy.getName(), 3)
 
 		dummy.setOwner(owner, false)
@@ -85,7 +85,7 @@ public class DummyCaster
 		delayTable.saveUnit(dummy.getHandleId(), dummy)
 		getTimer()..setData(dummy.getHandleId())..start(recycleDelay, () -> begin
 			let t = GetExpiredTimer()
-			recycleDummy(delayTable.loadUnit(t.getData()))
+			DummyRecycler.recycle(delayTable.loadUnit(t.getData()))
 			t.release()
 		end)
 		debugPrint("recycled", 3)
@@ -101,7 +101,7 @@ public class DummyCaster
 		dummy.issueTargetOrderById(orderId,target)
 		getTimer()..setData(dummy.getHandleId())..start(recycleDelay, () -> begin
 			let t = GetExpiredTimer()
-			recycleDummy(delayTable.loadUnit(t.getData()))
+			DummyRecycler.recycle(delayTable.loadUnit(t.getData()))
 			t.release()
 		end)
 		if autodestroy
@@ -117,7 +117,7 @@ public class DummyCaster
 		debugPrint("ordered Cast", 3)
 		getTimer()..setData(dummy.getHandleId())..start(recycleDelay, () -> begin
 			let t = GetExpiredTimer()
-			recycleDummy(delayTable.loadUnit(t.getData()))
+			DummyRecycler.recycle(delayTable.loadUnit(t.getData()))
 			t.release()
 		end)
 		debugPrint("recycled", 3)
@@ -136,7 +136,7 @@ public class DummyCaster
 		dummy.issueImmediateOrderById(orderId)
 		getTimer()..setData(dummy.getHandleId())..start(recycleDelay, () -> begin
 			let t = GetExpiredTimer()
-			recycleDummy(delayTable.loadUnit(t.getData()))
+			DummyRecycler.recycle(delayTable.loadUnit(t.getData()))
 			t.release()
 		end)
 		if autodestroy

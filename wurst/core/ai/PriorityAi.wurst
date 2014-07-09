@@ -1,0 +1,136 @@
+package PriorityAi
+import AiManager
+import MapStuff
+import HashMap
+import LinkedList
+import LastOrder
+
+
+// States
+public State PA_STATE_WANDER
+public State PA_STATE_ATTACK
+
+LinkedList<Entity> targets
+int array startPriorities
+
+public function applyPriorityAi(Entity e)
+	AiManager.registerEntity(e, PA_STATE_WANDER)
+	new PriorityInfo(e)
+
+public function addPriorityAiTarget(Entity target, int startPrio)
+	targets.add(target)
+	startPriorities[target castTo int] = startPrio
+
+public function removePriorityAiTarget(Entity target)	
+	targets.remove(target)
+	startPriorities[target castTo int] = 0
+	
+class PriorityInfo
+	private static PriorityInfo array infoDatas
+	private HashMap<Entity, int> priorityMap = new HashMap<Entity, int>()
+	Entity chosenTarget = null
+	Entity aiControlled
+	int laziness = 10
+	
+	construct(Entity e)
+		infoDatas[e castTo int] = this
+		aiControlled = e
+		
+	function findHighestPriorityTarget()
+		LinkedList<Entity> possibleTargets = null
+		var highest = -1
+		Entity u = null
+		for t in targets
+			if priorityMap.get(t) > highest and priorityMap == null
+				highest = priorityMap.get(t)
+				u = t
+			else if priorityMap.get(t) >= highest
+				if possibleTargets == null
+					possibleTargets = new LinkedList<Entity>()
+				possibleTargets.add(t)
+				
+		if possibleTargets == null
+			chosenTarget = u
+		else
+			chosenTarget = possibleTargets.get(GetRandomInt(0, possibleTargets.getSize()-1))
+			destroy possibleTargets
+			
+	function findNearestTarget()
+		Entity u = null
+		var dist = INT_LIMIT + 0.
+		let pos = aiControlled.getPos2()
+		for t in targets
+			let ndist = pos.distToVecSquared(t.getPos2())
+			if ndist < dist
+				dist = ndist
+				u = t
+		chosenTarget = u
+		
+	function getPriority(Entity e) returns int
+		return priorityMap.get(e)
+		
+	function getChosenTargetPriority() returns int
+		return priorityMap.get(chosenTarget)
+	
+	function attackTarget()
+		aiControlled.actor.issueTargetOrder("attack", chosenTarget.actor)
+			
+	function addPriority(Entity e, int amount)
+		if priorityMap.has(e)
+			priorityMap.put(e, priorityMap.get(e) + amount)
+		else
+			priorityMap.put(e, startPriorities[e castTo int] + amount)
+		
+	static function get(Entity e) returns PriorityInfo
+		return infoDatas[e castTo int]
+		
+	ondestroy
+		destroy priorityMap
+	
+class PA_Wander implements State
+	function enter(Entity entity)
+		entity.actor..setAnimation("birth")
+		..issuePointOrder("attack", STATUE_POS)
+	function execute(Entity entity)
+		PriorityInfo.get(entity)..findNearestTarget()
+		..attackTarget()
+	function exit(Entity entity)
+	function onEvent(UnitEvent evnt, Entity entity)
+		switch evnt
+			case DAMAGED
+				PriorityInfo.get(entity).addPriority(GetEventDamageSource().getEntity(), 2)
+				AiManager.getFSM(entity).changeState(PA_STATE_ATTACK)
+			case CHANGESTATE
+				
+			default
+	
+public class PA_Attack implements State
+
+	function enter(Entity entity)
+		PriorityInfo.get(entity)..findHighestPriorityTarget()
+		..attackTarget()
+		
+	function execute(Entity entity)
+		let info = PriorityInfo.get(entity)
+		if entity.actor.getPastOrder(0).tar != info.chosenTarget.actor
+			info.attackTarget()
+		
+	function exit(Entity entity)
+	function onEvent(UnitEvent evnt, Entity entity)
+		let info = PriorityInfo.get(entity)
+		switch evnt
+			case DAMAGED
+				let prioAdd = (GetEventDamage() / 10 / 2).toInt()
+				let damager = GetEventDamageSource().getEntity()
+				info.addPriority(damager, prioAdd)
+				if info.getPriority(damager) - info.laziness > info.getChosenTargetPriority()
+					info.chosenTarget = damager
+					info.attackTarget()
+			default
+				debugPrint("unhandled event", 3)
+
+public function init_PriorityAi(boolean c)
+	if not c
+		PA_STATE_WANDER = new PA_Wander()
+		PA_STATE_ATTACK = new PA_Attack()
+		targets = new LinkedList<Entity>()

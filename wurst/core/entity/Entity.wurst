@@ -52,7 +52,7 @@ public abstract class Entity
 		this.pos = pos
 		this.fx = fx
 		this.owner = fx.getOwner()
-		fx.getDummy()..setEntity(this)
+		fx.getDummy().setEntity(this)
 		fx.setPos(pos)
 		
 	function getZ() returns real

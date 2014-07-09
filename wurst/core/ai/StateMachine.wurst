@@ -1,0 +1,58 @@
+package StateMachine
+import public Entity
+import public EventManager
+
+public interface State
+	function enter(Entity entity)
+	function execute(Entity entity)
+	function exit(Entity entity)
+	function onEvent(UnitEvent evnt, Entity entity)
+
+public class StateMachine implements UnitEventInterface
+	private Entity owner
+	
+	private State currentState
+	private State prevState
+	private State globalState
+	
+	construct(Entity owner, State globalState, State currentState)
+		this.owner = owner
+		this.globalState = globalState
+		if currentState != null
+			print("construct currentState != null")
+		else
+			print("construct currentState == null")
+		this.currentState = currentState
+		if this.currentState != null
+			print("this.currentState != null")
+		else
+			print("this.currentState == null")
+		currentState.enter(owner)
+		EventManager.registerUnit(owner, this)
+		
+	function onEvent(UnitEvent evt)
+		currentState.onEvent(evt, owner)
+		
+	function update()
+		if globalState != null
+			globalState.execute(owner)
+		if currentState == null
+			print("StateMachine currentState null")
+		else
+			print("StateMachine currentState != null")
+		if currentState != null
+			print("execute current state not null")
+			currentState.execute(owner)
+			print("execute current state executed")
+			
+	function changeState(State newState)
+		prevState = currentState
+		currentState.exit(owner)
+		currentState = newState
+		currentState.enter(owner)
+		
+	function revertToPreviousState()
+		changeState(prevState)
+		
+	function isInState(State state) returns boolean
+		return currentState == state

@@ -79,6 +79,9 @@ public function unit.kill()
 public function unit.addAbility(int abil) returns boolean
 	return UnitAddAbility(this, abil)
 	
+public function unit.makeAbilityPermanent(int abil, boolean flag) returns boolean
+	return UnitMakeAbilityPermanent(this, flag, abil)
+	
 public function unit.removeAbility(int abil)
 	UnitRemoveAbility(this, abil)
 
