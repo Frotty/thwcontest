@@ -21,6 +21,7 @@ import CustomExp
 import Items
 import Vampire
 import AllwaysItemDefinitions
+import PauseItemDefinitions
 import AiManager
 import PriorityAi
 
@@ -34,6 +35,7 @@ function initResources(boolean compileTime)
 	init_Picking(compileTime)
 	init_Spawner(compileTime)
 	init_AllwaysItems(compileTime)
+	init_PauseItems(compileTime)
 	init_Waves(compileTime)
 	init_Intermission(compileTime)
 	init_StunHandler(compileTime)

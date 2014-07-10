@@ -1,0 +1,48 @@
+package PauseItemDefinitions
+
+import MapStuff
+import ItemObjEditing
+import UnitObjEditing
+import ObjectIds
+
+public int DMG_POWERUP_ID
+public int REQ_UNIT_ID
+
+public LinkedList<PauseItem> pauseItems = new LinkedList<PauseItem>()
+
+class PauseItem 
+	ItemDefinition ite
+	int id
+	
+	construct(int id ,ItemDefinition i)
+		ite = i
+		this.id = id
+		//ite.setRequirements(idInteger2IdString(REQ_UNIT_ID))
+		
+public function init_PauseItems(boolean c)
+	DMG_POWERUP_ID = ITEM_ID_GEN.next()
+	REQ_UNIT_ID = UNIT_ID_GEN.next()
+	if c
+		let req = new BuildingDefinition(REQ_UNIT_ID, 'nfr2')
+		req..setModelFile("dummy.mdx")
+			..setName("Wave in Progress")
+			..setNormalAbilities("Agho")
+			..setGroundTexture("")
+			..setShadowTextureBuilding("")
+			..setCollisionSize(0)
+			..setPathingMap("")
+			..setNeutralBuildingShowsMinimapIcon(false)
+			
+		let pow = new ItemDefinition(DMG_POWERUP_ID, 'texp')
+		pow..setName("Upgrade Damage")
+			..setAbilities("")
+			..setTooltipBasic("Upgrade Damage")
+			..setDescription("Increases the damage of your weapon!")
+			..setTooltipExtended("Increases the damage of your weapon!")
+			..setGoldCost(50)
+			..setButtonPositionX(2)
+			..setButtonPositionY(0)
+			..setRequirements(idInteger2IdString(REQ_UNIT_ID))
+	
+		pauseItems.add(new PauseItem(DMG_POWERUP_ID, pow))
+		//pauseItems.add(new PauseItem('phea', null))

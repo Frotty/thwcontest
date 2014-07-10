@@ -54,7 +54,7 @@ public function init_Spawner(boolean compiletime)
 		..setNormalAbilities("Avul")
 		..setTintingColorRed(150)..setTintingColorBlue(150)..setTintingColorGreen(150)
 	else
-		WEST = new Spawner(vec2(-1500,-1500),mapCenter)
-		NORTH = new Spawner(vec2(-1800,1500),mapCenter)
-		EAST = new Spawner(vec2(1700,-400),mapCenter)
+		WEST = new Spawner(vec2(-1800,-1800),mapCenter)
+		NORTH = new Spawner(vec2(-500,2400),mapCenter)
+		EAST = new Spawner(vec2(1800,-1100),mapCenter)
 		

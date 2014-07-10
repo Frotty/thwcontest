@@ -8,14 +8,16 @@ import LinkedList
 import initlater WaveManager
 import ObjectIds
 import AllwaysItemDefinitions
+import PauseItemDefinitions
 import initlater Hero
+import ItemObjEditing
 
 int SHOP_ID
 
 unit SHOP_UNIT
 timerdialog td
-LinkedList<int> pauseItemsIds = new LinkedList<int>()
 public LinkedList<Hero> fallenHeros = new LinkedList<Hero>()
+
 
 public function startIntermission(real duration, string text)
 	let fx = new Fx(STATUE_POS.withZ(300), angle(0))
@@ -38,25 +40,15 @@ public function startIntermission(real duration, string text)
 	end)
 	printTimed("|cff086BAD>> |cffFFD64A" + text + "|r", duration-4)
 	printTimed("            |cffFFD64AYou can now regenerate and buy permanent items from the statue.", duration-4)
-	SHOP_UNIT..addAbility('ACnr')..addAbility('ANre')
 	
-	for i in pauseItemsIds
-		AddItemToStock(SHOP_UNIT, i, 1, 2)
+	//let requnit = createUnit(DUMMY_PLAYER,REQ_UNIT_ID,vec3(0,0,0),angle(0))
+	SHOP_UNIT..addAbility('ACnr')..addAbility('ANre')
 		
 	doAfter(duration, () -> begin
-		for i in pauseItemsIds
-			RemoveItemFromStock(SHOP_UNIT, i)
+		//requnit.kill()
 		SHOP_UNIT..removeAbility('ACnr')..removeAbility('ANre')
 		WaveManager.startNextWave()
 	end)
-	
-	
-public function addShopItem(int id, int currentStack, int maxStack, boolean always)
-	if always
-		//AddItemToStock(SHOP_UNIT, id, currentStack, maxStack)
-	else
-		pauseItemsIds.add(id)
-	
 	
 public function init_Intermission(boolean c)
 	SHOP_ID = UNIT_ID_GEN.next()
@@ -67,8 +59,12 @@ public function init_Intermission(boolean c)
 		var s = ""
 		for a in alwaysItemsIds // In package AlwaysItemDefinitions
 			s = s + idInteger2IdString(a) + ","
+		/*for p in pauseItems
+			s = s + idInteger2IdString(p.id) + ","
+		*/
 		s = s.substring(0, s.length()-1)
-		def.setItemsSold(s)
+		def.setItemsMade(s)
+		
 	else
 		SHOP_UNIT = createUnit(DUMMY_PLAYER, SHOP_ID, STATUE_POS, angle(0))
 	
