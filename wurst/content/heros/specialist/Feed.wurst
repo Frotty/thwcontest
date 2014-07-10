@@ -86,7 +86,7 @@ public class FoodProjectile extends Projectile
 				dummyUnit = actor
 				actor = createUnit(CREEP_PLAYER,FOOD_DUMMY_ID,getPos2(),angle(0))
 				actor.setUserData(this castTo int)
-				addPriorityAiTarget(this, 20)
+				addPriorityAiTarget(this, 40)
 				actor..addAbility('Agho')
 				
 				ond = onDamage(dummyUnit, (unit damaged, unit source, real amount) -> begin
@@ -120,7 +120,7 @@ public class FoodProjectile extends Projectile
 		if e instanceof Creep
 			var c = e castTo Creep
 			if not (attached and c == victim)
-				dummyUnit.damageTarget(c.actor, 1)
+				EventManager.fireEventFor(c, UnitEvent.CHANGESTATE, PA_STATE_ATTACK)
 		
 	static function onFoodRange()
 		unit source = GetTriggeringTrigger().getSource()

@@ -10,6 +10,7 @@ import Bounty
 import StateMachine
 import AiManager
 import PriorityAi
+import OnUnitEnterLeave
 
 public enum CreepType
 	CREEP
@@ -36,12 +37,14 @@ init
 		for i = 0 to playerNumber-1
 			Player(i).addGold((creep.bounty) div allPlayers.getSize())
 			showBountyTextTag((creep.bounty) div allPlayers.getSize(), creep.actor, Player(i))
+		creep.dead = true
 		destroy creep
 	end)
-
+	
 public class Creep extends Entity
 	vec2 target
 	int bounty = 5
+	boolean dead = false
 	use LinkedListModule
 	construct(vec3 pos, int id, angle a, vec2 target)
 		super(pos, createUnit(CREEP_PLAYER, id, pos, a))

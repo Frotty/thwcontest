@@ -31,7 +31,10 @@ public class StateMachine implements UnitEventInterface
 		EventManager.registerUnit(owner, this)
 		
 	function onEvent(UnitEvent evt)
-		currentState.onEvent(evt, owner)
+		if evt == UnitEvent.CHANGESTATE
+			changeState(EventManager.getNewState())
+		else
+			currentState.onEvent(evt, owner)
 		
 	function update()
 		if globalState != null

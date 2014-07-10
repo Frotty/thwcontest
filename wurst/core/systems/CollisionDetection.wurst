@@ -3,42 +3,43 @@ import AbilityObjEditing
 import MapBounds
 import HashMap
 import ObjectIdGenerator
+import DamageDetection
 
 int MAX_COLLISION_SIZE
 int MIN_COLLISION_SIZE
 int array fastIds
 int array slowIds
 
-HashMap<unit, CollisionCallback> callbackMap = new HashMap<unit, CollisionCallback>()
+CollisionCallback array callbacks
 
 public abstract class CollisionCallback
+	int id = 0
 	abstract function run(unit hit, unit hitter)
 	
 public function unit.registerOnHitCallback(CollisionCallback cc)
-	callbackMap.put(this, cc)
+	callbacks[this.getUserData()] = cc
 	
 public function unit.registerOnHitCallback(int radius, boolean fast, CollisionCallback cc )
 	if radius < MIN_COLLISION_SIZE or radius > MAX_COLLISION_SIZE
 		error("Radius out of Bounds")
-	callbackMap.put(this, cc)
 	var lvl = radius mod 4
 	if lvl == 0
 		lvl = 4
 	if fast
 		this..addAbility(fastIds[radius])..setAbilityLevel(fastIds[radius], lvl)
+		cc.id = fastIds[radius]
 	else
 		this..addAbility(slowIds[radius])..setAbilityLevel(slowIds[radius], lvl)
+		cc.id = slowIds[radius]
+	callbacks[this.getUserData()] = cc
 	
 public function unit.removeOnHitCallback()
-	destroy callbackMap.get(this)
-	callbackMap.put(this, null)
+	let id = this.getUserData()
+	if callbacks[id] != null
+		this.removeAbility(callbacks[id].id)
+		destroy callbacks[id]
+		callbacks[id] = null
 
-
-trigger enterRect = CreateTrigger()
-trigger damageTrig = CreateTrigger()
-
-function unit.registerDamage()
-	damageTrig.registerUnitEvent(this, EVENT_UNIT_DAMAGED)
 
 public function init_CollisionDetection(boolean c, int minCollisionSize, int maxCollisionSize)
 	MAX_COLLISION_SIZE = maxCollisionSize
@@ -75,18 +76,17 @@ public function init_CollisionDetection(boolean c, int minCollisionSize, int max
 		i += 3
 			
 	if not c
-		damageTrig.addAction(() -> begin
+		addOnDamageFunc(Filter(() -> begin
 			let u = GetTriggerUnit()
 			if u.hasAbility('Bpxf')
 				u.removeAbility('Bpxf')
-				var cc = callbackMap.get(u)
+				var cc = callbacks[u.getUserData()]
 				let u2 = GetEventDamageSource()
 				if cc != null
 					cc.run(u, u2)
-				cc = callbackMap.get(u2)
+				cc = callbacks[u2.getUserData()]
 				if cc != null
 					cc.run(u, u2)
 					
-		end)
-		enterRect.registerEnterRegion(mapRegion, Filter(() -> GetFilterUnit().registerDamage()))
+		end))
 		

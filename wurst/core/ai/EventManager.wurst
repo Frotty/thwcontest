@@ -3,6 +3,8 @@ import DamageDetection
 import Entity
 import OnUnitEnterLeave
 import DamageMod
+import RegisterEvents
+import initlater AiManager
 
 public enum UnitEvent
 	DAMAGED
@@ -21,6 +23,10 @@ public interface UnitEventInterface
 
 public class EventManager
 	static UnitEventInterface array objects
+	private static State temp_State = null
+	
+	static function getNewState() returns State
+		return temp_State
 	
 	static function registerUnit(Entity e, UnitEventInterface onEvent)
 		objects[e castTo int] = onEvent
@@ -32,7 +38,14 @@ public class EventManager
 		let index = e castTo int
 		if objects[index] != null
 			objects[index].onEvent(evt)
-	
+		
+	static function fireEventFor(Entity e, UnitEvent evt, State state)
+		temp_State = state
+		let index = e castTo int
+		if objects[index] != null
+			objects[index].onEvent(evt)
+		temp_State = null
+		
 	static function onDamageEvent() returns boolean
 		let damaged = GetTriggerUnit()
 		let source = GetEventDamageSource()
@@ -47,4 +60,4 @@ public class EventManager
 	
 init
 	addOnDamageFunc(Filter(function EventManager.onDamageEvent))
-	onLeave(() -> EventManager.unregisterUnit(getEnterLeaveUnit().getEntity()))
+	registerPlayerUnitEvent(EVENT_PLAYER_UNIT_DEATH, () -> EventManager.unregisterUnit(GetDyingUnit().getEntity()))

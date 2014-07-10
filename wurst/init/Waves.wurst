@@ -25,7 +25,7 @@ public function wave_1() returns WavePool
 	// Create a CreepDefinition. Use a distinctive Name here for later copies
 	var def = new CreepDefinition("Lesser Zombie")
 	// Set Values..
-	def.hp = 50
+	def.hp = 95
 	def.modelPath = "units\\creeps\\Zombie\\Zombie.mdl"
 	def.scale = 0.9
 	def.collisionSize = 8
@@ -53,7 +53,7 @@ public function wave_2() returns WavePool
 	// This still creates a new Object (as needed by the system)
 	// But reduces codeLength and copy-paste work (readability too)
 	var zom =new CreepDefinition("Zombie")
-	zom.hp = 65
+	zom.hp = 155
 	zom.modelPath = "units\\creeps\\Zombie\\Zombie.mdl"
 	zom.collisionSize = 12
 	zom.damage = 10

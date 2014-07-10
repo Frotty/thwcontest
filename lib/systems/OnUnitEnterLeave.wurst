@@ -7,6 +7,7 @@ import Player
 import TempGroups
 import PrintingHelper
 import AbilityObjEditing
+import ObjectIds
 import initlater RegisterEvents
 
 constant eventTrigger = CreateTrigger()
@@ -39,13 +40,15 @@ init
 			eventTrigger.execute()
 			tempUnit = null
 	end)
+	ABILITY_ID = '!e@$'
 	for i = 0 to bj_MAX_PLAYER_SLOTS-1
 		players[i].setAbilityAvailable(ABILITY_ID, false)
+		print("regged " + idInteger2IdString(ABILITY_ID))
     
 	GroupEnumUnitsInRect(ENUM_GROUP, mapRect, Filter(() -> enter()))
     
 
-constant ABILITY_ID = '!e@$'
+int ABILITY_ID = '!e@$'
 
 @compiletime function generateAbility()
 	new AbilityDefinitionDefend(ABILITY_ID)

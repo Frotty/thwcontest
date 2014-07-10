@@ -1,5 +1,5 @@
 package PriorityAi
-import AiManager
+import public AiManager
 import MapStuff
 import HashMap
 import LinkedList
@@ -100,8 +100,9 @@ class PA_Wander implements State
 			case DAMAGED
 				PriorityInfo.get(entity).addPriority(GetEventDamageSource().getEntity(), 2)
 				AiManager.getFSM(entity).changeState(PA_STATE_ATTACK)
-			case CHANGESTATE
-				
+			case DAMAGEINFLICTED
+				PriorityInfo.get(entity).addPriority(getDamageTarget().getEntity(), 2)
+				AiManager.getFSM(entity).changeState(PA_STATE_ATTACK)
 			default
 	
 public class PA_Attack implements State
@@ -112,7 +113,7 @@ public class PA_Attack implements State
 		
 	function execute(Entity entity)
 		let info = PriorityInfo.get(entity)
-		if entity.actor.getPastOrder(0).tar != info.chosenTarget.actor
+		if entity.actor.getPastOrders().get(0).tar != info.chosenTarget.actor
 			info.attackTarget()
 		
 	function exit(Entity entity)

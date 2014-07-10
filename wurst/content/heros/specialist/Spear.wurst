@@ -66,13 +66,14 @@ public class Spear extends Projectile
 							break
 					if not affected
 						var c = hit.getEntity() castTo Creep
-						fx.getDummy().damageTarget(hit, getSpearDamage(lvl))
 						// Todo MASS handling
 						if targets.getSize() < getSpearTargetCount(lvl)
 							//If everything fine, then add.
-							targets.add(new SpearCreep(c, c.getPos2()-getPos2()))
+							targets.add(new SpearCreep(c, c.getPos2()))
 							c.active = false
 							c.actor..setTurnSpeed(0)..setPropWindow(0)
+							
+						fx.getDummy().damageTarget(hit, getSpearDamage(lvl))
 		end)
 		
 		
