@@ -153,6 +153,9 @@ public abstract class Entity
 		if not sleeping
 			physicsUpdate()
 			
+		if actor != null and pos.z < WATER_HEIGHT
+			actor.kill()
+			
 	private function updatePos()
 		if lastPosChange < currentTime
 			lastPosChange = currentTime

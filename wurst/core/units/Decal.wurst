@@ -1,0 +1,53 @@
+package Decal
+import LinkedListModule
+import Entity
+import MapStuff
+import GameTimer
+
+constant DECAL_DELAY = 4.
+
+public function convertEntityToDecal(Entity e)
+	new Decal(e.actor, e.getVel(), true)
+	destroy e
+
+public class Decal
+	use LinkedListModule
+	vec3 pos
+	vec3 vel
+	boolean gravityA
+	unit actor
+	real timestamp
+	
+	static real curTime
+	
+	construct(unit u, vec3 initialVel, boolean gravity)
+		actor = u
+		pos = u.getPos3()
+		this.gravityA = gravity
+		vel = initialVel
+		timestamp = curTime + DECAL_DELAY
+		
+		
+	function update()
+		if gravityA
+			vel += gravity
+		vel *= 0.99
+		pos += vel
+		actor.setXYZReal(pos)
+		if curTime >= timestamp 
+			destroy this
+			
+	ondestroy
+		actor.remove()
+	
+
+	static function updateDecals()
+		var d = Decal.first
+		Decal.curTime = getElapsedGameTime()
+		while d != null
+			d.update()
+			d = d.next
+	
+public function initDecals(boolean c)
+	if not c
+		CreateTimer().startPeriodic(ANIMATION_PERIOD, function Decal.updateDecals)

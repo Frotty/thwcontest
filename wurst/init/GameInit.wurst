@@ -24,6 +24,7 @@ import AllwaysItemDefinitions
 import PauseItemDefinitions
 import AiManager
 import PriorityAi
+import Decal
 
 function initResources(boolean compileTime)
 	init_PriorityAi(compileTime)
@@ -41,7 +42,7 @@ function initResources(boolean compileTime)
 	init_StunHandler(compileTime)
 	init_Mammoth(compileTime)
 	init_CollisionDetection(compileTime, 16, 256)
-	
+	initDecals(compileTime)
 	init_AiManager(compileTime)
 	init_VampireBoss(compileTime)
 	if compileTime
