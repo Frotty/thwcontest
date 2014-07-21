@@ -11,6 +11,7 @@ import StateMachine
 import AiManager
 import PriorityAi
 import OnUnitEnterLeave
+import Decal
 
 public enum CreepType
 	CREEP
@@ -37,8 +38,8 @@ init
 		for i = 0 to playerNumber-1
 			Player(i).addGold((creep.bounty) div allPlayers.getSize())
 			showBountyTextTag((creep.bounty) div allPlayers.getSize(), creep.actor, Player(i))
-		creep.dead = true
-		destroy creep
+		convertEntityToDecal(creep)
+		
 	end)
 	
 public class Creep extends Entity
