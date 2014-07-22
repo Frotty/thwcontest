@@ -29,7 +29,7 @@ function enter()
 	tempUnit = null
 	
 init
-	CreateTrigger()..registerEnterRegion(mapRegion, null)
+	CreateTrigger()..registerEnterRegion(boundRegion, null)
 	..addCondition(Condition(() -> enter()))
 	
 	registerPlayerUnitEvent(EVENT_PLAYER_UNIT_ISSUED_ORDER, () -> begin
@@ -45,7 +45,7 @@ init
 		players[i].setAbilityAvailable(ABILITY_ID, false)
 		print("regged " + idInteger2IdString(ABILITY_ID))
     
-	GroupEnumUnitsInRect(ENUM_GROUP, mapRect, Filter(() -> enter()))
+	GroupEnumUnitsInRect(ENUM_GROUP, boundRect, Filter(() -> enter()))
     
 
 int ABILITY_ID = '!e@$'
@@ -53,4 +53,5 @@ int ABILITY_ID = '!e@$'
 @compiletime function generateAbility()
 	new AbilityDefinitionDefend(ABILITY_ID)
 	..setName("Deindex Detect")..setEditorSuffix("(Unit Indexer)")
-	..setArtCaster("")..setIconNormal("")..setRace("0")
+	..setArtCaster("")..setIconNormal("")..setRace(Race.Unknown)
+	

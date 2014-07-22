@@ -8,8 +8,6 @@ import public ChannelAbilityPreset
 @configurable constant NORMAL_ACTIVE_PATTERN = "$name$ - $lvl$ [|cffFFCC00$hotkey$|r]"
 @configurable constant NORMAL_PASSIVE_PATTERN = "$name$ - $lvl$"
 
-public abstract class LevelClosure
-	abstract function run(int lvl) returns string
 
 public class AbilityTooltipGenerator
 	private string name 		= ""
@@ -71,7 +69,7 @@ public class AbilityTooltipGenerator
 			
 		def..setTooltipLearn(generateTooltipLearn())
 		..setTooltipLearnExtended(generateTooltipExtended(-1, true))
-		..setHotkey(hotkey)..setLevels(maxLevel)..setName(name)
+		..presetHotkey(hotkey)..setLevels(maxLevel)..setName(name)
 	
 	private function generateTooltipLearn() returns string
 		return replaceRefs(LEARN_PATTERN)

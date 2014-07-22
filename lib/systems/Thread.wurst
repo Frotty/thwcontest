@@ -30,11 +30,10 @@ public class Thread
 	
 	construct()
 		if (null == threadSyncer)
-			threadSyncer = CreateUnit(Player(0), UNIT_SYNC_ID, mapMaxX, mapMaxY, 0)
-			threadSyncer.setUserData(this castTo int)
-			threadSyncer.pause()
-			threadSyncer.setX(mapMaxX)
-			threadSyncer.setY(mapMaxY)
+			threadSyncer = createUnit(Player(0), UNIT_SYNC_ID, boundMax, angle(0))
+			..setUserData(this castTo int)
+			..pause()
+			..setXY(boundMax)
 
 	/** call this function to sync the thread for the local player*/
 	function sync()

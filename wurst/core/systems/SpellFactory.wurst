@@ -1,0 +1,110 @@
+package SpellFactory
+import Entity
+import Creep
+import StunHandler
+import LinkedList
+
+public class SpellFactory
+	static LinkedList<Entity> targets
+	
+	static function clear()
+		destroy targets
+		
+	static function addTargetsInRectangle(vec2 pos, real height, real width)
+		if targets == null
+			targets = new LinkedList<Entity>()
+		var creep = Creep.first
+		while creep != null
+			let cpos = creep.getPos2()
+			if cpos.x > pos.x - width/2 and cpos.x < pos.x + width/2 and cpos.y > pos.y - height/2 and cpos.y < pos.y + height/2 
+				targets.add(creep)
+			creep = creep.next
+	
+	static function addTargetsInCone(vec2 pos, real range, angle coneAngle, real coneWidth)
+		if targets == null
+			targets = new LinkedList<Entity>()
+		let rangesq = range * range
+		var creep = Creep.first
+		while creep != null
+			let deg = creep.getPos2().angleTo(pos).degrees()
+			if creep.getPos2().distToVecSquared(pos) < rangesq and deg > coneAngle.degrees()-coneWidth/2 and deg < coneAngle.degrees()+coneWidth/2
+				targets.add(creep)
+			creep = creep.next
+	
+	static function addTargetsInCircle(vec2 pos, real range)
+		if targets == null
+			targets = new LinkedList<Entity>()
+		let rangesq = range * range
+		var creep = Creep.first
+		while creep != null
+			if creep.getPos2().distToVecSquared(pos) < rangesq
+				targets.add(creep)
+			creep = creep.next
+	
+	static function addTarget(Entity target)
+		if targets == null
+			targets = new LinkedList<Entity>()
+		targets.add(target)
+
+	static function knockbackTarget(Entity target, vec3 vel)
+		target.applyVel(vel)
+			
+	static function knockbackTarget(Entity target, angle facing, real xypower, real zpower)
+		knockbackTarget(target, vec3(facing.cos()*xypower, facing.sin()*xypower, zpower))
+		
+	static function knockbackTarget(Entity target, angle facing, real xypower)
+		knockbackTarget(target, facing, xypower, 0)
+		
+	static function knockbackTargetFromPosition(Entity target, vec2 position, real xypower, real zpower)
+		knockbackTarget(target, position.angleTo(target.getPos2()), xypower, zpower)
+		
+	static function knockbackTargetFromPosition(Entity target, vec2 position, real xypower)
+		knockbackTargetFromPosition(target, position, xypower, 0)
+		
+	static function knockbackNearCreepsOutward(vec2 position, real range, real power)
+		let rangesq = range * range
+		var creep = Creep.first
+		while creep != null
+			if creep.getPos2().distToVecSquared(position) < rangesq
+				knockbackTargetFromPosition(creep, position, power)
+			creep = creep.next
+			
+	static function knockbackNearCreepsDirection(vec2 position, real range, angle direction, real power)
+		let rangesq = range * range
+		var creep = Creep.first
+		while creep != null
+			if creep.getPos2().distToVecSquared(position) < rangesq
+				knockbackTarget(creep, direction, power)
+			creep = creep.next
+			
+	static function stunTarget(Entity target, boolean stacking, real duration, player stunner)
+		target.actor.applyStun(stacking, duration, stunner)
+			
+	static function stunTarget(Entity target, real duration)
+		stunTarget(target, false, duration, DUMMY_HOSTILE_PLAYER)
+		
+	static function stunTarget(Entity target, boolean stacking, real duration)
+		stunTarget(target, stacking, duration, DUMMY_HOSTILE_PLAYER)
+			
+	static function stunTarget(Entity target, real duration, player stunner)
+		stunTarget(target, false, duration, stunner)
+		
+	static function stunNearCreeps(vec2 position, real range, boolean stacking, real duration, player stunner)
+		let rangesq = range * range
+		var creep = Creep.first
+		while creep != null
+			if creep.getPos2().distToVecSquared(position) < rangesq
+				stunTarget(creep, stacking, duration, stunner)
+			creep = creep.next
+			
+	static function stunNearCreeps(vec2 position, real range, boolean stacking, real duration)
+		stunNearCreeps(position, range, stacking, duration, DUMMY_HOSTILE_PLAYER)
+		
+	static function stunNearCreeps(vec2 position, real range, real duration)
+		stunNearCreeps(position, range, false, duration, DUMMY_HOSTILE_PLAYER)
+		
+	static function stunNearCreeps(vec2 position, real range, real duration, player stunner)
+		stunNearCreeps(position, range, false, duration, stunner)
+		
+	
+	
