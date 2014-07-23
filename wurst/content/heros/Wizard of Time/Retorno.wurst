@@ -1,0 +1,69 @@
+package Retorno
+import Hero
+import Creep
+import AbilityTooltipGenerator
+import MapStuff
+import ClosureEvents
+import ClosureTimers
+import DamageMod
+
+public int RETORNO_SPELL_ID
+
+constant RETORNO_MAXLVL = 4
+constant RETORNO_NAME = "Retorno"
+constant RETORNO_HOTKEY = "W"
+constant RETORNO_DURATION = 4.
+
+public function startRetorno(Hero caster, Entity target)
+	new RetornoShield(target, getRetornoDamage(caster.actor.getAbilityLevel(RETORNO_SPELL_ID)))
+	
+function getRetornoDamage(int lvl) returns real
+	return 50 + 20. * (lvl * lvl)
+	
+class RetornoShield extends Entity
+	effect eff
+	real maxDamage
+	real currentDamage = 0
+	Hero caster
+	Entity target
+	OnDamage ond
+	vec2 startPos
+	real remainingDuration = RETORNO_DURATION
+	
+	construct(Entity target, real damage)
+		super(target.getPos3(), target.owner)
+		eff = target.actor.addEffect("", "chest")
+		this.caster = caster
+		this.target = target
+		maxDamage = damage
+		startPos = target.getPos2()
+		ond = onDamage(target.actor, (unit damaged, unit source, real amount) -> begin
+			currentDamage += amount
+			modifyDamage(0)
+			if currentDamage >= maxDamage
+				destroy this
+		end)
+		
+	override function update()
+		remainingDuration -= ANIMATION_PERIOD
+		if remainingDuration <= 0
+			destroy this
+
+		
+	ondestroy
+		eff.destr()
+		destroy ond
+		if target.owner.isEnemyOf(caster.owner)
+			caster.actor.damageTarget(target.actor, maxDamage * 2)
+		else
+			target.actor.setHP(target.actor.getHP() + maxDamage * 2)
+
+public function init_Retorno(boolean c)
+	RETORNO_SPELL_ID = ABIL_ID_GEN.next()
+	if c
+		let def = new ChannelAbilityPreset(RETORNO_SPELL_ID, RETORNO_MAXLVL)
+		..removeChannelProperties(true)..setOption(Option.VISIBLE, true)
+		
+		new AbilityTooltipGenerator(RETORNO_NAME, RETORNO_HOTKEY, Targettype.UTARGET, RETORNO_MAXLVL, "")
+		..addProperty("Damage Treshold:", (int lvl) -> getRetornoDamage(lvl).toString())
+		..applyToDef(def)

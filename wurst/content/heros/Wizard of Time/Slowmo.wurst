@@ -1,0 +1,34 @@
+package Slowmo
+import MapStuff
+import Hero
+import AbilityTooltipGenerator
+
+public int SLOWMO_SPELL_ID
+
+constant SLOWMO_MAX_LVL = 4
+constant SLOWMO_NAME = "Slowmo"
+constant SLOWMO_HOTKEY = "R"
+
+function getSlowmoDuration(int lvl) returns real
+	return 4. + lvl
+
+public function initiateSlowmo(Hero caster)
+	let lvl = getSlowmoDuration(caster.actor.getAbilityLevel(SLOWMO_SPELL_ID))
+	print("Started Slowmo")
+	Entity.addOnCostructEvent((Entity e) -> begin
+		e.setSpeedFactor(0.1)
+	end)
+
+
+public function init_Slowmo(boolean c)
+	SLOWMO_SPELL_ID = ABIL_ID_GEN.next()
+	
+	if c
+		let def = new ChannelAbilityPreset(SLOWMO_SPELL_ID, SLOWMO_MAX_LVL)
+		..removeChannelProperties(true)..setOption(Option.VISIBLE, true)
+		
+		new AbilityTooltipGenerator(SLOWMO_NAME, SLOWMO_HOTKEY, Targettype.NOTARGET, SLOWMO_MAX_LVL, "")
+		..addProperty("Duration:", (int lvl) -> getSlowmoDuration(lvl).toString())
+		..applyToDef(def)
+		
+	
