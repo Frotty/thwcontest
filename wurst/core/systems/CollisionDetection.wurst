@@ -54,7 +54,7 @@ public function init_CollisionDetection(boolean c, int minCollisionSize, int max
 		fastIds[i+2] = fastIds[i]
 		fastIds[i+3] = fastIds[i]
 		if c
-			var def = new AbilityDefinitionPhoenixFire(fastIds[i])
+			var def = new AbilityDefinitionPhoenixFire(fastIds[i])..setLevels(4)
 			..setMissileArt("")..setMissileSpeed(0)..setEditorSuffix("(Collision Detection)")
 			for j = 1 to 4
 				def..setAreaofEffect(j, i+j * 1.)

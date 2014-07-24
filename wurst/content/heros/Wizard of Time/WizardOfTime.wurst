@@ -1,0 +1,54 @@
+package WizardOfTime
+import Hero
+import ClosureTimers
+import SoundHelper
+import Slowmo
+import Retorno
+
+int WIZARD_ID
+
+public class Wizard extends Hero
+	
+	construct(vec3 pos, player owner )
+		super(pos, owner, WIZARD_ID)
+
+	override function onCast(int spellId, int lvl)
+	
+	override function onUnitCast(int spellId, unit target, int lvl)
+		switch spellId
+			case RETORNO_SPELL_ID
+				startRetorno(this, target.getEntity())	
+			case SLOWMO_SPELL_ID
+				initiateSlowmo(this)
+				
+	override function onPointCast(int spellId, vec2 target, int lvl)
+		switch spellId
+			case EXPLOSIVES_SPELL_ID
+				createXplosive(target, this, lvl)
+			case MOLOTOV_SPELL_ID
+				new Molotov(getPos3() + vec3(0,0,50), target, this, lvl)
+			
+	
+public function init_Technician(boolean compiletime)
+	WIZARD_ID = HERO_ID_GEN.next()
+	
+	init_Slowmo(compiletime)
+	init_Retorno(compiletime)
+	init_XBurn(compiletime)
+	init_Napalm(compiletime)
+	if compiletime
+		// Generate def if compieltime
+
+		
+		/*let adef = new AbilityDefinitionWarStompcreep(DUMBACKOFF_SPELL_ID)
+		adef..setCooldown(1, 0)..setManaCost(1, 0) //Missing presets ehre 
+		..setLevels(1)..setAreaofEffect(1, 300) // Done
+		*/
+		let preset = new HeroPreset(WIZARD_ID, 'nchp', "Wizard of Time")
+		preset..addProperName("Ark")
+			..addHeroAbility(SLOWMO_SPELL_ID)
+			..addHeroAbility(RETORNO_SPELL_ID)
+			..addHeroAbility(MOLOTOV_SPELL_ID)
+			..addHeroAbility(XBURN_SPELL_ID)
+		// Build at the end
+			..buildHero()

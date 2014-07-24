@@ -176,11 +176,11 @@ public class Fx
 		dummy.setFlyHeight(z, 0.)
 		
 	/** Set the position to the given xy vector tuple */
-	function setPos(vec2 pos)
+	function setXY(vec2 pos)
 		dummy.setXY(pos)
 	
 	/** Set the position to the given xyz vector tuple */
-	function setPos(vec3 pos)
+	function setXYZ(vec3 pos)
 		dummy.setXY(pos.x, pos.y)
 		setZ(pos.z-getTerrainZ(pos.x, pos.y))
 		

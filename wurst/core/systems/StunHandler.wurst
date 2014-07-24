@@ -15,9 +15,9 @@ LinkedList<unit> stunnedUnits = new LinkedList<unit>()
 timer checkTimer
 
 
-public function unit.applyStun(boolean stacking, real amount, player damager)
+public function unit.applyStun(boolean stacking, real amount, player stunner)
 	if stunTimes[this.getEntity() castTo int] <= 0
-		InstantDummyCaster.castTarget(damager, SPELL_ID, 1, "firebolt", this)
+		InstantDummyCaster.castTarget(stunner, SPELL_ID, 1, "firebolt", this)
 		stunnedUnits.add(this)
 		if checkTimer == null
 			checkTimer = getTimer()

@@ -45,7 +45,7 @@ function swap()
 		DisableTrigger(current)
 
 	
-	GroupEnumUnitsInRect(ENUM_GROUP, mapRect, Filter(() -> GetFilterUnit().detectAddFilter()))
+	GroupEnumUnitsInRect(ENUM_GROUP, boundRect, Filter(() -> GetFilterUnit().detectAddFilter()))
 	
 	for i = 0 to funcNext-1
 		current.addCondition(func[i])
@@ -56,6 +56,6 @@ init
 	for i = 0 to funcNext-1
 		current.addCondition(func[i])
 	onEnter(() -> getEnterLeaveUnit().detectAddFilter())
-	GroupEnumUnitsInRect(ENUM_GROUP, mapRect, Filter(() -> GetFilterUnit().detectAddFilter()))
+	GroupEnumUnitsInRect(ENUM_GROUP, boundRect, Filter(() -> GetFilterUnit().detectAddFilter()))
 	CreateTimer().startPeriodic(SWAP_TIMEOUT, function swap)
 
