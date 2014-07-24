@@ -1,9 +1,11 @@
 package ModelPaths
 import LinkedList
-class StringWarp
+
+class StringWrap
 	string s
 	construct(string s)
 		this.s = s
+
 LinkedList<StringWrap> human = new LinkedList<StringWrap>()
 LinkedList<StringWrap> humanHero = new LinkedList<StringWrap>()
 LinkedList<StringWrap> orc = new LinkedList<StringWrap>()
@@ -16,6 +18,7 @@ LinkedList<StringWrap> nightelf = new LinkedList<StringWrap>()
 LinkedList<StringWrap> nightelfHero = new LinkedList<StringWrap>()
 LinkedList<StringWrap> demon = new LinkedList<StringWrap>()
 LinkedList<StringWrap> demonHero = new LinkedList<StringWrap>()
+
 public function init_ModelPaths(bool compTime)
 	if compTime
 		human.add(new StringWrap("Units\\Human\\Arthas\\Arthas.mdx"))
