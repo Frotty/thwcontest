@@ -51,7 +51,7 @@ public class AbilityTooltipGenerator
 		values[titleCount] = fixValue(value)
 		titleCount++
 		
-	function addProperty(string title, LevelClosure lc)
+	function addProperty(string title, StringLevelClosure lc)
 		if titleCount >= MAX_TITLES
 			error("Maximum titles reached")
 		titles[titleCount] = TITLE_COLOR + title + "|r "

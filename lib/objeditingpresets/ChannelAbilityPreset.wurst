@@ -54,6 +54,8 @@ public class ChannelAbilityPreset extends AbilityDefinitionIllidanChannel
 		this.lvls = lvls
 		presetBaseOrderID((int lvl) -> odf.getOrderString(true))
 		
+	function removeChannelProperties(boolean removeVisuals)
+		removeChannelProperties(removeVisuals, true)
 		
 	function removeChannelProperties(boolean removeVisuals, boolean makeVisible)
 		presetDisableOtherAbilities((int lvl) -> false)

@@ -139,12 +139,12 @@ public function init_SafeGuard(boolean compileTime)
 	if compileTime
 		var safeguard = new ChannelAbilityPreset(SAFEGUARD_SPELL_ID, 4)
 		// Set Attributes
-		safeguard..removeChannelProperties(true)..setName("Safeguard")
+		safeguard..removeChannelProperties(true, true)..setName("Safeguard")
 			..setButtonPositionNormalX(2)..setButtonPositionNormalY(2)
 			..setButtonPositionResearchX(2)..setButtonPositionResearchY(0)
-			..setIcon("BTNSpell_Holy_HolyNova")..setOption(Option.VISIBLE, true)
-			..setCastRange(1,400)..setTargetType(Targettype.UTARGET)
-			..setTargetsAllowed(1,"friend")..setHotkey(SAFEGUARD_HOTKEY)
+			..presetIcon("BTNSpell_Holy_HolyNova")
+			..setCastRange(1,400)..presetTargetTypes(Targettype.UTARGET)
+			..setTargetsAllowed(1,"friend")..presetHotkey(SAFEGUARD_HOTKEY)
 		for i = 1 to 4
 			safeguard..setManaCost(i, getSafeGuardManaCost(i))
 			..setCooldown(i, getSafeGuardCooldown(i))

@@ -29,16 +29,16 @@ public class Spawner
 	function spawnCreep(CreepDefinition def)
 		switch def.ctype
 			case CREEP
-				var c = new Creep(pos.toVec3(), def.id, pos.angleTo(mapCenter), target)
+				var c = new Creep(pos.toVec3(), def.id, pos.angleTo(playableCenter), target)
 				c.weightFactor = def.weightFac
 			case FLIPPER
-				var c = new Flipper(pos.toVec3(), def.id, pos.angleTo(mapCenter), target)
+				var c = new Flipper(pos.toVec3(), def.id, pos.angleTo(playableCenter), target)
 				c.weightFactor = def.weightFac
 			case MAMMOTH
-				var c = new Mammoth(pos.toVec3(), def.id, pos.angleTo(mapCenter), target)
+				var c = new Mammoth(pos.toVec3(), def.id, pos.angleTo(playableCenter), target)
 				c.weightFactor = def.weightFac
 			default
-				var c = new Creep(pos.toVec3(), def.id, pos.angleTo(mapCenter), target)
+				var c = new Creep(pos.toVec3(), def.id, pos.angleTo(playableCenter), target)
 				c.weightFactor = def.weightFac
 				
 		
@@ -54,7 +54,7 @@ public function init_Spawner(boolean compiletime)
 		..setNormalAbilities("Avul")
 		..setTintingColorRed(150)..setTintingColorBlue(150)..setTintingColorGreen(150)
 	else
-		WEST = new Spawner(vec2(-1800,-1800),mapCenter)
-		NORTH = new Spawner(vec2(-500,2400),mapCenter)
-		EAST = new Spawner(vec2(1800,-1100),mapCenter)
+		WEST = new Spawner(vec2(-1800,-1800),playableCenter)
+		NORTH = new Spawner(vec2(-500,2400),playableCenter)
+		EAST = new Spawner(vec2(1800,-1100),playableCenter)
 		

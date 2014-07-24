@@ -173,11 +173,11 @@ public class Cage
 			
 function buildCageSpell(int id, int lvl) returns ChannelAbilityPreset
 	var pr = new ChannelAbilityPreset(id, lvl)
-		..removeChannelProperties(true)..setName("Cage")
+		..removeChannelProperties(true, true)..setName("Cage")
 		..setButtonPositionNormalX(3)..setButtonPositionNormalY(2)
 		..setButtonPositionResearchX(3)..setButtonPositionResearchY(0)
-		..setIcon("BTNStaticShock")..setOption(Option.VISIBLE, true)
-		..setOrderStringActivate("holybolt")..setHotkey(CAGE_HOTKEY)..setRequiredLevel(6)
+		..presetIcon("BTNStaticShock")
+		..setOrderStringActivate("holybolt")..presetHotkey(CAGE_HOTKEY)..setRequiredLevel(6)
 		..setLevelSkipRequirement(3)
 	for i = 1 to 4
 		if id == CAGE_SPELL_ID

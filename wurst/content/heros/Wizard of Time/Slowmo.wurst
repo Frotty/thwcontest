@@ -15,9 +15,6 @@ function getSlowmoDuration(int lvl) returns real
 public function initiateSlowmo(Hero caster)
 	let lvl = getSlowmoDuration(caster.actor.getAbilityLevel(SLOWMO_SPELL_ID))
 	print("Started Slowmo")
-	Entity.addOnCostructEvent((Entity e) -> begin
-		e.setSpeedFactor(0.1)
-	end)
 
 
 public function init_Slowmo(boolean c)
@@ -25,8 +22,7 @@ public function init_Slowmo(boolean c)
 	
 	if c
 		let def = new ChannelAbilityPreset(SLOWMO_SPELL_ID, SLOWMO_MAX_LVL)
-		..removeChannelProperties(true)..setOption(Option.VISIBLE, true)
-		
+		..removeChannelProperties(true, true)
 		new AbilityTooltipGenerator(SLOWMO_NAME, SLOWMO_HOTKEY, Targettype.NOTARGET, SLOWMO_MAX_LVL, "")
 		..addProperty("Duration:", (int lvl) -> getSlowmoDuration(lvl).toString())
 		..applyToDef(def)

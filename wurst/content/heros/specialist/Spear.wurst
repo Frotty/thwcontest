@@ -111,11 +111,11 @@ public function init_Spear(boolean compileTime)
 	if compileTime
 		var def = new ChannelAbilityPreset(SPEAR_SPELL_ID, 4)
 		// Set Attributes
-		def..removeChannelProperties(true)..setName(SPEAR_NAME)
+		def..removeChannelProperties(true, true)
 			..setButtonPositionNormalX(1)..setButtonPositionNormalY(2)
 			..setButtonPositionResearchX(1)..setButtonPositionResearchY(0)
-			..setIcon("BTNBloodFilledGlassArrow")..setOption(Option.VISIBLE, true)
-			..setTargetType(Targettype.PUTARGET)..setHotkey(SPEAR_HOTKEY)
+			..presetIcon("BTNBloodFilledGlassArrow")
+			..presetTargetTypes(Targettype.PUTARGET)..presetHotkey(SPEAR_HOTKEY)
 			..setLevels(SPEAR_MAXLVL)
 			..setOrderStringActivate("starfall")
 		for i = 1 to 4

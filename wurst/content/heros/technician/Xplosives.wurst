@@ -104,10 +104,10 @@ public function init_Xplosives(boolean c)
 	if c
 		
 		let xplosivePreset = new ChannelAbilityPreset(EXPLOSIVES_SPELL_ID, 4)
-		xplosivePreset..removeChannelProperties(true)..setName("Xplosives")
-		..setButtonPosNormal(0,2)..setIcon("BTNExplosiveBarrel")
-		..setOption(Option.VISIBLE, true)..setTargetType(Targettype.PTARGET)..setOption(Option.TARGETIMAGE, true)
-		..setAreaOfEffect(128)..setHotkey(XPLOSIVES_HOTKEY)
+		xplosivePreset..removeChannelProperties(true, true)..setName("Xplosives")
+		..presetButtonPosNormal(0,2)..presetIcon("BTNExplosiveBarrel")
+		..presetTargetTypes(Targettype.PTARGET)..presetOption(Option.TARGETIMAGE, true)
+		..presetAreaofEffect((int lvl) -> 128.)..presetHotkey(XPLOSIVES_HOTKEY)
 		..setCastRange(1, 180)..setRequiredLevel(2)
 		for i = 1 to 4
 			xplosivePreset..setCooldown(i, getXplosionCooldown(i))
@@ -122,8 +122,8 @@ public function init_Xplosives(boolean c)
 	
 		
 		let xdum = new AbilityDefinitionBashcreep(MAX_EXPLOSIVES_ID)
-		xdum..setChancetoBash(1, 0)..setChancetoMiss(1, 0)..setButtonPosNormal(0, 2)
-		..setIcon("PASExplosiveBarrel")..setName("Maximum Amount")
+		xdum..setChancetoBash(1, 0)..setChancetoMiss(1, 0)..presetButtonPosNormal(0, 2)
+		..presetIcon("PASExplosiveBarrel")..setName("Maximum Amount")
 		new AbilityTooltipGenerator(MAX_XPLOSIVES_NAME, "", Targettype.PASSIVE, 4, "You reached the maximum Xplosives for this level.")
 		..addProperty("Maximum Amount:", (int lvl) -> getMaxXplo(lvl).toString())
 		..applyToDef(xdum)

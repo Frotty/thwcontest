@@ -143,11 +143,11 @@ public function init_Feed(boolean compileTime)
 	// Generate def if compieltime
 		var feed = new ChannelAbilityPreset(FEED_SPELL_ID, 4)
 		// Set Attributes
-		feed..removeChannelProperties(true)..setName("Feed")
+		feed..removeChannelProperties(true, true)..setName("Feed")
 			..setButtonPositionNormalX(0)..setButtonPositionNormalY(2)
 			..setButtonPositionResearchX(0)..setButtonPositionResearchY(0)
-			..setIcon("BTNMonsterLure")..setOption(Option.VISIBLE, true)
-			..setTargetType(Targettype.PUTARGET)..setHotkey(FEED_HOTKEY)
+			..presetIcon("BTNMonsterLure")
+			..presetTargetTypes(Targettype.PUTARGET)..presetHotkey(FEED_HOTKEY)
 			..setOrderStringActivate("warstomp")
 		for i = 1 to 4
 			feed..setCastRange(i,400)

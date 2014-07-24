@@ -279,7 +279,7 @@ init
 			a.setAreaofEffect(1, 1)
 			a.setTargetsAllowed(1, "self")
 			a.setAmountRegenerated(1, sign * pow2(n) / 200.)
-			a.setRace("other")
+			a.setRace(Race.Other)
 			setProperties(a, I2S(sign * pow2(n)), "Manaregen")
 
 	// Attackspeed:

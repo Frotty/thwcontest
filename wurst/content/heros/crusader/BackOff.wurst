@@ -58,10 +58,10 @@ public function init_BackOff(boolean compileTime)
 	if compileTime
 		var backoff = new ChannelAbilityPreset(BACKOFF_SPELL_ID, BACKOFF_MAXLVL)
 		// Set Attributes
-		backoff..removeChannelProperties(true)..setName("Back Off")
+		backoff..removeChannelProperties(true, true)..setName("Back Off")
 			..setButtonPositionNormalX(0)..setButtonPositionNormalY(2)
-			..setIcon("BTNCrushUndead")..setOption(Option.VISIBLE, true)
-			..setOrderStringActivate("warstomp")..setHotkey(BACKOFF_HOTKEY)
+			..presetIcon("BTNCrushUndead")
+			..setOrderStringActivate("warstomp")..presetHotkey(BACKOFF_HOTKEY)
 		for i = 1 to BACKOFF_MAXLVL
 			backoff..setManaCost(i,getBackManaCost(i))
 				..setCooldown(i,getBackOffCooldown(i).toReal())
