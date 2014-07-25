@@ -25,6 +25,7 @@ import PauseItemDefinitions
 import AiManager
 import PriorityAi
 import Decal
+import DebugRoundInfo
 
 function initResources(boolean compileTime)
 	init_PriorityAi(compileTime)
@@ -52,6 +53,8 @@ function initResources(boolean compileTime)
 			init_Items(compileTime)
 			init_Intermission(compileTime)
 		end)
+		
+	TypeWriter.enqueue("runningrunningrunningrunningrunningrunningrunningrunningrunningrunningrunningrunningrunningrunningrunningrunningrunningrunningrunning")
 	
 
 boolean testing = true

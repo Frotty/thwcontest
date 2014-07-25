@@ -1,0 +1,11 @@
+package ModelGene
+
+public class ModelGene
+	
+	function getUnit(int genotype) returns unit
+		return null
+		
+	function getMaxGenotypes() returns int
+		return 1
+	
+

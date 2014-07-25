@@ -1,0 +1,7 @@
+package Gene
+
+public abstract class Gene
+
+	abstract function getMaxGenotypes() returns int
+	
+	abstract function applyTo(unit u, int genotype)

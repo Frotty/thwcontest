@@ -1,0 +1,25 @@
+package Chromosome
+import FrequenceHandler
+import LinkedList
+import Gene
+import ModelGene
+
+
+	
+public class Chromosome
+	static ModelGene modelGene = new ModelGene()
+	static LinkedList<Gene> genes = new LinkedList<Gene>()	
+	Frequence frequence
+	
+	construct(string initialfrequence)
+		frequence.load(initialfrequence)
+		
+		
+	function createUnit() returns unit
+		let u = modelGene.getUnit(frequence.decode(modelGene.getMaxGenotypes()))
+		for gene in genes
+			gene.applyTo(u,frequence.decode(gene.getMaxGenotypes()))
+		return u
+	
+	static function registerGene(Gene gene)
+		genes.add(gene)
