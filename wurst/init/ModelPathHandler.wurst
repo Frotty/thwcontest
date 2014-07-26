@@ -1,39 +1,37 @@
 package ModelPathHandler
 import LinkedList
+import UnitObjEditing
+import MapStuff
 //Some families are created. I just realized that saving model strings is not enough,
 //Their unit definitions/ID-s need to be in the class too. But this will be added in advance.
-
 //Stringwrap serves the single prupose to make you able to put strings in a linkedlist
 class StringWrap
 	string s
 	construct(string s)
 		this.s = s
 
-//ModelPathHandler represents a model path.
+ //ModelPathHandler represents a model path.
 //It also contains the model paths associated with the represented model.
 //family is the closest models, mostly texture differences. Use them for anomalies in evolution
 //relatives list contain bigger evolution steps, use it for irreversible evolution.
 class ModelPathHandler
 	string path
+	int MODEL_ID
 	LinkedList<StringWrap> family
 	LinkedList<StringWrap> relatives
 	construct(string s)
 		family = new LinkedList<StringWrap>()
 		relatives = new LinkedList<StringWrap>()
 		this.path = s
-		
+LinkedList<ModelPathHandler> models = new LinkedList<ModelPathHandler>()
 //To be able to handle all this, ModelPathHandlers are in a list.
-//If you want to evolve a unit, use findModelPathHandler("your model path") to access it's family and relatives
+//If you want to evolve a unit, use findModelPathHandler("your model path") to access it's family and relatives	
 //Once you find the Handler, change model based on family/relatives list for your liking.
 public function findModelPathHandler(string path) returns ModelPathHandler
 	for m in models
 		if m.path == path
 			return m
 	return null
-
-
-LinkedList<ModelPathHandler> models = new LinkedList<ModelPathHandler>()
-
 
 public function init_ModelPaths(bool compTime)
 	if compTime
@@ -306,3 +304,11 @@ public function init_ModelPaths(bool compTime)
 		temp.family.add(new StringWrap("Units\\Creeps\\SpiderBlack\\SpiderBlack.mdx"))
 		temp.family.add(new StringWrap("Units\\Creeps\\SpiderBlue\\SpiderBlue.mdx"))
 		models.add(temp)
+
+	for m in models
+		m.MODEL_ID = UNIT_ID_GEN.next()
+	if compTime
+		for m in models
+			let def = new UnitDefinition(m.MODEL_ID, 'ugho')
+			def..setName("Mutant")..setHitPointsMaximumBase(500)
+			..setModelFile(m.path)
