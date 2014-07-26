@@ -62,7 +62,7 @@ public function init_Retorno(boolean c)
 	RETORNO_SPELL_ID = ABIL_ID_GEN.next()
 	if c
 		let def = new ChannelAbilityPreset(RETORNO_SPELL_ID, RETORNO_MAXLVL)
-		..removeChannelProperties(true)..setOption(Option.VISIBLE, true)
+		..removeChannelProperties(true, true)
 		
 		new AbilityTooltipGenerator(RETORNO_NAME, RETORNO_HOTKEY, Targettype.UTARGET, RETORNO_MAXLVL, "")
 		..addProperty("Damage Treshold:", (int lvl) -> getRetornoDamage(lvl).toString())

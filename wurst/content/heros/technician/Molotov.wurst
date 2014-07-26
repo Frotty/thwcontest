@@ -88,9 +88,9 @@ public function init_Molotov(boolean c)
 	
 	if c
 		let molotovPreset = new ChannelAbilityPreset(MOLOTOV_SPELL_ID, MOLOTOV_MAXLVL)
-		molotovPreset..setName("Molotov")..removeChannelProperties(true)..setOption(Option.VISIBLE, true)
-		..setIcon("BTNSunFragment")..setTargetType(Targettype.PTARGET)
-		..setButtonPosNormal(2, 2)..setHotkey(MOLOTOV_HOTKEY)
+		molotovPreset..setName("Molotov")..removeChannelProperties(true, true)
+		..presetIcon("BTNSunFragment")..presetTargetTypes(Targettype.PTARGET)
+		..presetButtonPosNormal(2, 2)..presetHotkey(MOLOTOV_HOTKEY)
 		for i = 1 to MOLOTOV_MAXLVL
 			molotovPreset..setCastRange(i, getMolotovCastRange(i))
 			..setCooldown(i, getMolotovCooldown(i))

@@ -81,10 +81,10 @@ public function init_CrushingHalo(boolean compileTime)
 	if compileTime
 
 		var crushinghalo = new ChannelAbilityPreset(CRUSHING_HALO_SPELL_ID, CRUSHING_HALO_MAXLVL)
-		crushinghalo..removeChannelProperties(true)..setName("Crushing Halo")
+		crushinghalo..removeChannelProperties(true, true)..setName("Crushing Halo")
 			..setButtonPositionNormalX(3)..setButtonPositionNormalY(2)
 			..setButtonPositionResearchX(3)..setButtonPositionResearchY(0)
-			..setIcon("BTNHoly")..setOption(Option.VISIBLE, true)
+			..presetIcon("BTNHoly")
 			..setOrderStringActivate("holybolt")..setRequiredLevel(6)..setLevelSkipRequirement(3)
 		for i = 1 to 4
 			crushinghalo..setManaCost(i, getCrushingHaloManaCost(i))

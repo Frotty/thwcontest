@@ -1,0 +1,46 @@
+package DebugRoundInfo
+import Queue
+
+// Oldschool typing of the letters to make it fancy
+
+public function displayEvolutionInfo(int generation)
+	TypeWriter.enqueue("==========Evolution Info==========\n")
+	TypeWriter.enqueue("Generation: " + generation.toString() + "\n")
+	TypeWriter.enqueue("Mutation-chance: " + "\n")
+	TypeWriter.enqueue("Crossover-chance: " + "\n")
+
+
+class StringWrap
+	string s
+	construct(string s)
+		this.s = s
+
+public class TypeWriter
+	static Queue<StringWrap> strings = new Queue<StringWrap>()
+	static int currentPos = 0
+	static timer t = CreateTimer()
+	static boolean running = false
+	
+	static function enqueue(string text)
+		strings.enqueue(new StringWrap(text))
+		if not running
+			running = true
+			t.startPeriodic(0.03, () -> begin
+				ClearTextMessages()
+				int pos = 0
+				string s = ""
+				if strings.getSize() > 0
+					for sw in strings
+						if pos + sw.s.length() < currentPos
+							s += sw.s
+							pos += sw.s.length()
+						else
+							s += sw.s.substring(0, currentPos-pos)
+						
+					printTimed(s, 2)
+				else
+					running = false
+					GetExpiredTimer().pause()
+				
+			end)
+		

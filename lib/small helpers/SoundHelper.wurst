@@ -34,7 +34,8 @@ public class Sound
 	vec2 emuPos = vec2(0,0)
 	unit emuUnit = null
 	
-	construct(string file, int duration, boolean looping, boolean is3D, boolean stopOnLeaveRange, int fadeIn, int fadeOut, string eaxSetting )
+	construct(string file, int duration, boolean looping, boolean is3D, 
+			boolean stopOnLeaveRange, int fadeIn, int fadeOut, string eaxSetting )
 		this.file = file
 		this.duration = duration
 		this.looping = looping

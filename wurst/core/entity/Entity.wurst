@@ -53,7 +53,7 @@ public abstract class Entity
 		this.fx = fx
 		this.owner = fx.getOwner()
 		fx.getDummy().setEntity(this)
-		fx.setPos(pos)
+		fx.setXYZ(pos)
 		
 	function getZ() returns real
 		return pos.z
@@ -82,7 +82,7 @@ public abstract class Entity
 		if actor != null
 			actor.setXY(pos)
 		else if fx != null
-			fx.setPos(pos)
+			fx.setXY(pos)
 		if wakeUp
 			sleeping = false
 			
@@ -92,7 +92,7 @@ public abstract class Entity
 		if actor != null
 			actor.setXYZReal(pos)
 		else if fx != null
-			fx.setPos(pos)
+			fx.setXYZ(pos)
 		if wakeUp
 			sleeping = false
 			
@@ -129,13 +129,13 @@ public abstract class Entity
 		if actor != null
 			actor.setXYZReal(pos)
 		if fx != null
-			fx.setPos(pos)
+			fx.setXYZ(pos)
 			
 	function setToPos2()
 		if actor != null
 			actor.setXY(pos)
 		if fx != null
-			fx.setPos(pos.toVec2())
+			fx.setXY(pos.toVec2())
 		
 	function setTarget( vec2 tpos, real speed2 )
 		let speed = speed2 * ANIMATION_PERIOD

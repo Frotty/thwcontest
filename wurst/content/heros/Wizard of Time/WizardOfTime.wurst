@@ -23,10 +23,6 @@ public class Wizard extends Hero
 				
 	override function onPointCast(int spellId, vec2 target, int lvl)
 		switch spellId
-			case EXPLOSIVES_SPELL_ID
-				createXplosive(target, this, lvl)
-			case MOLOTOV_SPELL_ID
-				new Molotov(getPos3() + vec3(0,0,50), target, this, lvl)
 			
 	
 public function init_Technician(boolean compiletime)
@@ -34,8 +30,6 @@ public function init_Technician(boolean compiletime)
 	
 	init_Slowmo(compiletime)
 	init_Retorno(compiletime)
-	init_XBurn(compiletime)
-	init_Napalm(compiletime)
 	if compiletime
 		// Generate def if compieltime
 
@@ -48,7 +42,5 @@ public function init_Technician(boolean compiletime)
 		preset..addProperName("Ark")
 			..addHeroAbility(SLOWMO_SPELL_ID)
 			..addHeroAbility(RETORNO_SPELL_ID)
-			..addHeroAbility(MOLOTOV_SPELL_ID)
-			..addHeroAbility(XBURN_SPELL_ID)
 		// Build at the end
 			..buildHero()

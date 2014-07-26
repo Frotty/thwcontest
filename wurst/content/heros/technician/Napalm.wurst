@@ -92,8 +92,8 @@ public function init_Napalm(boolean c)
 	if c
 		let spreset = new ChannelAbilityPreset(NAPALM_SPELL_ID, 4)
 		// Set Attributes
-		spreset..removeChannelProperties(true)..setName("Napalm")..setButtonPosNormal(1,2)
-			..setIcon("BTNFieryExplosion")..setOption(Option.VISIBLE, true)..setRequiredLevel(2)
+		spreset..removeChannelProperties(true, true)..setName("Napalm")..presetButtonPosNormal(1,2)
+			..presetIcon("BTNFieryExplosion")..setRequiredLevel(2)
 		for i = 1 to 4
 			spreset..setCooldown(i, getNapalmCooldown(i))
 			..setManaCost(i, getNapalmManaCost(i))

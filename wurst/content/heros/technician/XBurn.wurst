@@ -48,7 +48,7 @@ public function init_XBurn(boolean c)
 	if c
 		XBURN_BUFF_DEF.generate()
 		let def = new AbilityDefinitionBashcreep(XBURN_SPELL_ID)
-		def..setName("Xburn")..setButtonPosNormal(1, 1)..setIcon("PASevil")
+		def..setName("Xburn")..presetButtonPosNormal(1, 1)..presetIcon("PASevil")
 		
 		new AbilityTooltipGenerator(XBURN_NAME, XBURN_HOTKEY, Targettype.PASSIVE, XBURN_MAXLEVEL, "Spells from the technician can inflict an XBurn.\nXBurn instances stack.\nXDoes damage over time.")
 		..addProperty("Max Stacks:", (int lvl) -> getXburnMaxStacks(lvl).toString())
